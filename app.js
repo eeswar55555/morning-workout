@@ -300,12 +300,11 @@
 
   /* ====================== SETTINGS ====================== */
   function renderSettings(v) {
-    var st = S.settings, vs = V.voices;
+    var st = S.settings;
     var h = '<header class="top"><div><h1>Settings</h1></div></header>';
     h += '<section class="card"><b>Voice</b>' +
       '<label class="check"><input type="checkbox" id="sVoice"' + (st.voice ? ' checked' : '') + '> Speak instructions and count reps</label>' +
       (V.ok ? '' : '<p class="warn small">This browser has no built-in voice. Use Chrome on Android.</p>') +
-      '<label class="field">Voice<select id="sVoiceName"><option value="">Automatic</option>' + vs.map(function (x) { return '<option value="' + esc(x.name) + '"' + (x.name === st.voiceName ? ' selected' : '') + '>' + esc(x.name) + ' (' + esc(x.lang) + ')</option>'; }).join('') + '</select></label>' +
       '<label class="field">Speaking speed: <b id="rv">' + st.rate.toFixed(2) + '×</b><input type="range" id="sRate" min="0.7" max="1.3" step="0.05" value="' + st.rate + '"></label>' +
       '<label class="field">How much to explain<select id="sDetail"><option value="auto"' + (st.detail === 'auto' ? ' selected' : '') + '>Full the first 3 times, then short</option><option value="full"' + (st.detail === 'full' ? ' selected' : '') + '>Always full</option><option value="short"' + (st.detail === 'short' ? ' selected' : '') + '>Always short</option></select></label>' +
       '<button class="ghost" id="sTest">🔊 Test voice</button></section>';
@@ -325,10 +324,9 @@
     v.innerHTML = h;
     var save = function () { C.save(); };
     $('#sVoice').onchange = function () { st.voice = this.checked; save(); };
-    $('#sVoiceName').onchange = function () { st.voiceName = this.value; save(); };
     $('#sRate').oninput = function () { st.rate = +this.value; $('#rv').textContent = st.rate.toFixed(2) + '×'; save(); };
     $('#sDetail').onchange = function () { st.detail = this.value; save(); };
-    $('#sTest').onclick = function () { SND.unlock(); V.cancel(); if (!V.enabled()) toast('Voice is off'); else V.say('Good morning. Let us get moving. Chair sit to stand. Eight reps.'); };
+    $('#sTest').onclick = function () { SND.unlock(); V.warm(); if (!V.enabled()) toast('Voice is off'); else V.now('Good morning. Let us get moving. Chair sit to stand. Eight reps.'); };
     $('#sPace').onchange = function () { st.pace = +this.value; save(); };
     $('#sRest').oninput = function () { st.restStrength = +this.value; $('#rr').textContent = st.restStrength + ' s'; save(); };
     $('#sLight').onchange = function () { st.lightDay = +this.value; save(); };
@@ -340,7 +338,6 @@
     var si = $('#sInstall'); if (si) si.onclick = function () { deferredInstall.prompt(); };
     $('#sReset').onclick = function () { if (confirm('Erase ALL workouts, settings and custom exercises on this phone? This cannot be undone.')) { localStorage.removeItem('morningfit.v1'); C.load(); S = C.S; C.invalidate(); applyTheme(); toast('Everything was reset'); go('today'); } };
     // voices can load late
-    if (V.ok && !vs.length) setTimeout(function () { if (screen === 'settings' && V.voices.length) refresh(); }, 800);
   }
 
   /* ====================== SAFETY ====================== */
@@ -362,7 +359,7 @@
   function startWorkout(plan) {
     var built = C.buildSteps(plan);
     if (!built.steps.length) { toast('Nothing in the plan. Add exercises first.'); return; }
-    SND.unlock(); C.WakeLock.on();
+    SND.unlock(); V.warm(); C.WakeLock.on();
     var cum = [], tot = 0;
     built.steps.forEach(function (st) { var ex = built.insts[st.exi].ex; var e = st.kind === 'intro' ? 14 : st.kind === 'rest' ? st.secs : st.mode === 'reps' ? st.n * C.period(ex) : st.secs; cum.push(tot); tot += e; });
     RUN = { plan: plan, steps: built.steps, insts: built.insts, i: -1, step: null, paused: false, t: 0, tok: 0, active: 0, clock: 0,

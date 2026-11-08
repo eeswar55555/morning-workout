@@ -226,44 +226,73 @@
     buzz: function (p) { if (S.settings.vibrate && navigator.vibrate) try { navigator.vibrate(p || 80); } catch (e) {} }
   };
 
-  /* ---------- voice (built-in text-to-speech, works offline on Android) ---------- */
+  /* ---------- voice (built-in text-to-speech, works offline on Android) ----------
+   * Indian English (en-IN) is the default. Android Chrome can be slow to start speaking, drops a
+   * sentence that is spoken straight after a cancel, and its "network" voices can stall, so:
+   *  - prefer an on-device en-IN voice,
+   *  - wait a moment after a cancel,
+   *  - if speech has not started after 3 seconds, retry once with the phone's default en-IN voice. */
   var Voice = {
     ok: 'speechSynthesis' in root && 'SpeechSynthesisUtterance' in root,
     voices: [], token: 0,
+    load: function () {
+      if (!this.ok) return;
+      try { this.voices = speechSynthesis.getVoices().filter(function (v) { return /^en/i.test(v.lang); }); } catch (e) {}
+    },
     init: function () {
       if (!this.ok) return;
-      var self = this, loadV = function () { self.voices = speechSynthesis.getVoices().filter(function (v) { return /^en/i.test(v.lang); }); };
-      loadV(); try { speechSynthesis.onvoiceschanged = loadV; } catch (e) {}
+      var self = this; this.load();
+      try { speechSynthesis.onvoiceschanged = function () { self.load(); }; } catch (e) {}
     },
     pick: function () {
-      var n = S.settings.voiceName, vs = this.voices;
-      return vs.filter(function (v) { return v.name === n; })[0] || vs.filter(function (v) { return /en[-_]IN/i.test(v.lang); })[0] ||
-        vs.filter(function (v) { return /en[-_]GB/i.test(v.lang); })[0] || vs.filter(function (v) { return /en[-_]US/i.test(v.lang); })[0] || vs[0];
+      if (!this.voices.length) this.load();
+      var vs = this.voices, isIN = function (v) { return /en[-_]IN/i.test(v.lang); }, local = function (v) { return v.localService !== false; };
+      return vs.filter(function (v) { return isIN(v) && local(v); })[0] || vs.filter(isIN)[0] ||
+        vs.filter(function (v) { return /en[-_]GB/i.test(v.lang) && local(v); })[0] || vs.filter(function (v) { return /^en/i.test(v.lang) && local(v); })[0] || null;
     },
     enabled: function () { return this.ok && S.settings.voice; },
-    cancel: function () { this.token++; if (this.ok) try { speechSynthesis.cancel(); } catch (e) {} },
-    say: function (text, onstart) {            // queued: resolves when finished
+    busy: function () { try { return this.ok && (speechSynthesis.speaking || speechSynthesis.pending); } catch (e) { return false; } },
+    warm: function () { this.load(); try { speechSynthesis.resume(); } catch (e) {} },
+    lastCancel: 0,
+    cancel: function () { this.token++; this.lastCancel = Date.now(); if (this.ok) try { speechSynthesis.cancel(); } catch (e) {} },
+    say: function (text, onstart, delay) {            // queued: resolves when finished
       var self = this, speed = root.__speed || 1;
       if (root.__said && self.enabled()) root.__said.push(text);
       return new Promise(function (res) {
         if (!self.enabled()) { res(); return; }
-        var done = false, wd;
-        var fin = function () { if (done) return; done = true; clearTimeout(wd); res(); };
+        var since = Date.now() - self.lastCancel;
+        if (since < 150) delay = Math.max(delay || 0, 150 - since);      // Android drops speech right after a cancel
+        var done = false, wd, st, started = false, retried = false, seq = 0;
+        var fin = function () { if (done) return; done = true; clearTimeout(wd); clearTimeout(st); res(); };
         var est = Math.max(900, text.length * 75 / (S.settings.rate || 1)) + 1200;
-        wd = setTimeout(fin, (est * 2.2) / speed);
+        wd = setTimeout(fin, (est * 2.2) / speed + (delay || 0));
         if (speed > 1) { if (onstart) onstart(); setTimeout(fin, 200 / speed); return; }   // test mode
-        try {
-          var u = new SpeechSynthesisUtterance(text), v = self.pick();
-          if (v) { u.voice = v; u.lang = v.lang; } else u.lang = 'en-US';
-          u.rate = S.settings.rate || 1; u.pitch = 1;
-          u.onstart = function () { if (onstart) onstart(); };
-          u.onend = fin; u.onerror = fin;
-          try { speechSynthesis.resume(); } catch (e) {}
-          speechSynthesis.speak(u);
-        } catch (e) { fin(); }
+        function attempt(useVoice) {
+          if (done) return;
+          try {
+            var u = new SpeechSynthesisUtterance(text), v = useVoice ? self.pick() : null, mine = ++seq;
+            if (v) { u.voice = v; u.lang = v.lang; } else u.lang = 'en-IN';
+            u.rate = S.settings.rate || 1; u.pitch = 1;
+            u.onstart = function () { if (mine !== seq) return; started = true; clearTimeout(st); if (onstart) onstart(); };
+            u.onend = function () { if (mine === seq) fin(); };
+            u.onerror = function () { if (mine === seq) fin(); };
+            try { speechSynthesis.resume(); } catch (e) {}
+            speechSynthesis.speak(u);
+            clearTimeout(st);
+            st = setTimeout(function () {                      // never started: try again once, default voice
+              if (started || done || retried) return;
+              retried = true; try { speechSynthesis.cancel(); } catch (e) {}
+              setTimeout(function () { attempt(false); }, 120);
+            }, 3000);
+          } catch (e) { fin(); }
+        }
+        if (delay) setTimeout(function () { attempt(true); }, delay); else attempt(true);
       });
     },
-    now: function (text) { this.cancel(); return this.say(text); },     // interrupts whatever is playing
+    now: function (text) {                         // interrupts whatever is playing
+      var wasBusy = this.busy(); this.cancel();
+      return this.say(text, null, wasBusy ? 120 : 0);
+    },
     seq: function (list, from, onIdx) {          // speak sentences one by one; false if interrupted
       var tok = this.token, self = this;
       return (async function () {
