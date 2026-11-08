@@ -10,6 +10,30 @@
   var DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   var screen = 'today', RUN = null, deferredInstall = null;
 
+  /* ====================== icons (inline SVG: same look on every phone, follows the theme) ====================== */
+  var ICONS = {
+    flame: '<path d="M12 3c1 4 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-3-1-5 1-9z"/>',
+    play: '<path d="M7 4.5l12 7.5-12 7.5z" fill="currentColor"/>',
+    pause: '<rect x="6" y="5" width="4" height="14" rx="1" fill="currentColor"/><rect x="14" y="5" width="4" height="14" rx="1" fill="currentColor"/>',
+    repeat: '<path d="M3.5 12a8.5 8.5 0 1 0 2.6-6.1"/><path d="M3.5 4v5h5"/>',
+    skip: '<path d="M5 5l10 7-10 7z" fill="currentColor"/><path d="M19 5v14"/>',
+    close: '<path d="M6 6l12 12M18 6L6 18"/>',
+    volume: '<path d="M4 9.5v5h4l5 4v-13l-5 4z" fill="currentColor"/><path d="M16.5 9a4.5 4.5 0 0 1 0 6M19 6.5a8 8 0 0 1 0 11"/>',
+    mute: '<path d="M4 9.5v5h4l5 4v-13l-5 4z" fill="currentColor"/><path d="M17 9.5l5 5M22 9.5l-5 5"/>',
+    swap: '<path d="M4 8h14l-3-3M20 16H6l3 3"/>',
+    shuffle: '<path d="M3 7h4c4 0 6 10 10 10h4M3 17h4c1.5 0 2.6-1 3.5-2.3M14 9c.9-1.2 2-2 3-2h4"/><path d="M18 4l3 3-3 3M18 14l3 3-3 3"/>',
+    edit: '<path d="M4 20l1-4L16.5 4.5a2 2 0 0 1 3 3L8 19z"/>',
+    down: '<path d="M12 4v11M7 11l5 5 5-5M5 20h14"/>',
+    up: '<path d="M12 16V5M7 9l5-5 5 5M5 20h14"/>',
+    warning: '<path d="M12 3.5l10 17.5H2z"/><path d="M12 10v5M12 18h.01"/>',
+    check: '<path d="M5 12.5l5 5 9-11"/>',
+    search: '<circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/>',
+    plus: '<path d="M12 5v14M5 12h14"/>'
+  };
+  function ico(n, cls) {
+    return '<svg class="i ' + (cls || '') + '" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + ICONS[n] + '</svg>';
+  }
+
   /* ====================== animation loop ====================== */
   var anims = [], lastT = performance.now();
   function frame(now) {
@@ -41,7 +65,7 @@
 
   /* ====================== small UI helpers ====================== */
   function toast(msg) {
-    var t = document.createElement('div'); t.className = 'toast'; t.textContent = msg;
+    var t = document.createElement('div'); t.className = 'toast'; t.setAttribute('role', 'status'); t.textContent = msg;
     document.body.appendChild(t); setTimeout(function () { t.classList.add('show'); }, 10);
     setTimeout(function () { t.classList.remove('show'); setTimeout(function () { t.remove(); }, 300); }, 2600);
   }
@@ -66,7 +90,7 @@
   /* ====================== navigation ====================== */
   function go(name) {
     screen = name; var v = $('#view');
-    $$('#nav button').forEach(function (b) { b.classList.toggle('on', b.getAttribute('data-go') === name); });
+    $$('#nav button').forEach(function (b) { var on = b.getAttribute('data-go') === name; b.classList.toggle('on', on); b.setAttribute('aria-current', on ? 'page' : 'false'); });
     ({ today: renderToday, library: renderLibrary, progress: renderProgress, settings: renderSettings })[name](v);
     v.scrollTop = 0; thumbs(v);
   }
@@ -78,38 +102,46 @@
     var key = C.dateKey(), plan = C.buildPlan(key), built = C.buildSteps(plan), mins = Math.max(1, Math.round(C.estimate(built) / 60));
     var L = C.level(), adv = C.advice(), done = C.sessions().some(function (h) { return h.date === key; });
     var dateStr = new Date().toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' });
+    var nEx = plan.blocks.reduce(function (a, bl) { return a + bl.items.length; }, 0), nRounds = plan.blocks.some(function (bl) { return bl.circuit; }) ? L.rounds : 1;
     var h = '<header class="top"><div><h1>' + greeting() + '</h1><div class="muted">' + esc(dateStr) + '</div></div>' +
-      '<div class="chips"><span class="chip">🔥 ' + C.streak() + ' day' + (C.streak() === 1 ? '' : 's') + '</span><span class="chip">Level ' + L.n + '</span></div></header>';
-    if (deferredInstall) h += '<button class="install" id="installBtn">📲 Install on this phone</button>';
+      '<div class="chips"><span class="chip">' + ico('flame', 'sm') + C.streak() + ' day' + (C.streak() === 1 ? '' : 's') + '</span><span class="chip">Level ' + L.n + '</span></div></header>';
+    if (C.saveFailed()) h += '<div class="warn" role="alert"><b>Progress can\'t be saved.</b> This browser is blocking storage (a private window?). Open the app in a normal Chrome tab.</div>';
+    if (!nEx) {
+      h += '<section class="hero empty"><h2>Your plan is empty</h2><p class="muted">Add a few exercises and today\'s workout will appear here.</p><button class="btn" id="editPlan2">Edit plan</button></section>';
+    } else {
+      h += '<section class="hero"><span class="eyebrow">' + (plan.light ? 'Lighter day' : done ? 'Done today · go again?' : 'Today\'s workout') + '</span>' +
+        '<div class="hero-stats"><div><b>' + mins + '</b><span>minutes</span></div><div><b>' + nEx + '</b><span>exercises</span></div><div><b>' + nRounds + '</b><span>' + (nRounds === 1 ? 'round' : 'rounds') + '</span></div></div>' +
+        '<button class="btn big" id="start">' + ico('play') + '<span>' + (done ? 'Do it again' : 'Start workout') + '</span></button></section>';
+    }
     if (plan.light) h += '<div class="card note"><b>Lighter day today</b><p>Warm-up, back stability and cool-down only. After that, take a gentle 20–30 minute walk.</p><button class="link" id="fullDay">Do the full routine instead</button></div>';
     else if (C.isLightDay(key) && S.plans[key] && S.plans[key].full) h += '<div class="card note"><p>Full routine chosen for your lighter day.</p><button class="link" id="lightDay">Back to the lighter day</button></div>';
+    if (deferredInstall) h += '<div class="install"><div><b>Install this app</b><div class="small muted">One tap from your home screen. Works offline.</div></div><button class="btn small" id="installBtn">Install</button></div>';
     var pain = S.pain[key];
-    h += '<section class="card"><div class="row"><b>How is your back this morning?</b><span class="muted small">optional · 0 = none, 10 = worst</span></div><div class="painrow" id="pain">';
-    for (var i = 0; i <= 10; i++) h += '<button class="pn' + (pain === i ? ' on' : '') + '" data-p="' + i + '">' + i + '</button>';
-    h += '</div></section>';
+    h += '<section class="card" aria-labelledby="painQ"><div class="row"><b id="painQ">How is your back this morning?</b><span class="muted small">optional</span></div><div class="painrow" id="pain" role="group" aria-labelledby="painQ">';
+    for (var i = 0; i <= 10; i++) h += '<button class="pn' + (pain === i ? ' on' : '') + '" data-p="' + i + '" aria-pressed="' + (pain === i) + '">' + i + '</button>';
+    h += '</div><div class="painend small muted"><span>0 · none</span><span>10 · worst</span></div></section>';
     h += '<div class="planhead"><h2>Today\'s plan</h2><span class="muted">about ' + mins + ' min</span></div>';
     plan.blocks.forEach(function (b) {
       var rounds = b.circuit ? L.rounds : 1;
-      h += '<section class="card block"><div class="bt">' + esc(b.title) + (rounds > 1 ? ' <span class="muted">· ' + rounds + ' rounds</span>' : '') + '</div>';
+      h += '<section class="card block"><h3 class="bt">' + esc(b.title) + (rounds > 1 ? ' <span class="muted">· ' + rounds + ' rounds</span>' : '') + '</h3>';
       b.items.forEach(function (it) {
         var ex = C.getEx(it.id);
-        h += '<div class="item">' + thumbHtml(ex.id) + '<div class="meta" data-open="' + esc(ex.id) + '"><div class="nm">' + esc(ex.name) + '</div><div class="muted small">' + esc(C.doseText(ex)) + '</div></div>' +
-          (it.options.length > 1 ? '<button class="swap" data-swap="' + esc(it.key) + '" aria-label="Swap exercise" title="Swap for another exercise">⟳</button>' : '') + '</div>';
+        h += '<div class="item">' + thumbHtml(ex.id) + '<div class="meta" data-open="' + esc(ex.id) + '" role="button" tabindex="0"><div class="nm">' + esc(ex.name) + '</div><div class="muted small">' + esc(C.doseText(ex)) + '</div></div>' +
+          (it.options.length > 1 ? '<button class="swap" data-swap="' + esc(it.key) + '" aria-label="Swap ' + esc(ex.name) + ' for another exercise" title="Swap for another exercise">' + ico('swap') + '</button>' : '') + '</div>';
       });
       h += '</section>';
     });
-    h += '<div class="rowbtns"><button class="ghost" id="shuf">🔀 Shuffle</button><button class="ghost" id="editPlan">✏️ Edit plan</button></div>';
-    h += '<section class="card"><b>' + esc(L.title) + '</b><p class="small">' + esc(adv.text) + '</p>' +
+    h += '<div class="rowbtns"><button class="ghost" id="shuf">' + ico('shuffle') + 'Shuffle</button><button class="ghost" id="editPlan">' + ico('edit') + 'Edit plan</button></div>';
+    h += '<section class="card"><h3 class="bt">Level</h3><b>' + esc(L.title) + '</b><p class="small">' + esc(adv.text) + '</p>' +
       (adv.up ? '<button class="btn small" id="lvlUp">Move up to level ' + (S.level + 1) + '</button>' : '') +
       (adv.down ? '<button class="btn small alt" id="lvlDown">Drop back to level ' + (S.level - 1) + '</button>' : '') + '</section>';
-    h += '<div class="spacer"></div>';
-    h += '<div class="startbar"><button class="btn big" id="start">' + (done ? '▶ Do it again' : '▶ Start workout') + ' · ' + mins + ' min</button></div>';
     v.innerHTML = h;
 
-    $('#start').onclick = function () { startWorkout(plan); };
+    var sb = $('#start'); if (sb) sb.onclick = function () { startWorkout(plan); };
+    var ep2 = $('#editPlan2'); if (ep2) ep2.onclick = openPlanEditor;
     $$('#pain .pn').forEach(function (b) { b.onclick = function () { var p = +b.getAttribute('data-p'); if (S.pain[key] === p) delete S.pain[key]; else S.pain[key] = p; C.save(); refresh(); }; });
     $$('[data-swap]').forEach(function (b) { b.onclick = function () { var k = b.getAttribute('data-swap'); var it = null; plan.blocks.forEach(function (bl) { bl.items.forEach(function (i) { if (i.key === k) it = i; }); }); C.swap(key, k, it.options, it.id); refresh(); }; });
-    $$('[data-open]').forEach(function (m) { m.onclick = function () { openDetail(m.getAttribute('data-open')); }; });
+    $$('[data-open]').forEach(function (m) { m.onclick = function () { openDetail(m.getAttribute('data-open')); }; m.onkeydown = function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openDetail(m.getAttribute('data-open')); } }; });
     $('#shuf').onclick = function () { C.shuffle(key); refresh(); toast('Mixed it up'); };
     $('#editPlan').onclick = openPlanEditor;
     var fd = $('#fullDay'); if (fd) fd.onclick = function () { C.buildPlan(key); S.plans[key].full = true; C.save(); refresh(); };
@@ -126,13 +158,13 @@
     var amount = ex.type === 'reps' ? 'Reps' : 'Seconds';
     var base = (S.dose[ex.id] && S.dose[ex.id].n != null) ? S.dose[ex.id].n : (ex.type === 'reps' ? ex.reps : ex.secs);
     var h = '<div class="demo" id="demoBox"></div><h2>' + esc(ex.name) + '</h2><div class="muted">' + esc(ex.area || '') + ' · ' + esc(C.doseText(ex, d)) + '</div>' +
-      '<div class="rowbtns"><button class="btn small" id="hear">🔊 Hear instructions</button></div>' +
+      '<div class="rowbtns"><button class="btn small" id="hear">' + ico('volume') + 'Hear instructions</button></div>' +
       '<h3>How to do it</h3><ol class="steps">' + (ex.steps || []).map(function (s) { return '<li>' + esc(s) + '</li>'; }).join('') + '</ol>' +
       (ex.breath ? '<p><b>Breathing:</b> ' + esc(ex.breath) + '</p>' : '') +
       (ex.mistake ? '<p><b>Avoid:</b> ' + esc(ex.mistake) + '</p>' : '') +
       (ex.easier ? '<p class="tip"><b>Easier:</b> ' + esc(ex.easier) + '</p>' : '') +
       (ln ? '<p class="tip"><b>At your level:</b> ' + esc(ln) + '</p>' : '') +
-      '<div class="warn small">⚠ Stop if this causes sharp pain, or pain, tingling or numbness in your leg.</div>' +
+      '<div class="warn small">' + ico('warning', 'sm') + ' Stop if this causes sharp pain, or pain, tingling or numbness in your leg.</div>' +
       '<label class="field">Your ' + amount.toLowerCase() + ' (starting amount)<input type="number" inputmode="numeric" min="1" max="120" id="amt" value="' + base + '"></label>' +
       '<div class="rowbtns">' + (ex.isCustom ? '<button class="ghost danger" id="delEx">Delete exercise</button>' : '') + '<button class="btn small" data-close>Done</button></div>';
     var sh = sheet(h, { tall: true, onClose: function () { demo && demo.stop(); V.cancel(); } });
@@ -160,19 +192,34 @@
   }
 
   /* ====================== LIBRARY ====================== */
+  var libFilter = 'all';
   function renderLibrary(v) {
     var all = C.lib();
     var h = '<header class="top"><div><h1>Exercises</h1><div class="muted">Tap one to watch it. Switch off any you do not want in your plan.</div></div></header>' +
-      '<button class="btn" id="addEx">＋ Add my own exercise</button><div class="liblist">';
+      '<button class="btn" id="addEx">' + ico('plus') + 'Add my own exercise</button>' +
+      '<div class="searchbar">' + ico('search') + '<input id="lq" type="search" placeholder="Search exercises" aria-label="Search exercises" autocomplete="off"></div>' +
+      '<div class="filters" role="group" aria-label="Filter">' + [['all', 'All'], ['on', 'In my plan'], ['off', 'Switched off']].map(function (f) { return '<button class="fchip' + (libFilter === f[0] ? ' on' : '') + '" data-f="' + f[0] + '" aria-pressed="' + (libFilter === f[0]) + '">' + f[1] + '</button>'; }).join('') + '</div>' +
+      '<div class="liblist" id="liblist">';
     all.forEach(function (ex) {
-      h += '<div class="item lib">' + thumbHtml(ex.id) + '<div class="meta" data-open="' + esc(ex.id) + '"><div class="nm">' + esc(ex.name) + '</div><div class="muted small">' + esc(ex.area || '') + ' · ' + esc(C.doseText(ex)) + '</div></div>' +
-        '<label class="switch" title="Use in my plan"><input type="checkbox" data-en="' + esc(ex.id) + '"' + (S.disabled[ex.id] ? '' : ' checked') + '><span></span></label></div>';
+      h += '<div class="item lib" data-name="' + esc((ex.name + ' ' + (ex.area || '')).toLowerCase()) + '" data-off="' + (S.disabled[ex.id] ? 1 : 0) + '">' + thumbHtml(ex.id) + '<div class="meta" data-open="' + esc(ex.id) + '" role="button" tabindex="0"><div class="nm">' + esc(ex.name) + '</div><div class="muted small">' + esc(ex.area || '') + ' · ' + esc(C.doseText(ex)) + '</div></div>' +
+        '<label class="switch" title="Use in my plan"><input type="checkbox" data-en="' + esc(ex.id) + '" aria-label="Use ' + esc(ex.name) + ' in my plan"' + (S.disabled[ex.id] ? '' : ' checked') + '><span></span></label></div>';
     });
-    h += '</div><p class="muted small">New exercises can also be added by editing <code>exercises.js</code> — see README.</p>';
+    h += '</div><p class="empty muted" id="libEmpty" hidden>No exercises match.</p><p class="muted small">New exercises can also be added by editing <code>exercises.js</code> — see README.</p>';
     v.innerHTML = h;
+    function applyFilter() {
+      var q = ($('#lq').value || '').trim().toLowerCase(), shown = 0;
+      $$('#liblist .item').forEach(function (r) {
+        var ok = (!q || r.getAttribute('data-name').indexOf(q) >= 0) && (libFilter === 'all' || (libFilter === 'off') === (r.getAttribute('data-off') === '1'));
+        r.hidden = !ok; if (ok) shown++;
+      });
+      $('#libEmpty').hidden = shown > 0;
+    }
+    $('#lq').oninput = applyFilter;
+    $$('.fchip', v).forEach(function (b) { b.onclick = function () { libFilter = b.getAttribute('data-f'); $$('.fchip', v).forEach(function (x) { var on = x === b; x.classList.toggle('on', on); x.setAttribute('aria-pressed', on); }); applyFilter(); }; });
+    applyFilter();
     $('#addEx').onclick = openCustomForm;
-    $$('[data-open]', v).forEach(function (m) { m.onclick = function () { openDetail(m.getAttribute('data-open')); }; });
-    $$('[data-en]', v).forEach(function (c) { c.onchange = function () { var id = c.getAttribute('data-en'); if (c.checked) delete S.disabled[id]; else S.disabled[id] = 1; C.save(); }; });
+    $$('[data-open]', v).forEach(function (m) { m.onclick = function () { openDetail(m.getAttribute('data-open')); }; m.onkeydown = function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openDetail(m.getAttribute('data-open')); } }; });
+    $$('[data-en]', v).forEach(function (c) { c.onchange = function () { var id = c.getAttribute('data-en'); if (c.checked) delete S.disabled[id]; else S.disabled[id] = 1; c.closest('.item').setAttribute('data-off', c.checked ? 0 : 1); C.save(); applyFilter(); }; });
   }
 
   function openCustomForm() {
@@ -213,7 +260,7 @@
           h += '<div class="pe-row"><div class="pe-names">' + it.pick.map(function (id) { var e = C.getEx(id); return esc(e ? e.name : id); }).join(' <span class="muted">/</span> ') +
             (it.pick.length > 1 ? ' <span class="chip tiny">rotates</span>' : '') + '</div>' +
             '<button class="ic" data-up="' + bi + ':' + ii + '" aria-label="Move up">↑</button><button class="ic" data-dn="' + bi + ':' + ii + '" aria-label="Move down">↓</button>' +
-            '<button class="ic" data-ed="' + bi + ':' + ii + '" aria-label="Change">✎</button><button class="ic" data-rm="' + bi + ':' + ii + '" aria-label="Remove">✕</button></div>';
+            '<button class="ic" data-ed="' + bi + ':' + ii + '" aria-label="Change">' + ico('edit') + '</button><button class="ic" data-rm="' + bi + ':' + ii + '" aria-label="Remove">' + ico('close') + '</button></div>';
         });
         h += '<button class="link" data-add="' + bi + '">＋ Add exercise to ' + esc(b.title.toLowerCase()) + '</button></div>';
       });
@@ -283,7 +330,7 @@
       h += '<div class="hrow"><div><b>' + esc(dt) + '</b><div class="muted small">Level ' + x.level + ' · ' + Math.round(x.mins || 0) + ' min · ' + (x.done ? x.done.length : 0) + ' exercises' + (x.completed ? '' : ' · ended early') + (x.painAfter != null ? ' · back ' + x.painAfter + '/10' : '') + '</div></div>' +
         (x.form === true ? '<span class="chip tiny ok">good form</span>' : '') + '</div>';
     });
-    h += '</section><div class="rowbtns"><button class="ghost" id="exp">⬇ Save a backup</button><button class="ghost" id="imp">⬆ Restore backup</button></div><input type="file" id="impFile" accept="application/json" hidden>';
+    h += '</section><div class="rowbtns"><button class="ghost" id="exp">' + ico('down') + 'Save a backup</button><button class="ghost" id="imp">' + ico('up') + 'Restore backup</button></div><input type="file" id="impFile" accept="application/json" hidden>';
     v.innerHTML = h;
     $('#lvlSel').onchange = function () { S.level = +this.value; C.save(); refresh(); };
     $('#exp').onclick = function () {
@@ -307,7 +354,7 @@
       (V.ok ? '' : '<p class="warn small">This browser has no built-in voice. Use Chrome on Android.</p>') +
       '<label class="field">Speaking speed: <b id="rv">' + st.rate.toFixed(2) + '×</b><input type="range" id="sRate" min="0.7" max="1.3" step="0.05" value="' + st.rate + '"></label>' +
       '<label class="field">How much to explain<select id="sDetail"><option value="auto"' + (st.detail === 'auto' ? ' selected' : '') + '>Full the first 3 times, then short</option><option value="full"' + (st.detail === 'full' ? ' selected' : '') + '>Always full</option><option value="short"' + (st.detail === 'short' ? ' selected' : '') + '>Always short</option></select></label>' +
-      '<button class="ghost" id="sTest">🔊 Test voice</button></section>';
+      '<button class="ghost" id="sTest">' + ico('volume') + 'Test voice</button></section>';
     h += '<section class="card"><b>Workout</b>' +
       '<label class="field">Rep speed<select id="sPace"><option value="1.25"' + (st.pace === 1.25 ? ' selected' : '') + '>Slower</option><option value="1"' + (st.pace === 1 ? ' selected' : '') + '>Normal</option><option value="0.8"' + (st.pace === 0.8 ? ' selected' : '') + '>Faster</option></select></label>' +
       '<label class="field">Rest between strength exercises: <b id="rr">' + (st.restStrength || 15) + ' s</b><input type="range" id="sRest" min="10" max="30" step="5" value="' + (st.restStrength || 15) + '"></label>' +
@@ -318,7 +365,7 @@
       '<label class="field">Theme<select id="sTheme"><option value="auto"' + (st.theme === 'auto' ? ' selected' : '') + '>Match my phone</option><option value="light"' + (st.theme === 'light' ? ' selected' : '') + '>Light</option><option value="dark"' + (st.theme === 'dark' ? ' selected' : '') + '>Dark</option></select></label></section>';
     h += '<section class="card"><b>Safety</b><p class="small">This is general fitness guidance, not medical advice.</p><button class="ghost" id="sSafety">Read the safety guidance</button></section>';
     h += '<section class="card"><b>Install</b><p class="small">In Chrome on Android: tap ⋮ and choose <b>Add to Home screen</b> (or <b>Install app</b>). It then opens full screen and works with no internet.</p>' +
-      (deferredInstall ? '<button class="btn small" id="sInstall">📲 Install now</button>' : '') + '</section>';
+      (deferredInstall ? '<button class="btn small" id="sInstall">Install now</button>' : '') + '</section>';
     h += '<section class="card"><b>Start over</b><button class="ghost danger" id="sReset">Erase all progress on this phone</button></section>';
     h += '<p class="muted small center">Morning Workout · everything stays on your phone</p>';
     v.innerHTML = h;
@@ -373,17 +420,17 @@
   function buildRunnerDom() {
     var r = document.createElement('div'); r.id = 'runner'; r.className = 'runner';
     r.innerHTML =
-      '<div class="rtop"><button class="ic" id="rClose" aria-label="Stop workout">✕</button><div class="rprog"><div class="rbar" id="rBar"></div></div><button class="ic" id="rMute" aria-label="Voice on or off"></button></div>' +
+      '<div class="rtop"><button class="ic" id="rClose" aria-label="Stop workout">' + ico('close') + '</button><div class="rprog"><div class="rbar" id="rBar"></div></div><button class="ic" id="rMute" aria-label="Voice on or off"></button></div>' +
       '<div class="rblock" id="rBlock"></div>' +
       '<div class="rstage" id="rStage"></div>' +
-      '<div class="rinfo"><h2 id="rName"></h2><div class="sub" id="rSub"></div>' +
+      '<div class="rinfo"><div class="eyebrow" id="rArea"></div><h2 id="rName"></h2><div class="sub" id="rSub"></div>' +
       '<div class="rscroll" id="rScroll"><div class="rmain" id="rMain"></div><ol class="rsteps" id="rSteps"></ol><div class="rcue" id="rCue"></div>' +
       '<button class="btn small" id="rGo" hidden></button></div></div>' +
-      '<div class="rctrl"><button class="rc" id="rRepeat" aria-label="Repeat this exercise"><span>⟲</span><small>Repeat</small></button>' +
-      '<button class="rc big" id="rPause" aria-label="Pause"><span>⏸</span><small>Pause</small></button>' +
-      '<button class="rc" id="rSkip" aria-label="Skip this exercise"><span>⏭</span><small>Skip</small></button></div>' +
-      '<div class="rlinks"><button class="link" id="rHow">How to do it</button><button class="link" id="rSafe">⚠ Safety</button></div>' +
-      '<div class="pauseov" id="rPaused" hidden><div>Paused</div><button class="btn" id="rResume">▶ Resume</button><button class="ghost" id="rEnd">End workout</button></div>';
+      '<div class="rctrl"><button class="rc" id="rRepeat" aria-label="Repeat this exercise"><span>' + ico('repeat') + '</span><small>Repeat</small></button>' +
+      '<button class="rc big" id="rPause" aria-label="Pause"><span>' + ico('pause') + '</span><small>Pause</small></button>' +
+      '<button class="rc" id="rSkip" aria-label="Skip this exercise"><span>' + ico('skip') + '</span><small>Skip</small></button></div>' +
+      '<div class="rlinks"><button class="link" id="rHow">How to do it</button><button class="link" id="rSafe">' + ico('warning', 'sm') + ' Safety</button></div>' +
+      '<div class="pauseov" id="rPaused" hidden><div>Paused</div><button class="btn" id="rResume">' + ico('play') + 'Resume</button><button class="ghost" id="rEnd">End workout</button></div>';
     document.body.appendChild(r);
     document.body.classList.add('running');
     var svg = document.createElementNS(NS, 'svg'); svg.setAttribute('class', 'fig'); $('#rStage', r).appendChild(svg);
@@ -400,7 +447,16 @@
     $('#rSafe').onclick = function () { pause(); sheet(safetyHtml() + '<div class="rowbtns"><button class="btn small" data-close>Back to workout</button></div>', { tall: true }); };
     muteIcon();
   }
-  function muteIcon() { var b = $('#rMute'); if (b) b.textContent = S.settings.voice && V.ok ? '🔊' : '🔇'; }
+  function muteIcon() { var b = $('#rMute'), on = S.settings.voice && V.ok; if (b) { b.innerHTML = ico(on ? 'volume' : 'mute'); b.setAttribute('aria-label', on ? 'Voice on. Tap to mute' : 'Voice off. Tap to turn on'); } }
+  function pauseBtn(p) { var b = $('#rPause'); b.firstChild.innerHTML = ico(p ? 'play' : 'pause'); b.lastChild.textContent = p ? 'Resume' : 'Pause'; b.setAttribute('aria-label', p ? 'Resume' : 'Pause'); }
+  /* progress ring around the big number */
+  var RING = 2 * Math.PI * 52;
+  function mkRing() {
+    $('#rMain').innerHTML = '<div class="ring"><svg viewBox="0 0 120 120" aria-hidden="true"><circle class="rt" cx="60" cy="60" r="52"/><circle class="rp" id="rRing" cx="60" cy="60" r="52" transform="rotate(-90 60 60)"/></svg><div class="rnum"><div class="big-num" id="rNum"></div><div class="rlbl" id="rLbl"></div></div></div>';
+    RUN.numKey = null; ringTo(0);
+  }
+  function setMain(num, label) { var k = num + '|' + label; if (RUN.numKey === k) return; RUN.numKey = k; var n = $('#rNum'); if (n) { n.innerHTML = num; $('#rLbl').textContent = label; } }
+  function ringTo(f) { var r = $('#rRing'); if (r) r.style.strokeDashoffset = (RING * (1 - Math.max(0, Math.min(1, f)))).toFixed(1); }
 
   function exName(i) { return RUN.insts[i].ex.name; }
 
@@ -452,7 +508,7 @@
       var idx = i - sc.offset; if (sc.full && idx >= 0 && li[idx]) { li[idx].classList.add('now'); li[idx].scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
     }).then(function (ok) { if (ok && tok === RUN.tok && !RUN.paused && RUN.phase === 'speak') beginCount(); });
   }
-  function beginCount() { RUN.phase = 'count'; RUN.t = 0; RUN.cnt = 99; $('#rGo').hidden = true; $('#rSteps').hidden = true; $$('#rSteps li').forEach(function (x) { x.classList.remove('now'); }); }
+  function beginCount() { RUN.phase = 'count'; RUN.t = 0; RUN.cnt = 99; mkRing(); $('#rGo').hidden = true; $('#rSteps').hidden = true; $$('#rSteps li').forEach(function (x) { x.classList.remove('now'); }); }
 
   function startRest(st, inst) {
     if (st.why === 'between') V.say(st.secs <= 6 ? 'Next: ' + inst.ex.name + '.' : 'Rest. Next up: ' + inst.ex.name + '.');
@@ -477,16 +533,17 @@
     $('#rBar').style.width = Math.min(100, 100 * (RUN.cum[RUN.i] + (st.kind === 'work' && st.mode === 'reps' ? Math.min(RUN.t, st.n * C.period(ex)) : st.kind === 'rest' || st.kind === 'work' ? Math.min(RUN.t, st.secs) : 0)) / RUN.total) + '%';
     if (RUN.paused) return;
     RUN.t += dt; RUN.active += dt;
-    var main = $('#rMain');
     if (st.kind === 'intro') {
       if (RUN.phase === 'count') {
         var left = 3 - RUN.t, n = Math.ceil(left);
-        if (n !== RUN.cnt && n > 0) { RUN.cnt = n; SND.beep(700, 0.1); main.innerHTML = '<div class="big-num">' + n + '</div><div class="muted">get ready</div>'; }
-        if (left <= 0) { main.innerHTML = ''; SND.beep(1000, 0.25, 0.18); goNext(); }
+        if (n !== RUN.cnt && n > 0) { RUN.cnt = n; SND.beep(700, 0.1); setMain(n, 'get ready'); }
+        ringTo(RUN.t / 3);
+        if (left <= 0) { SND.beep(1000, 0.25, 0.18); goNext(); }
       }
     } else if (st.kind === 'rest') {
       var rem = st.secs - RUN.t, n2 = Math.max(0, Math.ceil(rem));
-      if (n2 !== RUN.cnt) { RUN.cnt = n2; main.innerHTML = '<div class="big-num">' + n2 + '</div><div class="muted">seconds rest</div>'; if (n2 <= 3 && n2 > 0) SND.beep(600, 0.08); }
+      if (n2 !== RUN.cnt) { RUN.cnt = n2; setMain(n2, 'seconds rest'); if (n2 <= 3 && n2 > 0) SND.beep(600, 0.08); }
+      ringTo(RUN.t / st.secs);
       if (rem <= 0) goNext();
     } else if (st.mode === 'reps') {
       var per = C.period(ex), cyc = Math.floor(RUN.t / per), u = (RUN.t % per) / per, f = ex.anim.down || 0.5;
@@ -501,17 +558,18 @@
         if (RUN.reps >= st.n) { V.now(String(RUN.reps)); V.say('Done.'); SND.beep(900, 0.2, 0.16); SND.buzz([60, 40, 60]); goNext(); return; }
         V.now(RUN.reps === st.n - 1 ? RUN.reps + '. Last one.' : (RUN.reps === Math.floor(st.n / 2) && st.n >= 8 ? RUN.reps + '. Halfway.' : String(RUN.reps)));
       }
-      main.innerHTML = '<div class="big-num">' + RUN.reps + '<small> / ' + st.n + '</small></div><div class="muted">reps done</div>';
+      setMain(RUN.reps + '<small> / ' + st.n + '</small>', 'reps done'); ringTo(RUN.t / (st.n * per));
     } else {
       var remain = st.secs - RUN.t, nn = Math.max(0, Math.ceil(remain));
       if (nn !== RUN.cnt) {
         RUN.cnt = nn;
-        main.innerHTML = '<div class="big-num">' + nn + '<small> s</small></div><div class="muted">' + (st.mode === 'hold' ? 'hold' + (st.sets > 1 ? ' ' + st.set + ' of ' + st.sets : '') : 'keep going') + '</div>';
+        setMain(nn + '<small> s</small>', st.mode === 'hold' ? 'hold it steady' : 'keep going');
         if (nn <= 3 && nn > 0) { V.now(String(nn)); SND.beep(700, 0.08); }
         else if (st.secs >= 20 && nn === Math.round(st.secs / 2) && !RUN.flags.half) { RUN.flags.half = 1; V.now('Halfway.'); }
         else if (st.mode === 'time' && st.secs >= 45 && nn === 30) V.now('Thirty seconds left.');
         else if (st.mode === 'time' && st.secs >= 25 && nn === 10) V.now('Ten seconds.');
       }
+      ringTo(RUN.t / st.secs);
       if (remain <= 0) { SND.beep(900, 0.25, 0.16); SND.buzz([60, 40, 60]); V.say(st.mode === 'hold' ? 'Relax.' : 'Good.'); goNext(); }
     }
   }
@@ -543,12 +601,13 @@
       if (st.kind === 'work' && st.mode === 'hold' && st.sets > 1) sub.push('Hold ' + st.set + ' of ' + st.sets);
     }
     $('#rName').textContent = title; $('#rSub').textContent = sub.join(' · ');
-    $('#rMain').innerHTML = '';
+    $('#rArea').textContent = st.kind === 'rest' ? '' : (ex.area || '');
+    if (st.kind === 'intro') $('#rMain').innerHTML = ''; else mkRing();
     $('#rSteps').hidden = st.kind !== 'intro';
     $('#rGo').hidden = true;
     $('#rCue').textContent = st.kind === 'work' ? (ex.cue || ex.breath || '') : '';
     if (st.kind !== 'intro') $('#rSteps').innerHTML = '';
-    var pb = $('#rPause'); pb.firstChild.textContent = '⏸'; pb.lastChild.textContent = 'Pause';
+    pauseBtn(false);
     RUN.cnt = 99;
   }
   function renderSteps(sc) {
@@ -563,12 +622,12 @@
     if (!RUN || RUN.paused) return;
     RUN.paused = true; V.cancel();
     if (!silent) $('#rPaused').hidden = false;
-    var pb = $('#rPause'); pb.firstChild.textContent = '▶'; pb.lastChild.textContent = 'Resume';
+    pauseBtn(true);
   }
   function resume() {
     if (!RUN || !RUN.paused) return;
     RUN.paused = false; $('#rPaused').hidden = true;
-    var pb = $('#rPause'); pb.firstChild.textContent = '⏸'; pb.lastChild.textContent = 'Pause';
+    pauseBtn(false);
     SND.unlock();
     if (RUN.step.kind === 'intro' && RUN.phase === 'speak') speakIntro();
   }
@@ -615,11 +674,12 @@
   function showSummary(entry) {
     var v = $('#view'); $('#nav').hidden = true;
     var form = null, extra = null, pain = null;
-    var h = '<div class="summary"><div class="trophy">' + (entry.completed ? '🎉' : '👍') + '</div><h1>' + (entry.completed ? 'Workout complete!' : 'Ended early') + '</h1>' +
-      '<p class="muted">' + Math.round(entry.mins) + ' min · ' + entry.done.length + ' exercises</p>';
+    var h = '<div class="summary"><div class="badge">' + ico('check') + '</div><h1>' + (entry.completed ? 'Workout complete!' : 'Ended early') + '</h1>' +
+      '<p class="muted">' + Math.round(entry.mins) + ' min · ' + entry.done.length + ' exercises</p>' +
+      '<ul class="donelist">' + entry.done.map(function (id) { var e = C.getEx(id); return '<li>' + ico('check', 'sm') + esc(e ? e.name : id) + '</li>'; }).join('') + '</ul>';
     if (entry.completed) {
-      h += '<section class="card"><b>Did you finish every set with good form?</b><div class="seg" id="qForm"><button data-v="1">Yes</button><button data-v="0">Not quite</button></div></section>' +
-        '<section class="card"><b>Could you have done 2 or more extra reps?</b><div class="seg" id="qExtra"><button data-v="1">Yes</button><button data-v="0">No</button></div></section>' +
+      h += '<section class="card"><b>Did you finish every set with good form?</b><div class="seg" id="qForm" role="group" aria-label="Good form"><button data-v="1">Yes</button><button data-v="0">Not quite</button></div></section>' +
+        '<section class="card"><b>Could you have done 2 or more extra reps?</b><div class="seg" id="qExtra" role="group" aria-label="Extra reps"><button data-v="1">Yes</button><button data-v="0">No</button></div></section>' +
         '<section class="card"><b>Back pain right now (0–10)</b><div class="painrow" id="qPain">' + [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(function (i) { return '<button class="pn" data-p="' + i + '">' + i + '</button>'; }).join('') + '</div></section>';
     }
     h += '<div class="rowbtns"><button class="btn" id="sumSave">Save workout</button></div></div>';

@@ -69,9 +69,9 @@
   function doseText(ex, d) {
     d = d || dose(ex);
     var sd = d.sides ? (ex.sides === true ? ' each side' : ' each way') : '';
-    if (d.type === 'reps') return d.reps + ' reps' + sd;
-    if (d.type === 'hold') return d.holds + ' × ' + d.secs + ' s hold' + sd;
-    return d.secs + ' s' + sd;
+    if (d.type === 'reps') return d.reps + ' reps' + sd;
+    if (d.type === 'hold') return d.holds + ' × ' + d.secs + ' s hold' + sd;
+    return d.secs + ' s' + sd;
   }
   function spokenDose(ex, d) {
     d = d || dose(ex);

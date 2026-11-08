@@ -1,7 +1,7 @@
 /* Service worker: makes the app work offline.
  * Strategy: serve from the cache instantly, and quietly refresh the cache in the background,
  * so edits you publish (e.g. a changed exercises.js) show up the next time you open the app. */
-const CACHE = 'morning-workout-v1';
+const CACHE = 'morning-workout-v2';
 const FILES = ['./', 'index.html', 'app.css', 'figure.css', 'figure.js', 'exercises.js', 'routine.js', 'core.js', 'app.js',
   'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/icon-maskable-512.png'];
 
