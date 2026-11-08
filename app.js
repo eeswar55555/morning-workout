@@ -31,7 +31,7 @@
     plus: '<path d="M12 5v14M5 12h14"/>'
   };
   function ico(n, cls) {
-    return '<svg class="i ' + (cls || '') + '" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + ICONS[n] + '</svg>';
+    return '<svg class="i ' + (cls || '') + '" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + ICONS[n] + '</svg>';
   }
 
   /* ====================== animation loop ====================== */
@@ -115,7 +115,7 @@
     }
     if (plan.light) h += '<div class="card note"><b>Lighter day today</b><p>Warm-up, back stability and cool-down only. After that, take a gentle 20–30 minute walk.</p><button class="link" id="fullDay">Do the full routine instead</button></div>';
     else if (C.isLightDay(key) && S.plans[key] && S.plans[key].full) h += '<div class="card note"><p>Full routine chosen for your lighter day.</p><button class="link" id="lightDay">Back to the lighter day</button></div>';
-    if (deferredInstall) h += '<div class="install"><div><b>Install this app</b><div class="small muted">One tap from your home screen. Works offline.</div></div><button class="btn small" id="installBtn">Install</button></div>';
+    if (deferredInstall) h += '<button class="link" id="installBtn">Install on this phone</button>';
     var pain = S.pain[key];
     h += '<section class="card" aria-labelledby="painQ"><div class="row"><b id="painQ">How is your back this morning?</b><span class="muted small">optional</span></div><div class="painrow" id="pain" role="group" aria-labelledby="painQ">';
     for (var i = 0; i <= 10; i++) h += '<button class="pn' + (pain === i ? ' on' : '') + '" data-p="' + i + '" aria-pressed="' + (pain === i) + '">' + i + '</button>';
@@ -132,7 +132,7 @@
       h += '</section>';
     });
     h += '<div class="rowbtns"><button class="ghost" id="shuf">' + ico('shuffle') + 'Shuffle</button><button class="ghost" id="editPlan">' + ico('edit') + 'Edit plan</button></div>';
-    h += '<section class="card"><h3 class="bt">Level</h3><b>' + esc(L.title) + '</b><p class="small">' + esc(adv.text) + '</p>' +
+    if (adv.up || adv.down) h += '<section class="card note"><b>' + (adv.up ? 'Ready for level ' + (S.level + 1) : 'Back sore lately?') + '</b><p class="small">' + esc(adv.text) + '</p>' +
       (adv.up ? '<button class="btn small" id="lvlUp">Move up to level ' + (S.level + 1) + '</button>' : '') +
       (adv.down ? '<button class="btn small alt" id="lvlDown">Drop back to level ' + (S.level - 1) + '</button>' : '') + '</section>';
     v.innerHTML = h;
@@ -712,7 +712,11 @@
     go('today');
     requestAnimationFrame(function (t) { lastT = t; requestAnimationFrame(frame); });
     if (!S.ack) openSafety(true);
-    if ('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('sw.js').catch(function () {});
+    if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+      var hadController = !!navigator.serviceWorker.controller, reloaded = false;
+      navigator.serviceWorker.addEventListener('controllerchange', function () { if (hadController && !reloaded && !RUN) { reloaded = true; location.reload(); } });
+      navigator.serviceWorker.register('sw.js').catch(function () {});
+    }
     window.__app = { go: go, startWorkout: startWorkout, get RUN() { return RUN; }, skip: skip, pause: pause, resume: resume };
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
