@@ -1,0 +1,41 @@
+/* Colours for the exercise figure and furniture (light + dark) */
+:root {
+  --skin: #f0bd94; --shirt: #14b8a6; --shirt-far: #0d8277; --pants: #3b4a6b; --pants-far: #2a3550;
+  --shoe: #f97316; --bag: #ef4444; --bag2: #b91c1c;
+  --stage-bg: #eef6f5; --floor: #d6e4e2; --floor-line: #9db8b4;
+  --furn: #b08a5a; --furn2: #8a6a40; --wall: #dfe6ee; --wall-edge: #8fa1b8; --mat: #94a3f0; --label: #6b7a8a;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --skin: #e7b48c; --shirt: #2dd4bf; --shirt-far: #17958a; --pants: #8aa0d6; --pants-far: #5d70a0;
+    --shoe: #fb923c; --bag: #f87171; --bag2: #dc2626;
+    --stage-bg: #17232a; --floor: #22343b; --floor-line: #3f5d66;
+    --furn: #a0804f; --furn2: #7a5f38; --wall: #25323f; --wall-edge: #50657d; --mat: #4b57a8; --label: #8fa0b0;
+  }
+}
+:root[data-theme="dark"] {
+  --skin: #e7b48c; --shirt: #2dd4bf; --shirt-far: #17958a; --pants: #8aa0d6; --pants-far: #5d70a0;
+  --shoe: #fb923c; --bag: #f87171; --bag2: #dc2626;
+  --stage-bg: #17232a; --floor: #22343b; --floor-line: #3f5d66;
+  --furn: #a0804f; --furn2: #7a5f38; --wall: #25323f; --wall-edge: #50657d; --mat: #4b57a8; --label: #8fa0b0;
+}
+.limb { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.limb.shirt { stroke: var(--shirt); }
+.limb.shirt.far { stroke: var(--shirt-far); }
+.limb.pants { stroke: var(--pants); }
+.limb.pants.far { stroke: var(--pants-far); }
+.limb.shoe { stroke: var(--shoe); }
+.limb.shoe.far { stroke: var(--shoe); opacity: .8; }
+.fill-skin { fill: var(--skin); }
+.fill-skin.far-skin { opacity: .85; }
+.fill-pants { fill: var(--pants); }
+.fill-bag { fill: var(--bag); }
+.fill-bag2 { fill: var(--bag2); }
+.floor { fill: var(--floor); }
+.floorLine { stroke: var(--floor-line); stroke-width: 1.5; }
+.pr-furn { fill: var(--furn); }
+.pr-furn2 { fill: var(--furn2); }
+.pr-wall { fill: var(--wall); }
+.pr-wallEdge { stroke: var(--wall-edge); stroke-width: 2; }
+.pr-mat { fill: var(--mat); opacity: .55; }
+.pr-label { fill: var(--label); font: 600 8px system-ui, sans-serif; }

@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Morning Workout</title>
+<meta name="description" content="Guided morning full-body workout with animated demos and voice coaching.">
+<meta name="theme-color" content="#0f1a1f">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="figure.css">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<main id="view" aria-live="polite"></main>
+<nav id="nav" aria-label="Main">
+  <button data-go="today" class="on"><span>🏠</span>Today</button>
+  <button data-go="library"><span>📚</span>Exercises</button>
+  <button data-go="progress"><span>📈</span>Progress</button>
+  <button data-go="settings"><span>⚙️</span>Settings</button>
+</nav>
+<noscript>This app needs JavaScript.</noscript>
+<script src="figure.js"></script>
+<script src="exercises.js"></script>
+<script src="routine.js"></script>
+<script src="core.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
