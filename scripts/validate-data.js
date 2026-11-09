@@ -11,7 +11,7 @@
  */
 'use strict';
 const fs = require('fs'), path = require('path'), vm = require('vm');
-const ROOT = path.resolve(__dirname, '..'), DATA = path.join(ROOT, 'data');
+const ROOT = path.resolve(__dirname, '..'), DATA = process.env.FITNESS_DATA_DIR || path.join(ROOT, 'data');   // the env var lets import-pack.js check a temporary copy
 const SCHEMA = JSON.parse(fs.readFileSync(path.join(DATA, 'schema', 'fitness.schema.json'), 'utf8'));
 
 const errors = [], notes = [];

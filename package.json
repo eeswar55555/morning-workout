@@ -3,6 +3,8 @@
   "private": true,
   "description": "Morning Workout PWA. No build step; npm is only used to run the content validator.",
   "scripts": {
-    "validate": "node scripts/validate-data.js"
+    "validate": "node scripts/validate-data.js",
+    "ai-brief": "node scripts/make-ai-brief.js",
+    "import": "node scripts/import-pack.js"
   }
 }

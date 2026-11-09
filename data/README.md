@@ -85,13 +85,16 @@ A workout day has `workoutId` (one) **or** `workoutIds` (several, done one after
 - **Variation:** alternate workouts across days (A/B/C). **Recovery:** a gentle workout (`recovery_day_01`). **Rest:** `type: "rest"`.
 - **Your own variants:** add a new exercise (`incline_push_up`) instead of adding flags to an existing one.
 
-## Ask an AI for content
+## Ask an AI to add or verify content
 
-Give it [`schema/fitness.schema.json`](schema/fitness.schema.json) as the output format (or paste it) and the list of existing ids (`node -e "console.log(require('./data/exercises/core.json').exercises.map(e=>e.id).join(' '))"` in the `app` folder). For example:
+1. **Build the brief:** `npm run ai-brief` writes `ai-brief.md` (instructions + JSON Schema + an index of every existing id; ~7k tokens).
+   For a **review** use `npm run ai-brief -- --full --task verify --out ai-brief-full.md` (also contains the complete current JSON; ~36k tokens).
+2. **Give it to any AI** (Claude, GPT, Gemini...): attach or paste the file, then write your request at the bottom, e.g. "ADD 10 hip mobility exercises, one 20 minute workout and a 4-week plan". The instructions inside tell it the rules, the output format and the quality checklist ([`AI_INSTRUCTIONS.md`](AI_INSTRUCTIONS.md)).
+3. **Save its whole reply** to a file (for example `answer.txt`) and run `npm run import -- answer.txt --dry`, then without `--dry`.
+   The importer finds the JSON in the reply, checks everything on a temporary copy (schema, references, reps vs seconds, day numbers...), and only then merges it: an item with an existing id **replaces** it in place (how fixes from a review land), new items go to `exercises/ai-additions.json`, `workouts/ai-additions.json` and `plans/ai-additions.json` (created and listed in `index.json` automatically). If anything is wrong nothing is changed and you get a list to paste back to the AI.
+4. Try it in the app, then commit and push. New exercises show a placeholder picture until one is assigned in `../animations.js` (the AI's notes suggest which existing picture looks closest).
 
-> Return ONLY a JSON object that matches the attached JSON Schema (a content pack). Create a 4-week beginner plan for a sore lower back with 5 training days and 2 rest days per week, no equipment. Reuse existing `exerciseId`s whenever possible; only add a new exercise to `exercises` if nothing fits, with `type`, muscles from the schema's list, `difficulty` and 3–4 short `instructions.steps`. Create the workouts the plan needs in `workouts` (progress by pointing later weeks at harder workouts), then the plan in `plans`. Use snake_case ids.
-
-Save the answer as a file, list it in `index.json`, run `npm run validate`, and fix any reported problem (paste the validator output back to the AI if needed).
+Content you create inside the app (Workout Studio) is saved on the phone, not in these files. The AI workflow is for built-in content that ships with the app.
 
 ## Illustrations (optional)
 
