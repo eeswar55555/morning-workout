@@ -1,0 +1,28 @@
+{
+  "name": "exercise-viz",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "3D exercise visualiser (React + React Three Fiber). Builds into ../viz/",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "test": "node test/retarget.test.mjs",
+    "glb:optimize": "node scripts/optimize-glb.mjs",
+    "glb:test": "node test/make-test-glb.mjs"
+  },
+  "dependencies": {
+    "@react-three/fiber": "^9.8.2",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "three": "^0.187.0"
+  },
+  "devDependencies": {
+    "@gltf-transform/core": "^4.5.1",
+    "@gltf-transform/extensions": "^4.5.1",
+    "@gltf-transform/functions": "^4.5.1",
+    "@vitejs/plugin-react": "^6.3.0",
+    "draco3dgltf": "^1.5.9",
+    "vite": "^8.3.6"
+  }
+}

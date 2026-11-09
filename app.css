@@ -153,7 +153,13 @@ code { background: var(--accent-soft); padding: 1px 6px; border-radius: 6px; fon
 .sheet.tall { height: 92vh; }
 @keyframes up { from { transform: translateY(40px); opacity: .5; } to { transform: none; opacity: 1; } }
 .grab { width: 44px; height: 5px; border-radius: 3px; background: var(--line); margin: var(--s1) auto var(--s3); }
-.demo { aspect-ratio: 260 / 176; max-height: 260px; width: 100%; border-radius: var(--r2); overflow: hidden; background: var(--stage-bg); margin: var(--s1) 0 var(--s3); }
+.demo { position: relative; aspect-ratio: 260 / 176; max-height: 260px; width: 100%; border-radius: var(--r2); overflow: hidden; background: var(--stage-bg); margin: var(--s1) 0 var(--s3); }
+/* 3D viewer (viz/viewer.js) */
+.viz-host { position: absolute; inset: 0; }
+.demo.viz { aspect-ratio: 1 / 1; max-height: 340px; }
+.rstage.viz { aspect-ratio: auto; height: 33vh; min-height: 200px; max-height: 40vh; }
+.rstage .xv-ui { right: auto; left: 8px; top: 8px; }   /* the Instructions pill lives on the right */
+@media (max-height: 700px) { .rstage.viz { height: 30vh; min-height: 170px; } }
 .steps { padding-left: 1.3rem; margin: var(--s1) 0; } .steps li { margin: 6px 0; }
 .pe-block { margin: var(--s4) 0; }
 .pe-row { display: flex; align-items: center; gap: 6px; padding: 6px 0; border-top: 1px solid var(--line); }
