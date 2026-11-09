@@ -311,13 +311,16 @@
     smile_cheek_lift: { face: { to: { smile: 1 }, caption: 'Smile, lift cheeks' } },
     jaw_drop: { face: { to: { jaw: 0.8 } } },
     jaw_side_slide: { face: { to: { slide: 1, jaw: 0.18 } } },
-    chin_lift_pucker: { face: { to: { pitch: 1, pucker: 0.9 }, caption: 'Kiss the ceiling' } },
+    chin_lift_pucker: { face: { to: { pitch: 0.45, pucker: 0.85 }, caption: 'Gentle lip pucker' } },
     platysma_pull: { face: { to: { down: 1, neck: 1, jaw: 0.12 }, caption: 'Pull corners down' } },
     vowel_shapes: { face: { dynamic: true, from: { pucker: 1, jaw: 0.4 }, to: { wide: 1, smile: 0.6, jaw: 0.15 } } },
     brow_raise: { face: { to: { brow: 1, eyeWide: 0.4 } } },
-    eye_squeeze: { face: { from: { eyeWide: 0.8 }, to: { squeeze: 1 } } },
-    lion_face: { face: { to: { jaw: 1, tongue: 1, eyeWide: 1, brow: 0.5 } } },
-    tongue_posture: { face: { to: { neck: 0.25 }, caption: 'Tongue on the roof of the mouth' } },
+    eye_squeeze: { face: { from: { eyeWide: 0.25 }, to: { squeeze: 0.45 }, caption: 'Close gently' } },
+    lion_face: { face: { to: { jaw: 0.85, tongue: 1, eyeWide: 0.8, brow: 0.4 } } },
+    tongue_posture: { face: { to: { neck: 0.22 }, caption: 'Tongue on the roof of the mouth' } },
+    tongue_press: { face: { to: { neck: 0.4 }, caption: 'Press tongue to the palate' } },
+    slow_chew: { face: { dynamic: true, from: { jaw: 0.06 }, to: { jaw: 0.32 }, caption: 'Chew slowly' } },
+    chin_resistance: { face: { to: { jaw: 0.28, neck: 0.35 }, caption: 'Open against a light hand' } },
 
     /* =================== NECK, BACK AND SPINE =================== */
     chin_tuck: {
@@ -367,13 +370,82 @@
       props: P.mat(20, 200),
       poses: [
         { hip: [100, 131], t: 93, h: 93, aN: [96, 96], aF: [94, 94], lN: { to: [40, 133], b: 1 }, lF: { to: [38, 133], b: 1 }, fN: 40, fF: 40 },
-        { hip: [100, 128], t: [100, 112], h: 108, aN: [112, 106], aF: [110, 104], lN: { to: [42, 117], b: 1 }, lF: { to: [40, 115], b: 1 }, fN: 40, fF: 40 }
+        { hip: [100, 129], t: [97, 106], h: 104, aN: [118, 108], aF: [94, 94], lN: { to: [40, 133], b: 1 }, lF: { to: [44, 118], b: 1 }, fN: 40, fF: 40 }
+      ]
+    },
+    dead_bug: {
+      cfg: { track: 'haN' },
+      props: P.mat(20, 200),
+      poses: [
+        lying({ aN: [180, 180], aF: [175, 175], lN: [205, 95], lF: [200, 92], fN: 180, fF: 180 }),
+        lying({ aN: [250, 255], aF: [175, 175], lN: [205, 95], lF: [92, 88], fN: 180, fF: 90 })
+      ]
+    },
+    hamstring_stretch: {
+      cfg: { track: 'haN' },
+      props: P.mat(30, 200),
+      poses: [
+        { hip: [78, 118], t: 185, h: 175, aN: [70, 20], aF: [64, 16], lN: { to: [168, 136], b: 1 }, lF: { to: [62, 136], b: 1 } },
+        { hip: [82, 118], t: [158, 148], h: 138, aN: { to: [150, 128], b: -1 }, aF: { to: [146, 130], b: -1 }, lN: { to: [168, 136], b: 1 }, lF: { to: [62, 136], b: 1 } }
+      ]
+    },
+    lateral_raise: {
+      cfg: { view: 'front', track: 'haL', equip: 'dumbbell' },
+      view: 'front',
+      poses: [
+        { hip: [130, 74.5], t: 0, h: 0, aL: [8, 8], lL: { to: [9, 136] } },
+        { hip: [130, 74.5], t: 0, h: 0, aL: [92, 88], lL: { to: [9, 136] } }
+      ]
+    },
+    bent_over_row: {
+      cfg: { track: 'haN', equip: 'dumbbell' },
+      poses: [
+        { hip: [100, 86], t: 115, h: 120, aN: [4, 4], aF: [0, 0], lN: { to: [118, 136], b: 1 }, lF: { to: [128, 136], b: 1 } },
+        { hip: [100, 86], t: 115, h: 120, aN: [-72, 8], aF: [-68, 6], lN: { to: [118, 136], b: 1 }, lF: { to: [128, 136], b: 1 } }
+      ]
+    },
+    tricep_dip: {
+      cfg: { track: 'hip' },
+      props: P.chair(42, 110),
+      poses: [
+        { hip: [106, 96], t: 175, aN: { to: [80, 110], b: -1 }, aF: { to: [76, 110], b: -1 }, lN: { to: [150, 136], b: 1 }, lF: { to: [160, 136], b: 1 } },
+        { hip: [106, 114], t: 175, aN: { to: [80, 110], b: -1 }, aF: { to: [76, 110], b: -1 }, lN: { to: [150, 136], b: 1 }, lF: { to: [160, 136], b: 1 } }
+      ]
+    },
+    jump_squat: {
+      cfg: { track: 'hip' },
+      mode: 'cycle',
+      poses: [
+        stand(118, armsFwd),
+        mix(armsFwd, { hip: [94, 105], t: [144, 136], h: 164, lN: { to: [118, 136], b: 1 }, lF: { to: [126, 136], b: 1 } }),
+        { hip: [118, 46], t: 180, aN: [170, 172], aF: [165, 168], lN: { to: [116, 118], b: 1 }, lF: { to: [126, 112], b: 1 }, fN: 60, fF: 60 },
+        stand(118, armsFwd)
+      ]
+    },
+    quad_stretch: {
+      cfg: { track: 'anN' },
+      props: P.wallRight(168),
+      poses: [
+        { hip: [118, 74.5], t: 180, aN: { to: [164, 56], b: -1 }, aF: [20, 20], lN: { to: [118, 136], b: 1 }, lF: { to: [128, 136], b: 1 } },
+        { hip: [118, 74.5], t: 180, aN: { to: [164, 56], b: -1 }, aF: { to: [96, 92], b: 1 }, lN: { to: [118, 136], b: 1 }, lF: [200, 90], fF: 270 }
+      ]
+    },
+    side_lunge: {
+      cfg: { view: 'front', track: 'hip' },
+      view: 'front',
+      poses: [
+        { hip: [130, 74.5], t: 0, h: 0, aL: [12, 12], lL: { to: [10, 136] } },
+        { hip: [108, 92], t: 10, h: 4, aL: [30, 44], aR: [6, 8], lL: { to: [50, 136] }, lR: { to: [12, 136] } }
       ]
     },
 
     /* =================== LOOKS-LIKE: reuse another exercise's picture =================== */
     crunch: { like: 'curl_up' },
-    high_knees: { like: 'march_in_place' }
+    high_knees: { like: 'march_in_place' },
+    butt_kicks: { like: 'high_knees' },
+    bicycle_crunch: { like: 'crunch' },
+    flutter_kick: { like: 'dead_bug' },
+    leg_raise: { like: 'dead_bug' }
   };
 
   root.ANIMATIONS = LIST;

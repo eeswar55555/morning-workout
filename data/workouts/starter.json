@@ -27,7 +27,7 @@
       "restSeconds": 20,
       "exercises": [
         { "exerciseId": "march_in_place", "durationSeconds": 45 },
-        { "exerciseId": "lunge", "repetitions": 8 },
+        { "exerciseId": "lunge", "repetitions": 6 },
         { "exerciseId": "incline_push_up", "repetitions": 10 },
         { "exerciseId": "side_plank", "durationSeconds": 15, "sets": 2 },
         { "exerciseId": "calf_raise", "repetitions": 12 }
@@ -74,11 +74,11 @@
       "rounds": 2,
       "restSeconds": 20,
       "exercises": [
-        { "exerciseId": "crunch", "repetitions": 12 },
+        { "exerciseId": "curl_up", "durationSeconds": 10, "sets": 2 },
         { "exerciseId": "plank", "durationSeconds": 25 },
         { "exerciseId": "dead_bug", "repetitions": 10 },
         { "exerciseId": "side_plank", "durationSeconds": 15, "sets": 2 },
-        { "exerciseId": "superman", "durationSeconds": 15 }
+        { "exerciseId": "superman", "durationSeconds": 12 }
       ]
     },
     {

@@ -4,7 +4,7 @@
     {
       "id": "jaw_jut",
       "name": "Jaw jut",
-      "description": "Push the lower jaw forward and hold. A popular jawline exercise; it works the muscles under the chin and along the jaw.",
+      "description": "Push the lower jaw forward and hold. Works the muscles under the chin and along the jaw.",
       "type": "hold",
       "primaryMuscles": ["jaw"],
       "secondaryMuscles": ["neck"],
@@ -20,14 +20,15 @@
           "Hold, breathing normally, then release slowly."
         ],
         "breathing": "Breathe normally through your nose.",
-        "commonMistake": "Do not tilt your head back or clench hard. Stop if your jaw clicks painfully or hurts, and do not clench hard.",
+        "cue": "Gentle forward slide. Do not clench.",
+        "commonMistake": "Do not tilt your head back or clench hard. Stop if your jaw clicks painfully or hurts.",
         "easier": "Push the jaw forward only a little."
       }
     },
     {
       "id": "fish_face",
       "name": "Fish face (hollow cheeks)",
-      "description": "Suck the cheeks in toward the back teeth and hold. Works the cheek muscles and gives the hollow-cheek look.",
+      "description": "Suck the cheeks in toward the back teeth and hold, to work the cheek muscles.",
       "type": "hold",
       "primaryMuscles": ["cheeks", "lips"],
       "secondaryMuscles": ["jaw"],
@@ -39,10 +40,10 @@
         "steps": [
           "Relax your face and close your mouth.",
           "Suck your cheeks in toward your back teeth, like a fish.",
-          "Try to smile while keeping the hollow shape.",
+          "Keep the shape without biting the insides of your cheeks.",
           "Hold, then relax your face completely."
         ],
-        "commonMistake": "Do not bite your cheeks or hold your breath.",
+        "commonMistake": "Do not bite your cheeks or hold your breath. Stop if your jaw hurts.",
         "easier": "Suck in gently and hold for a shorter time."
       }
     },
@@ -55,7 +56,7 @@
       "difficulty": "beginner",
       "category": "facial",
       "bodyRegion": "face",
-      "tags": ["face", "hollow_cheeks", "low_impact"],
+      "tags": ["face", "low_impact"],
       "tempoSeconds": 4,
       "instructions": {
         "steps": [
@@ -64,29 +65,30 @@
           "Hold for a second or two.",
           "Let the air out slowly, then relax."
         ],
-        "commonMistake": "Do not let air leak out of your lips, and do not push so hard that it hurts.",
+        "breathCues": ["Puff the cheeks with air", "Let the air out slowly"],
+        "commonMistake": "Do not let air leak, and do not push so hard that it hurts. Stop if your jaw hurts.",
         "easier": "Puff gently and hold for less time."
       }
     },
     {
       "id": "smile_cheek_lift",
       "name": "Smile cheek lift",
-      "description": "A closed-lip smile that lifts the cheeks toward the eyes. Works the cheek muscles that give a lifted look.",
+      "description": "A closed-lip smile that lifts the cheeks toward the eyes, to work the cheek muscles.",
       "type": "hold",
       "primaryMuscles": ["cheeks"],
       "secondaryMuscles": ["lips", "eyes"],
       "difficulty": "beginner",
       "category": "facial",
       "bodyRegion": "face",
-      "tags": ["face", "cheekbones", "low_impact"],
+      "tags": ["face", "low_impact"],
       "instructions": {
         "steps": [
-          "Close your lips and smile as wide as you can without showing teeth.",
+          "Close your lips and smile as wide as is comfortable, without showing teeth.",
           "Lift your cheeks up toward your eyes.",
           "Keep your forehead relaxed.",
           "Hold, then release slowly."
         ],
-        "commonMistake": "Do not squint hard or wrinkle your forehead.",
+        "commonMistake": "Do not squint hard or wrinkle your forehead. Stop if it hurts.",
         "easier": "Smile a little less wide."
       }
     },
@@ -109,7 +111,8 @@
           "Pause for a moment.",
           "Close slowly and smoothly."
         ],
-        "commonMistake": "Do not force the mouth wide open. Stop if your jaw clicks painfully or hurts, and do not clench hard.",
+        "breathCues": ["Let the jaw open slowly", "Close smoothly"],
+        "commonMistake": "Do not force the mouth wide open. Stop if your jaw clicks painfully or hurts.",
         "easier": "Open only halfway."
       }
     },
@@ -133,14 +136,15 @@
           "Return to the middle with control.",
           "Finish all reps on one side, then switch sides."
         ],
-        "commonMistake": "Do not move your head or force the jaw. Stop if your jaw clicks painfully or hurts, and do not clench hard.",
+        "breathCues": ["Slide the jaw to the side", "Return to the middle"],
+        "commonMistake": "Do not move your head or force the jaw. Stop if your jaw clicks painfully or hurts.",
         "easier": "Slide only a little."
       }
     },
     {
       "id": "chin_lift_pucker",
       "name": "Chin lift pucker",
-      "description": "Tilt the head back and pucker the lips toward the ceiling (\"kiss the ceiling\"). Works the front of the neck, under the chin and the lips.",
+      "description": "A small head tilt with a lip pucker, to work the front of the neck and the lips.",
       "type": "reps",
       "primaryMuscles": ["neck", "lips"],
       "secondaryMuscles": ["jaw"],
@@ -151,19 +155,20 @@
       "tempoSeconds": 5,
       "instructions": {
         "steps": [
-          "Sit tall and slowly tilt your head back to look at the ceiling.",
-          "Close your lips and push them up toward the ceiling, as if kissing it.",
-          "Hold for a moment, feeling the stretch under your chin.",
+          "Sit tall and slowly tip your face up a little, only as far as is comfortable.",
+          "Close your lips and push them gently upward.",
+          "Feel the front of your neck working, without forcing the tilt.",
           "Relax your lips and bring your head back to neutral."
         ],
-        "commonMistake": "Do not tilt your head back sharply. Skip it if you feel dizzy or it hurts your neck.",
-        "easier": "Tilt your head back only a little."
+        "breathCues": ["Tip up a little and pucker", "Return your head to neutral"],
+        "commonMistake": "Do not tip your head back sharply. Skip it if you feel dizzy or it hurts your neck.",
+        "easier": "Keep your head almost level and only pucker your lips."
       }
     },
     {
       "id": "platysma_pull",
       "name": "Neck tightener (platysma pull)",
-      "description": "Pull the corners of the mouth down to tighten the broad muscle of the front neck.",
+      "description": "Pull the corners of the mouth down to work the broad muscle of the front neck.",
       "type": "hold",
       "primaryMuscles": ["neck"],
       "secondaryMuscles": ["jaw", "lips"],
@@ -175,10 +180,10 @@
         "steps": [
           "Sit tall with your chin level.",
           "Pull the corners of your mouth down and back, as if grimacing.",
-          "Feel the neck tendons tighten and show.",
+          "Feel the front of your neck tighten.",
           "Hold, then relax completely."
         ],
-        "commonMistake": "Do not lift your chin or shrug your shoulders.",
+        "commonMistake": "Do not lift your chin or shrug your shoulders. Stop if your jaw or neck hurts.",
         "easier": "Pull less hard and hold for less time."
       }
     },
@@ -202,7 +207,7 @@
           "Keep alternating smoothly, exaggerating each shape."
         ],
         "cue": "Round, then wide, then round again.",
-        "commonMistake": "Do not strain your neck or hold your breath.",
+        "commonMistake": "Do not strain your neck or hold your breath. Stop if your jaw clicks painfully or hurts.",
         "easier": "Make the shapes smaller."
       }
     },
@@ -222,17 +227,18 @@
         "steps": [
           "Relax your face and look straight ahead.",
           "Raise your eyebrows as high as is comfortable.",
-          "Open your eyes wide and hold for a second.",
+          "Open your eyes a little wider and hold for a second.",
           "Lower them smoothly."
         ],
-        "commonMistake": "Do not scrunch your forehead hard or tilt your head back.",
+        "breathCues": ["Raise the brows", "Lower them smoothly"],
+        "commonMistake": "Do not scrunch your forehead hard or tilt your head back. Stop if it hurts.",
         "easier": "Raise them only a little."
       }
     },
     {
       "id": "eye_squeeze",
-      "name": "Eye squeeze",
-      "description": "Squeeze the eyes shut, then open them wide, to work the muscles around the eyes.",
+      "name": "Gentle eye squeeze",
+      "description": "Close the eyes softly, then open them, to work the muscles around the eyes.",
       "type": "reps",
       "primaryMuscles": ["eyes"],
       "secondaryMuscles": ["cheeks", "forehead"],
@@ -243,13 +249,14 @@
       "tempoSeconds": 3,
       "instructions": {
         "steps": [
-          "Open your eyes wide with relaxed eyebrows.",
-          "Squeeze your eyes shut firmly, without scrunching your forehead.",
-          "Hold for a second.",
-          "Open them wide again."
+          "Look straight ahead with a relaxed face.",
+          "Close your eyes gently, as if going to sleep.",
+          "Hold for a second without scrunching your forehead.",
+          "Open your eyes softly."
         ],
-        "commonMistake": "Do not squeeze so hard that it hurts or gives you a headache.",
-        "easier": "Squeeze more gently."
+        "breathCues": ["Close the eyes gently", "Open them softly"],
+        "commonMistake": "Do not squeeze hard. Stop if it hurts or gives you a headache.",
+        "easier": "Close the eyes without any extra squeeze."
       }
     },
     {
@@ -267,42 +274,117 @@
       "instructions": {
         "steps": [
           "Take a breath in through your nose.",
-          "Open your mouth wide, stick your tongue out toward your chin and widen your eyes.",
+          "Open your mouth as far as is comfortable, stick your tongue toward your chin and widen your eyes.",
           "Breathe out with a long \"haaa\" while you hold for a few seconds.",
           "Relax your face and close your mouth."
         ],
         "breathing": "Breathe in through your nose, out through your mouth.",
-        "commonMistake": "Do not strain your jaw. Stop if your jaw clicks painfully or hurts, and do not clench hard.",
+        "breathCues": ["Open and breathe out", "Relax the face"],
+        "commonMistake": "Do not strain your jaw. Stop if your jaw clicks painfully or hurts.",
         "easier": "Open less wide."
       }
     },
     {
       "id": "tongue_posture",
-      "name": "Tongue posture",
-      "description": "Rest the tongue on the roof of the mouth with the lips closed. A resting-posture habit often practised for the jaw and chin area.",
+      "name": "Mewing (tongue posture)",
+      "description": "Rest the whole tongue on the roof of the mouth with the lips closed. A relaxed tongue and jaw posture practice.",
       "type": "hold",
       "primaryMuscles": ["jaw"],
       "secondaryMuscles": ["lips", "neck"],
       "difficulty": "beginner",
       "category": "facial",
       "bodyRegion": "face",
-      "tags": ["face", "jawline", "posture", "low_impact"],
+      "tags": ["face", "jawline", "posture", "mewing", "low_impact"],
       "instructions": {
         "steps": [
           "Close your lips and let your teeth rest lightly together or just apart.",
-          "Rest your whole tongue gently on the roof of your mouth, with the tip just behind your upper front teeth.",
+          "Rest your whole tongue gently on the roof of your mouth, tip just behind your upper front teeth.",
           "Breathe slowly through your nose and keep your neck long.",
           "Hold, keeping your face and jaw relaxed."
         ],
         "cue": "Tongue up, lips closed, jaw relaxed.",
-        "commonMistake": "Do not press hard with your tongue or clench your teeth.",
+        "commonMistake": "Do not press hard with your tongue or clench your teeth. Stop if your jaw clicks painfully or hurts.",
         "easier": "Hold for a shorter time."
+      }
+    },
+    {
+      "id": "tongue_press",
+      "name": "Tongue press",
+      "description": "Press the whole tongue gently into the roof of the mouth, then release.",
+      "type": "reps",
+      "primaryMuscles": ["jaw"],
+      "secondaryMuscles": ["neck"],
+      "difficulty": "beginner",
+      "category": "facial",
+      "bodyRegion": "face",
+      "tags": ["face", "jawline", "posture", "mewing", "low_impact"],
+      "tempoSeconds": 4,
+      "instructions": {
+        "steps": [
+          "Close your lips and rest your teeth slightly apart.",
+          "Press your whole tongue gently into the roof of your mouth.",
+          "Hold for a second, then ease the pressure.",
+          "Keep your jaw and neck relaxed throughout."
+        ],
+        "breathCues": ["Press the tongue up gently", "Ease the pressure"],
+        "cue": "Whole tongue up, jaw relaxed.",
+        "commonMistake": "Do not press hard or clench your teeth. Stop if your jaw clicks painfully or hurts.",
+        "easier": "Press more lightly and hold for less time."
+      }
+    },
+    {
+      "id": "slow_chew",
+      "name": "Slow chew",
+      "description": "A slow, small chewing motion with the lips closed, to practise the jaw muscles.",
+      "type": "reps",
+      "primaryMuscles": ["jaw"],
+      "secondaryMuscles": ["cheeks"],
+      "difficulty": "beginner",
+      "category": "facial",
+      "bodyRegion": "face",
+      "tags": ["face", "jawline", "low_impact"],
+      "tempoSeconds": 3,
+      "instructions": {
+        "steps": [
+          "Sit tall with your lips closed and teeth slightly apart.",
+          "Make a small, slow chewing motion, as if chewing a soft bite.",
+          "Keep the movement tiny and even on both sides.",
+          "Stop and rest if your jaw feels tired."
+        ],
+        "breathCues": ["Chew slowly", "Rest the jaw"],
+        "cue": "Small, slow chews. Do not clench.",
+        "commonMistake": "Do not chew hard or grind your teeth. Stop if your jaw clicks painfully or hurts.",
+        "easier": "Make even smaller movements, or fewer reps."
+      }
+    },
+    {
+      "id": "chin_resistance",
+      "name": "Chin resistance",
+      "description": "Open the mouth a little against light pressure from your hand under the chin.",
+      "type": "hold",
+      "primaryMuscles": ["jaw"],
+      "secondaryMuscles": ["neck"],
+      "difficulty": "beginner",
+      "category": "facial",
+      "bodyRegion": "face",
+      "tags": ["face", "jawline", "low_impact"],
+      "instructions": {
+        "steps": [
+          "Sit tall and place a fist or palm lightly under your chin.",
+          "Try to open your mouth a little against that gentle pressure.",
+          "Keep your teeth from clenching and your neck long.",
+          "Hold, then relax your jaw completely."
+        ],
+        "breathing": "Breathe normally through your nose.",
+        "cue": "Light pressure only. Stop if it hurts.",
+        "commonMistake": "Do not push hard or clench. Stop if your jaw clicks painfully or hurts.",
+        "easier": "Use almost no hand pressure, or hold for less time."
       }
     },
     {
       "id": "chin_tuck",
       "name": "Chin tuck",
-      "description": "Glide the head straight back, making a double chin, to retrain the neck and fix forward-head posture.",
+      "description": "Glide the head straight back to practise a controlled, neutral neck position.",
       "type": "reps",
       "primaryMuscles": ["neck"],
       "secondaryMuscles": ["back"],
@@ -319,7 +401,9 @@
           "Release slowly."
         ],
         "breathing": "Breathe normally.",
-        "commonMistake": "Do not tilt your head down or up. The movement is straight back.",
+        "breathCues": ["Glide the chin straight back", "Release slowly"],
+        "cue": "Straight back, not down. Neck long.",
+        "commonMistake": "Do not tilt your head down or up. The movement is straight back. Stop if it hurts your neck.",
         "easier": "Make the movement smaller."
       }
     },
@@ -387,6 +471,8 @@
           "Hold for two or three seconds.",
           "Release slowly."
         ],
+        "breathing": "Breathe out as you squeeze, and in as you release.",
+        "breathCues": ["Breathe out, squeeze the shoulder blades", "Breathe in, release"],
         "commonMistake": "Do not shrug your shoulders or arch your lower back.",
         "easier": "Squeeze gently and hold for less time."
       }
@@ -411,6 +497,8 @@
           "Slowly slide your arms up overhead, keeping contact with the wall.",
           "Slide back down with control."
         ],
+        "breathing": "Breathe in as you slide up, and out as you slide down.",
+        "breathCues": ["Breathe in, slide the arms up", "Breathe out, slide down"],
         "commonMistake": "Do not arch your lower back or let your ribs flare.",
         "easier": "Do not go as high, or let your hands leave the wall."
       }
@@ -425,7 +513,7 @@
       "difficulty": "beginner",
       "category": "mobility",
       "bodyRegion": "core",
-      "tags": ["spine", "back_friendly", "desk_worker", "low_impact"],
+      "tags": ["spine", "desk_worker", "low_impact"],
       "tempoSeconds": 4,
       "instructions": {
         "steps": [
@@ -434,8 +522,11 @@
           "Pause for a second.",
           "Return to standing tall."
         ],
-        "commonMistake": "Do not lean back far or hold your breath. Skip it if it increases your pain or sends pain, tingling or numbness into a leg.",
-        "easier": "Lean back only a little."
+        "breathing": "Breathe out as you lean, and in as you return.",
+        "breathCues": ["Breathe out, lean back gently", "Breathe in, stand tall"],
+        "cue": "Small, comfortable lean. Stop if symptoms worsen.",
+        "commonMistake": "Do not force the lean. Stop if pain increases or spreads into a leg.",
+        "easier": "Lean back only a little, or skip it if it aggravates your back."
       }
     },
     {

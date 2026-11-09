@@ -146,7 +146,7 @@
           "Slide back up to finish."
         ],
         "breathing": "Keep breathing steadily. Do not hold your breath.",
-        "commonMistake": "Keep your knees over your ankles, not past your toes.",
+        "commonMistake": "Do not let your knees cave inward. Keep your whole back on the wall.",
         "easier": "Do not slide down as far."
       }
     },
@@ -172,6 +172,7 @@
           "Lower back down slowly, then repeat. After the set, switch legs."
         ],
         "breathing": "Breathe out as you step up, and in as you step down.",
+        "breathCues": ["Breathe out, step up tall", "Breathe in, step down slowly"],
         "commonMistake": "Do not push off the back foot. Drive through the heel on the step.",
         "easier": "Use a lower step and hold on to a rail."
       }
@@ -277,6 +278,7 @@
           "Stop when your thigh is level with your back. Lower slowly. After the set, switch legs."
         ],
         "breathing": "Breathe out as you lift, and in as you lower.",
+        "breathCues": ["Breathe out, lift the heel", "Breathe in, lower slowly"],
         "commonMistake": "Do not swing your leg high, arch your back or twist your hips.",
         "easier": "Lift your leg only a little off the floor."
       }
@@ -326,14 +328,14 @@
       "instructions": {
         "steps": [
           "Stand beside a wall with one hand resting on it, feet together.",
-          "Step one foot back and lower until both knees are bent, the front knee above your ankle.",
-          "Keep your body upright.",
+          "Step one foot back and lower until both knees are bent.",
+          "Keep your body upright and your front knee tracking over the foot.",
           "Push through your front heel to stand. Finish one side, then switch."
         ],
         "breathing": "Breathe in as you step back, and out as you stand.",
         "breathCues": ["Breathe in, step back and lower", "Breathe out, push up"],
-        "cue": "Step back, front knee over the ankle.",
-        "commonMistake": "Do not let your front knee travel past your toes, and do not lean forward.",
+        "cue": "Step back, front knee tracking over the foot.",
+        "commonMistake": "Do not let your front knee collapse inward, and do not lean forward.",
         "easier": "Take a smaller step back, or do the split squat instead."
       }
     },
@@ -384,6 +386,7 @@
           "Lower your heels slowly back down."
         ],
         "breathing": "Breathe out as you rise, and in as you lower.",
+        "breathCues": ["Breathe out, rise onto your toes", "Breathe in, lower slowly"],
         "commonMistake": "Do not roll your ankles outward. Rise straight up.",
         "easier": "Hold the wall firmly with your whole hand."
       }
@@ -603,7 +606,9 @@
           "Lower until your thighs are about parallel to the floor.",
           "Drive through your heels to stand tall."
         ],
-        "commonMistake": "Knees track over your toes; do not let them cave inward.",
+        "breathing": "Breathe in as you lower, and out as you stand.",
+        "breathCues": ["Breathe in, sit your hips back", "Breathe out, stand tall"],
+        "commonMistake": "Keep your knees tracking over your toes; do not let them cave inward.",
         "easier": "Squat to a chair or do a shallower range."
       }
     },
@@ -626,6 +631,8 @@
           "Bend your elbows and lower your chest toward the floor.",
           "Press back up to straight arms."
         ],
+        "breathing": "Breathe in as you lower, and out as you press up.",
+        "breathCues": ["Breathe in, lower your chest", "Breathe out, press up"],
         "commonMistake": "Do not let your hips sag or your head drop.",
         "easier": "Do the push-up from your knees, or against a table or wall."
       }
@@ -633,7 +640,7 @@
     {
       "id": "lunge",
       "name": "Lunge",
-      "description": "Forward lunge: step ahead and lower both knees to about 90 degrees.",
+      "description": "Forward lunge: step ahead and lower both knees with control.",
       "type": "reps",
       "primaryMuscles": ["quadriceps", "glutes"],
       "secondaryMuscles": ["hamstrings", "calves", "core"],
@@ -641,15 +648,19 @@
       "category": "strength",
       "bodyRegion": "lower_body",
       "tags": ["legs", "balance", "compound"],
+      "sides": ["right", "left"],
       "tempoSeconds": 4,
       "instructions": {
         "steps": [
-          "Stand tall with your feet together.",
-          "Step one foot forward and lower until both knees are bent about 90 degrees.",
-          "Keep your torso upright and your front knee over your ankle.",
-          "Push through your front heel to return, then switch legs."
+          "Stand tall with your feet together. Hold a wall if you need.",
+          "Step one foot forward and lower until both knees bend.",
+          "Keep your torso upright and your front knee tracking over the foot.",
+          "Push through your front heel to stand. Finish this side, then switch."
         ],
-        "commonMistake": "Do not let your front knee drift past your toes or your body lean forward.",
+        "breathing": "Breathe in as you lower, and out as you stand.",
+        "breathCues": ["Breathe in, step forward and lower", "Breathe out, push up"],
+        "cue": "Upright torso, front knee tracking over the foot.",
+        "commonMistake": "Do not let the front knee collapse inward, and do not lean forward.",
         "easier": "Take a shorter step or hold a wall for balance."
       }
     },
@@ -765,6 +776,8 @@
           "Curl the weights up toward your shoulders.",
           "Lower slowly back down."
         ],
+        "breathing": "Breathe out as you curl, and in as you lower.",
+        "breathCues": ["Breathe out, curl up", "Breathe in, lower slowly"],
         "commonMistake": "Do not swing your body or let your elbows drift forward.",
         "easier": "Use lighter weights or a water bottle."
       }
@@ -789,6 +802,8 @@
           "Press the weights straight overhead.",
           "Lower slowly back to shoulder height."
         ],
+        "breathing": "Breathe out as you press, and in as you lower.",
+        "breathCues": ["Breathe out, press overhead", "Breathe in, lower slowly"],
         "commonMistake": "Do not arch your lower back as you press.",
         "easier": "Press one arm at a time, or use lighter weights."
       }
@@ -819,13 +834,14 @@
     {
       "id": "crunch",
       "name": "Crunch",
-      "description": "Lift your shoulders off the floor by tightening your abdominal muscles.",
+      "description": "Lift your shoulders off the floor by tightening your abdominal muscles. Skip it if it aggravates your back.",
       "type": "reps",
       "primaryMuscles": ["core"],
       "difficulty": "beginner",
       "category": "core",
       "bodyRegion": "core",
       "tags": ["abs"],
+      "tempoSeconds": 3,
       "instructions": {
         "steps": [
           "Lie on your back with your knees bent and feet flat.",
@@ -833,15 +849,16 @@
           "Tighten your tummy and lift your head and shoulders off the floor.",
           "Lower back down slowly."
         ],
-        "commonMistake": "Do not pull on your neck.",
+        "breathing": "Breathe out as you lift, and in as you lower.",
+        "breathCues": ["Breathe out, lift your shoulders", "Breathe in, lower slowly"],
+        "commonMistake": "Do not pull on your neck. Skip this if it hurts your back; try the modified curl-up instead.",
         "easier": "Keep your hands across your chest and lift only a little."
-      },
-      "tempoSeconds": 3
+      }
     },
     {
       "id": "bicycle_crunch",
       "name": "Bicycle crunch",
-      "description": "Alternate elbow-to-opposite-knee while pedalling your legs.",
+      "description": "Alternate elbow-to-opposite-knee while pedalling your legs. Skip it if it aggravates your back.",
       "type": "reps",
       "primaryMuscles": ["core"],
       "secondaryMuscles": ["shoulders"],
@@ -849,6 +866,7 @@
       "category": "core",
       "bodyRegion": "core",
       "tags": ["abs", "obliques"],
+      "tempoSeconds": 2,
       "instructions": {
         "steps": [
           "Lie on your back with your hands lightly behind your head.",
@@ -856,15 +874,16 @@
           "Twist to bring one elbow toward the opposite knee while the other leg straightens.",
           "Switch sides in a smooth pedalling motion."
         ],
-        "commonMistake": "Do not yank your head with your hands; turn from your trunk.",
+        "breathing": "Breathe out as you twist, and in as you switch.",
+        "breathCues": ["Breathe out, twist toward the knee", "Breathe in, switch sides"],
+        "commonMistake": "Do not yank your head with your hands. Skip this if it hurts your back.",
         "easier": "Keep your feet on the floor and just twist."
-      },
-      "tempoSeconds": 2
+      }
     },
     {
       "id": "russian_twist",
       "name": "Russian twist",
-      "description": "Seated trunk rotation with your feet lifted or on the floor.",
+      "description": "Seated trunk rotation with your feet lifted or on the floor. Skip it if it aggravates your back.",
       "type": "reps",
       "primaryMuscles": ["core"],
       "secondaryMuscles": ["shoulders"],
@@ -872,6 +891,8 @@
       "category": "core",
       "bodyRegion": "core",
       "tags": ["abs", "obliques"],
+      "tempoSeconds": 2,
+      "sides": ["right", "left"],
       "instructions": {
         "steps": [
           "Sit with your knees bent and lean back slightly, back straight.",
@@ -879,11 +900,11 @@
           "Rotate your torso to one side, then to the other.",
           "Keep your chest lifted throughout."
         ],
-        "commonMistake": "Do not round your back or move only your arms.",
+        "breathing": "Breathe out as you rotate, and in as you return.",
+        "breathCues": ["Breathe out, rotate", "Breathe in, return to the middle"],
+        "commonMistake": "Do not round your back or move only your arms. Skip this if it hurts your back.",
         "easier": "Keep your heels on the floor."
-      },
-      "tempoSeconds": 2,
-      "sides": ["right", "left"]
+      }
     },
     {
       "id": "high_knees",
@@ -910,24 +931,27 @@
     },
     {
       "id": "superman",
-      "name": "Superman",
-      "description": "Lying face down, lift your arms and legs to strengthen the back.",
+      "name": "Opposite arm and leg lift",
+      "description": "Lying face down, lift one arm and the opposite leg a little, without forcing a back arch.",
       "type": "hold",
       "primaryMuscles": ["back", "glutes"],
       "secondaryMuscles": ["hamstrings", "shoulders"],
       "difficulty": "beginner",
       "category": "strength",
       "bodyRegion": "core",
-      "tags": ["back_friendly", "isometric"],
+      "tags": ["isometric", "low_impact"],
+      "sides": ["right", "left"],
       "instructions": {
         "steps": [
-          "Lie face down with your arms stretched forward.",
-          "Gently lift your arms, chest and legs a few centimetres off the floor.",
-          "Hold, keeping your neck long and looking at the floor.",
-          "Lower slowly."
+          "Lie face down with your forehead resting and your neck long.",
+          "Lift one arm and the opposite leg a few centimetres.",
+          "Keep looking at the floor. Do not crank your back.",
+          "Hold, then lower slowly. Switch to the other pair."
         ],
-        "commonMistake": "Do not crane your neck or lift too high.",
-        "easier": "Lift only your arms or only your legs."
+        "breathing": "Breathe normally. Do not hold your breath.",
+        "cue": "Long neck, small lift, opposite arm and leg.",
+        "commonMistake": "Do not force a big back arch or lift your head high. Stop if back pain increases.",
+        "easier": "Lift only the arm, or only the leg."
       }
     },
     {
@@ -940,7 +964,8 @@
       "difficulty": "beginner",
       "category": "core",
       "bodyRegion": "core",
-      "tags": ["mcgill_big_3", "back_friendly", "low_impact"],
+      "tags": ["back_friendly", "low_impact"],
+      "tempoSeconds": 4,
       "instructions": {
         "steps": [
           "Lie on your back with arms straight up and knees bent over your hips.",
@@ -948,10 +973,11 @@
           "Slowly lower one arm overhead and the opposite leg toward the floor.",
           "Return and switch sides."
         ],
+        "breathing": "Breathe out as you lower, and in as you return.",
+        "breathCues": ["Breathe out, reach long and lower", "Breathe in, return to the start"],
         "commonMistake": "Do not let your lower back arch off the floor.",
         "easier": "Move only your legs, keeping your arms still."
-      },
-      "tempoSeconds": 4
+      }
     },
     {
       "id": "shoulder_tap",
@@ -987,6 +1013,7 @@
       "category": "cardio",
       "bodyRegion": "lower_body",
       "tags": ["plyometric", "hiit"],
+      "tempoSeconds": 2,
       "instructions": {
         "steps": [
           "Lower into a squat with your chest up.",
@@ -994,10 +1021,11 @@
           "Land softly with bent knees.",
           "Go straight into the next squat."
         ],
+        "breathing": "Breathe in as you squat, and out as you jump.",
+        "breathCues": ["Breathe in, sit into the squat", "Breathe out, jump"],
         "commonMistake": "Do not land with locked knees or let them cave inward.",
         "easier": "Do regular squats or rise onto your toes."
-      },
-      "tempoSeconds": 2
+      }
     },
     {
       "id": "tricep_dip",
@@ -1011,6 +1039,7 @@
       "bodyRegion": "upper_body",
       "equipment": ["chair"],
       "tags": ["push"],
+      "tempoSeconds": 3,
       "instructions": {
         "steps": [
           "Sit on the edge of a sturdy chair and place your hands beside your hips.",
@@ -1018,10 +1047,11 @@
           "Bend your elbows to lower your body, keeping your back close to the chair.",
           "Press back up until your arms are straight."
         ],
+        "breathing": "Breathe in as you lower, and out as you press up.",
+        "breathCues": ["Breathe in, bend your elbows", "Breathe out, press up"],
         "commonMistake": "Do not let your shoulders shrug up to your ears.",
         "easier": "Keep your knees bent and feet close to the chair."
-      },
-      "tempoSeconds": 3
+      }
     },
     {
       "id": "flutter_kick",
@@ -1034,6 +1064,7 @@
       "category": "core",
       "bodyRegion": "core",
       "tags": ["abs", "low_impact"],
+      "tempoSeconds": 1,
       "instructions": {
         "steps": [
           "Lie on your back with your hands under your hips.",
@@ -1041,10 +1072,9 @@
           "Kick them up and down in small, quick alternating movements.",
           "Keep your lower back pressed down."
         ],
-        "commonMistake": "Do not let your lower back arch.",
+        "commonMistake": "Do not let your lower back arch. Stop if it hurts your back.",
         "easier": "Raise your legs higher or bend your knees."
-      },
-      "tempoSeconds": 1
+      }
     },
     {
       "id": "leg_raise",
@@ -1057,6 +1087,7 @@
       "category": "core",
       "bodyRegion": "core",
       "tags": ["abs"],
+      "tempoSeconds": 4,
       "instructions": {
         "steps": [
           "Lie on your back with your legs straight and hands under your hips.",
@@ -1064,10 +1095,11 @@
           "Raise both legs toward the ceiling.",
           "Lower slowly without touching the floor."
         ],
-        "commonMistake": "Do not let your back arch as your legs lower.",
+        "breathing": "Breathe out as you lift, and in as you lower.",
+        "breathCues": ["Breathe out, raise your legs", "Breathe in, lower slowly"],
+        "commonMistake": "Do not let your back arch as your legs lower. Stop if it hurts your back.",
         "easier": "Bend your knees slightly or raise one leg at a time."
-      },
-      "tempoSeconds": 4
+      }
     },
     {
       "id": "lateral_raise",
@@ -1080,6 +1112,7 @@
       "bodyRegion": "upper_body",
       "equipment": ["dumbbell"],
       "tags": ["isolation"],
+      "tempoSeconds": 4,
       "instructions": {
         "steps": [
           "Stand tall holding a light dumbbell in each hand.",
@@ -1087,10 +1120,11 @@
           "Pause briefly at the top.",
           "Lower slowly."
         ],
+        "breathing": "Breathe out as you raise, and in as you lower.",
+        "breathCues": ["Breathe out, raise to the sides", "Breathe in, lower slowly"],
         "commonMistake": "Do not shrug or swing the weights up.",
         "easier": "Use lighter weights, such as water bottles."
-      },
-      "tempoSeconds": 4
+      }
     },
     {
       "id": "bent_over_row",
@@ -1104,6 +1138,7 @@
       "bodyRegion": "upper_body",
       "equipment": ["dumbbell"],
       "tags": ["pull", "compound"],
+      "tempoSeconds": 4,
       "instructions": {
         "steps": [
           "Hold a dumbbell in each hand and hinge forward from your hips, back flat.",
@@ -1111,10 +1146,11 @@
           "Pull your elbows back toward your hips, squeezing your shoulder blades.",
           "Lower slowly."
         ],
+        "breathing": "Breathe out as you row, and in as you lower.",
+        "breathCues": ["Breathe out, row to your hips", "Breathe in, lower slowly"],
         "commonMistake": "Do not round your back or jerk the weights.",
         "easier": "Use lighter weights or row one arm at a time."
-      },
-      "tempoSeconds": 4
+      }
     },
     {
       "id": "side_lunge",
@@ -1189,7 +1225,7 @@
     {
       "id": "cobra_stretch",
       "name": "Cobra stretch",
-      "description": "Lying face down, press up gently to stretch the front of the body.",
+      "description": "Lying face down, press up gently to a comfortable height. A small back-bend, not a forced arch.",
       "type": "hold",
       "primaryMuscles": ["core"],
       "secondaryMuscles": ["back", "chest"],
@@ -1200,12 +1236,13 @@
       "instructions": {
         "steps": [
           "Lie face down with your hands under your shoulders.",
-          "Gently press up, lifting your chest while your hips stay down.",
-          "Keep your shoulders away from your ears.",
+          "Gently press up, lifting your chest only as far as feels comfortable.",
+          "Keep your hips down and your shoulders away from your ears.",
           "Hold and breathe, then lower slowly."
         ],
-        "commonMistake": "Do not push into pain or force your back to arch.",
-        "easier": "Prop up on your forearms instead."
+        "breathing": "Breathe slowly. Move only in a comfortable range.",
+        "commonMistake": "Do not force the back to arch. Stop if pain increases or spreads into a leg.",
+        "easier": "Stay on your forearms, or skip it if it aggravates your back."
       }
     },
     {

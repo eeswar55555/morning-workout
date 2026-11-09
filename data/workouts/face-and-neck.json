@@ -3,17 +3,20 @@
   "workouts": [
     {
       "id": "face_sharpening_01",
-      "name": "Face Sharpening 01",
-      "description": "Jawline, cheeks, lips and brow: about six minutes of facial exercises. Results from facial exercises vary and are not guaranteed.",
+      "name": "Face and Jaw 01",
+      "description": "A short practice for the tongue, jaw, cheeks, lips and neck muscles.",
       "category": "facial",
       "difficulty": "beginner",
       "restSeconds": 5,
-      "tags": ["face", "jawline", "hollow_cheeks"],
+      "tags": ["face", "jawline", "mewing"],
       "exercises": [
         { "exerciseId": "tongue_posture", "durationSeconds": 20 },
+        { "exerciseId": "tongue_press", "repetitions": 8 },
+        { "exerciseId": "slow_chew", "repetitions": 10 },
         { "exerciseId": "jaw_drop", "repetitions": 6 },
         { "exerciseId": "jaw_side_slide", "repetitions": 6 },
         { "exerciseId": "jaw_jut", "durationSeconds": 10, "sets": 3 },
+        { "exerciseId": "chin_resistance", "durationSeconds": 8, "sets": 2 },
         { "exerciseId": "fish_face", "durationSeconds": 10, "sets": 3 },
         { "exerciseId": "cheek_puff", "repetitions": 6 },
         { "exerciseId": "smile_cheek_lift", "durationSeconds": 10, "sets": 2 },
