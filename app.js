@@ -80,15 +80,37 @@
     document.body.appendChild(t); setTimeout(function () { t.classList.add('show'); }, 10);
     setTimeout(function () { t.classList.remove('show'); setTimeout(function () { t.remove(); }, 300); }, 2600);
   }
+  /* Phone/PWA Back: each sheet, editor or running workout pushes a history entry so Back
+     closes the top overlay instead of leaving the app. */
+  function pushBack() { try { history.pushState({ mw: 1 }, ''); } catch (e) {} }
+  function uiOpen() { return $$('.backdrop').length > 0 || $$('.editor').length > 0 || !!RUN; }
+  function closeTopUi() {
+    var bd = $$('.backdrop').pop();
+    if (bd) {
+      if (bd.getAttribute('data-sticky') === '1') return true;
+      bd.click();
+      return true;
+    }
+    var ed = $$('.editor').pop();
+    if (ed) {
+      var x = $('[data-x]', ed);
+      if (x) x.click();
+      return true;
+    }
+    if (RUN) { pause(); return true; }
+    return false;
+  }
   function sheet(html, opts) {
     opts = opts || {};
     var bd = document.createElement('div'); bd.className = 'backdrop';
+    if (opts.sticky) bd.setAttribute('data-sticky', '1');
     bd.innerHTML = '<div class="sheet' + (opts.tall ? ' tall' : '') + '" role="dialog" aria-modal="true"><div class="grab"></div>' + html + '</div>';
     document.body.appendChild(bd);
     var api = { root: bd.firstChild, close: function () { if (api.closed) return; api.closed = true; if (opts.onClose) opts.onClose(); bd.remove(); } };
     bd.addEventListener('click', function (e) { if (e.target === bd && !opts.sticky) api.close(); });
     $$('[data-close]', bd).forEach(function (b) { b.addEventListener('click', api.close); });
     thumbs(bd);
+    pushBack();
     return api;
   }
   function applyTheme() {
@@ -366,7 +388,7 @@
     RUN = { plan: plan, steps: built.steps, insts: built.insts, i: -1, step: null, paused: false, t: 0, tok: 0, active: 0, clock: 0,
       skipped: {}, done: {}, started: Date.now(), cum: cum, total: tot, lead: false, key: '' };
     buildRunnerDom();
-    try { history.pushState({ run: 1 }, ''); } catch (e) {}
+    pushBack();
     RUN.stopAnim = addAnim(runTick);
     enter(0);
   }
@@ -633,12 +655,10 @@
       if (document.hidden) { if (RUN && !RUN.paused) pause(); }
       else if (RUN) C.WakeLock.on();
     });
-    // Android back button during a workout: close an open sheet, otherwise pause (the pause screen has End workout)
+    // Phone Back: close the top sheet or editor; during a workout, pause (End is on the pause screen)
     window.addEventListener('popstate', function () {
-      if (!RUN) return;
-      var b = $$('.backdrop').pop();
-      if (b) b.click(); else pause();
-      try { history.pushState({ run: 1 }, ''); } catch (e) {}
+      if (!closeTopUi()) return;
+      if (uiOpen()) pushBack();
     });
     window.addEventListener('keydown', function (e) { if (e.key === 'Escape') { var b = $('.backdrop'); if (b && !b.querySelector('#ack')) b.click(); } });
     go('today');
@@ -649,7 +669,7 @@
       navigator.serviceWorker.addEventListener('controllerchange', function () { if (hadController && !reloaded && !RUN) { reloaded = true; location.reload(); } });
       navigator.serviceWorker.register('sw.js').catch(function () {});
     }
-    window.AppUI = { sheet: sheet, toast: toast, esc: esc, ico: ico, thumbHtml: thumbHtml, thumbs: thumbs, openDetail: openDetail, startWorkout: startWorkout, refresh: refresh, go: go, instrHtml: instrHtml };
+    window.AppUI = { sheet: sheet, toast: toast, esc: esc, ico: ico, thumbHtml: thumbHtml, thumbs: thumbs, openDetail: openDetail, startWorkout: startWorkout, refresh: refresh, go: go, instrHtml: instrHtml, pushBack: pushBack };
     window.__app = { go: go, startWorkout: startWorkout, get RUN() { return RUN; }, skip: skip, previous: previous, pause: pause, resume: resume };
   }
   function fail(e) {

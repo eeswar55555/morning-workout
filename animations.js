@@ -52,6 +52,20 @@
       props: P.mat(40, 190),
       poses: [all4({ t: [130, 80], h: 70 }), all4({ t: [80, 125], h: 135 })]
     },
+    standing_side_bend: {
+      cfg: { view: 'front' }, view: 'front',
+      poses: [
+        { hip: [130, 74.5], t: 0, h: 0, aL: [168, 172], aR: [8, 8], lL: { to: [9, 136] } },
+        { hip: [138, 76], t: 16, h: 18, aL: [175, 178], aR: [8, 8], lL: { to: [16, 136] } }
+      ]
+    },
+    thread_the_needle: {
+      props: P.mat(40, 190),
+      poses: [
+        all4(),
+        all4({ hip: [108, 118], t: 58, h: 18, aN: { to: [58, 136], b: -1 } })
+      ]
+    },
     arm_circles: {
       cfg: { arrow: true, track: 'haN' },
       mode: 'cycle', reverseSide2: true,
@@ -328,6 +342,15 @@
     },
     neck_forward_stretch: {
       poses: [stand(118, { aN: [3, 3], aF: [-6, -6] }), stand(118, { aN: [3, 3], aF: [-6, -6], h: 128 })]
+    },
+    neck_rotation: {
+      cfg: { view: 'front' }, view: 'front', mode: 'cycle', dynamic: true,
+      poses: [
+        { hip: [130, 74.5], t: 0, h: -22, aL: [4, 4], lL: { to: [9, 136] } },
+        { hip: [130, 74.5], t: 0, h: 0, aL: [4, 4], lL: { to: [9, 136] } },
+        { hip: [130, 74.5], t: 0, h: 22, aL: [4, 4], lL: { to: [9, 136] } },
+        { hip: [130, 74.5], t: 0, h: 0, aL: [4, 4], lL: { to: [9, 136] } }
+      ]
     },
     neck_side_stretch: {
       cfg: { view: 'front' }, view: 'front',

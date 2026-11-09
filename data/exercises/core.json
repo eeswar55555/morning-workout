@@ -27,6 +27,56 @@
       }
     },
     {
+      "id": "standing_side_bend",
+      "name": "Standing side bend",
+      "description": "Reach one arm overhead and lean to the opposite side to open the side of the body.",
+      "type": "hold",
+      "primaryMuscles": ["core"],
+      "secondaryMuscles": ["shoulders", "back"],
+      "difficulty": "beginner",
+      "category": "mobility",
+      "bodyRegion": "full_body",
+      "tags": ["warmup", "spine", "low_impact"],
+      "sides": ["right", "left"],
+      "instructions": {
+        "steps": [
+          "Stand tall with your feet hip-width apart.",
+          "Reach one arm up beside your ear.",
+          "Lean slowly to the other side until you feel a gentle stretch along your side.",
+          "Keep both feet planted and do not twist. Hold, then switch sides."
+        ],
+        "breathing": "Breathe slowly. Do not hold your breath.",
+        "cue": "Tall spine, lean a little, no twist.",
+        "commonMistake": "Do not collapse forward or twist your chest toward the floor.",
+        "easier": "Keep the bottom hand on your hip and lean less far."
+      }
+    },
+    {
+      "id": "thread_the_needle",
+      "name": "Thread the needle",
+      "description": "From hands and knees, slide one arm under the other to rotate the upper back.",
+      "type": "hold",
+      "primaryMuscles": ["back", "shoulders"],
+      "secondaryMuscles": ["core"],
+      "difficulty": "beginner",
+      "category": "mobility",
+      "bodyRegion": "core",
+      "tags": ["warmup", "spine", "low_impact", "back_friendly"],
+      "sides": ["right", "left"],
+      "instructions": {
+        "steps": [
+          "Start on your hands and knees, hands under your shoulders.",
+          "Slide one arm under the other, palm up, and rest that shoulder and the side of your head on the floor.",
+          "Keep the other arm pressing lightly into the floor.",
+          "Hold and breathe, then press back up and switch sides."
+        ],
+        "breathing": "Breathe slowly into the back of your ribs.",
+        "cue": "Slide the arm under. Rest the shoulder. Breathe.",
+        "commonMistake": "Do not force the shoulder down or twist from the lower back. Stop if it pinches.",
+        "easier": "Stay higher and only reach a little under."
+      }
+    },
+    {
       "id": "arm_circles",
       "name": "Arm circles",
       "description": "Big controlled arm circles that warm up the shoulders.",

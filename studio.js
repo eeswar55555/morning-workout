@@ -75,6 +75,7 @@
     el.className = 'editor'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true'); el.setAttribute('aria-label', title);
     el.innerHTML = '<div class="ed-top"><button class="ic" type="button" data-x aria-label="Close editor">' + ico('close') + '</button><h2>' + esc(title) + '</h2></div><div class="ed-body"></div><div class="ed-foot"></div>';
     document.body.appendChild(el); document.body.classList.add('editing');
+    ui().pushBack();
     var api = { el: el, body: $('.ed-body', el), foot: $('.ed-foot', el), onCancel: null, close: function () { el.remove(); document.body.classList.remove('editing'); } };
     $('[data-x]', el).onclick = function () { api.onCancel ? api.onCancel() : api.close(); };
     return api;

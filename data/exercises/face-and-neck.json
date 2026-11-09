@@ -408,6 +408,31 @@
       }
     },
     {
+      "id": "neck_rotation",
+      "name": "Neck rotation",
+      "description": "Slowly turn the head to look left and right through a comfortable range.",
+      "type": "time",
+      "primaryMuscles": ["neck"],
+      "secondaryMuscles": ["shoulders"],
+      "difficulty": "beginner",
+      "category": "mobility",
+      "bodyRegion": "neck",
+      "tags": ["neck", "mobility", "desk_worker", "low_impact"],
+      "tempoSeconds": 4,
+      "instructions": {
+        "steps": [
+          "Sit or stand tall and look straight ahead.",
+          "Slowly turn your head to look over one shoulder, only as far as is comfortable.",
+          "Pause, then turn the other way.",
+          "Keep your shoulders still and move smoothly."
+        ],
+        "breathing": "Breathe normally. Do not hold your breath.",
+        "cue": "Slow turns. Shoulders quiet.",
+        "commonMistake": "Do not crank the neck or lift the chin. Stop if you feel pain, dizziness, numbness or locking.",
+        "easier": "Turn less far, or hold the end position for one breath."
+      }
+    },
+    {
       "id": "neck_side_stretch",
       "name": "Neck side stretch",
       "description": "Tip one ear toward the shoulder to stretch the side of the neck.",

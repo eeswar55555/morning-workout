@@ -402,6 +402,35 @@
         { "exerciseId": "calf_stretch", "durationSeconds": 30 },
         { "exerciseId": "childs_pose", "durationSeconds": 30 }
       ]
+    },
+    {
+      "id": "morning_mobility_01",
+      "name": "Morning full-body, spine, neck and face mobility",
+      "description": "About 20 minutes of easy stretching. Move slowly and stay within a comfortable range. Stop neck or jaw movements if they cause pain, dizziness, numbness, locking or painful clicking. Facial exercises can move and engage facial muscles, but they are not proven to sharpen the jawline or reshape the face.",
+      "category": "mobility",
+      "difficulty": "beginner",
+      "restSeconds": 5,
+      "tags": ["full_body", "spine", "neck", "face", "low_impact", "back_friendly"],
+      "exercises": [
+        { "exerciseId": "march_in_place", "durationSeconds": 60 },
+        { "exerciseId": "arm_circles", "repetitions": 8 },
+        { "exerciseId": "standing_side_bend", "durationSeconds": 20 },
+        { "exerciseId": "cat_cow", "repetitions": 15 },
+        { "exerciseId": "thread_the_needle", "durationSeconds": 30 },
+        { "exerciseId": "childs_pose", "durationSeconds": 60 },
+        { "exerciseId": "knee_rolls", "repetitions": 12 },
+        { "exerciseId": "hip_flexor_stretch", "durationSeconds": 45 },
+        { "exerciseId": "hamstring_stretch", "durationSeconds": 45 },
+        { "exerciseId": "quad_stretch", "durationSeconds": 30 },
+        { "exerciseId": "calf_stretch", "durationSeconds": 30 },
+        { "exerciseId": "chest_stretch", "durationSeconds": 60, "note": "Switch arms halfway." },
+        { "exerciseId": "chin_tuck", "repetitions": 10 },
+        { "exerciseId": "neck_rotation", "durationSeconds": 45 },
+        { "exerciseId": "neck_side_stretch", "durationSeconds": 30 },
+        { "exerciseId": "tongue_posture", "durationSeconds": 45 },
+        { "exerciseId": "chin_lift_pucker", "repetitions": 8 },
+        { "exerciseId": "smile_cheek_lift", "durationSeconds": 45 }
+      ]
     }
   ]
 }
