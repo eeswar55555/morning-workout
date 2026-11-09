@@ -28,7 +28,7 @@ Open the icon → **Start workout**. That's it. The screen stays on and the work
 exercise → rest → **"Next up: Push ups, 3-2-1"** → next exercise, with no taps needed.
 
 - **Nothing blocks the workout.** There is no instruction screen. Every exercise starts straight away with its
-  animation, name and timer or rep count. The working muscles are tinted on the figure and named above the exercise name.
+  animation, name and timer or rep count. The working muscles are tinted in lime on the illustrated character and named above the exercise name.
 - **Instructions are optional.** Tap **Instructions** on the animation (or an exercise in the plan before you start) to
   see muscles, steps, tips and the common mistake. Opening it pauses the workout and closing it carries on.
 - **Controls:** Previous · Pause/Resume · Skip. The top-left ✕ (and the phone's back button) pauses and shows
@@ -55,7 +55,7 @@ You answer two quick questions after each workout, and (optionally) log your bac
    *Exercises tab*: switch exercises on/off, change reps/seconds, **Add my own exercise** (pick the picture that looks closest).
 2. **`routine.js`** — the plan: which exercises go in warm-up / strength / stability / cool-down, rest times, levels.
 3. **`exercises.js`** — the library. Each exercise is one block (name, instructions, breathing, easier version,
-   moving picture). Copy an existing block, change the text and the pose numbers. `figure.js` explains the pose format.
+   moving picture). Copy an existing block, change the text and the pose numbers. `figure.js` explains the pose format, `illus-config.js` says which muscles to highlight.
 After editing, re-upload the folder (Netlify Drop again / `git push`). The phone picks the update up the next time you open the app online.
 
 ## Files
@@ -64,10 +64,23 @@ After editing, re-upload the folder (Netlify Drop again / `git push`). The phone
 | `index.html`, `app.css`, `figure.css` | Page and look |
 | `app.js` | Screens + the workout player (voice, timers, controls) |
 | `core.js` | Plan rotation, progress rules, voice, sound |
-| `figure.js`, `figure.css` | The moving stick-figure demonstrations and the muscle tint (`hl-legs/torso/arms`) |
+| `illus.js`, `illus-config.js`, `figure.css` | **The illustrated character** (pure SVG, ~15 KB): drawing, per-exercise view / muscles / arrow config, colours |
+| `figure.js` | Pose engine (joint solver + animation timing). Its original stick figure remains only as a fallback |
+| `gallery.html` | Preview of every exercise illustration (also the extra ones in `illus-config.js`) |
 | `exercises.js` | **Exercise library (edit me)** |
 | `routine.js` | **Daily plan and levels (edit me)** |
 | `sw.js`, `manifest.webmanifest`, `icons/` | Offline + install support |
+
+## Exercise illustrations
+Each exercise is shown by a clean vector athlete (Settings → *Exercise character*: male or female) that loops the movement from the
+best fixed viewpoint — **side** for most exercises, **front** for arm and jumping moves. The working muscles are tinted lime
+(strong = main muscles, soft = helpers, brightest at the end position), a faint outline shows the end position, a dotted arrow shows
+the path of the most-moving joint and a small label lists the targets. It is plain SVG: no download beyond the 15 KB script,
+sharp at any screen density, about 80 SVG nodes and < 1 ms of JavaScript per frame.
+
+To change what is highlighted or the viewpoint edit `illus-config.js` (`view`, `primary`, `secondary`, `track`, `arrow`, `equip`).
+New side-view exercises only need poses in the `figure.js` format; front-view poses are described at the top of `illus.js`.
+Open `gallery.html` to preview everything.
 
 ## Safety
 General fitness guidance, not medical advice. Stop if an exercise makes pain worse or sends pain, tingling or numbness into a leg.

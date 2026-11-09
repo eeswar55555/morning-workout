@@ -402,6 +402,7 @@
       '<label class="field">Usual morning back pain (0–10)<input type="number" id="sBase" min="0" max="10" inputmode="numeric" placeholder="auto" value="' + (st.basePain == null ? '' : st.basePain) + '"></label>' +
       '<label class="check"><input type="checkbox" id="sBeep"' + (st.beep ? ' checked' : '') + '> Beeps for countdowns</label>' +
       '<label class="check"><input type="checkbox" id="sVib"' + (st.vibrate ? ' checked' : '') + '> Vibrate when a set ends</label>' +
+      '<label class="field">Exercise character<select id="sFig"><option value="m"' + (st.figure !== 'f' ? ' selected' : '') + '>Male</option><option value="f"' + (st.figure === 'f' ? ' selected' : '') + '>Female</option></select></label>' +
       '<label class="field">Theme<select id="sTheme"><option value="auto"' + (st.theme === 'auto' ? ' selected' : '') + '>Match my phone</option><option value="light"' + (st.theme === 'light' ? ' selected' : '') + '>Light</option><option value="dark"' + (st.theme === 'dark' ? ' selected' : '') + '>Dark</option></select></label></section>';
     h += '<section class="card"><b>Safety</b><p class="small">This is general fitness guidance, not medical advice.</p><button class="ghost" id="sSafety">Read the safety guidance</button></section>';
     h += '<section class="card"><b>Install</b><p class="small">In Chrome on Android: tap ⋮ and choose <b>Add to Home screen</b> (or <b>Install app</b>). It then opens full screen and works with no internet.</p>' +
@@ -420,6 +421,7 @@
     $('#sBase').onchange = function () { st.basePain = this.value === '' ? null : Math.max(0, Math.min(10, +this.value)); save(); };
     $('#sBeep').onchange = function () { st.beep = this.checked; save(); };
     $('#sVib').onchange = function () { st.vibrate = this.checked; save(); };
+    $('#sFig').onchange = function () { st.figure = this.value; Illus.female = st.figure === 'f'; save(); };
     $('#sTheme').onchange = function () { st.theme = this.value; save(); applyTheme(); };
     $('#sSafety').onclick = function () { openSafety(false); };
     var si = $('#sInstall'); if (si) si.onclick = function () { deferredInstall.prompt(); };
@@ -478,7 +480,7 @@
     document.body.classList.add('running');
     var svg = document.createElementNS(NS, 'svg'); svg.setAttribute('class', 'fig');
     var stage = $('#rStage', r); stage.insertBefore(svg, stage.firstChild);
-    RUN.fig = Figure.create(svg);
+    RUN.fig = Figure.create(svg); RUN.fig.label(false);   // the player already names the muscles above the exercise name
     $('#rClose').onclick = function () { pause(); };           // shows the pause screen, which holds End workout
     $('#rMute').onclick = function () { S.settings.voice = !S.settings.voice; C.save(); if (!S.settings.voice) V.cancel(); muteIcon(); };
     $('#rPause').onclick = function () { RUN.paused ? resume() : pause(); };
@@ -716,7 +718,7 @@
 
   /* ====================== boot ====================== */
   function boot() {
-    C.load(); S = C.S; V.init(); applyTheme();
+    C.load(); S = C.S; V.init(); applyTheme(); Illus.female = S.settings.figure === 'f';
     $$('#nav button').forEach(function (b) { b.onclick = function () { go(b.getAttribute('data-go')); }; });
     window.addEventListener('beforeinstallprompt', function (e) { e.preventDefault(); deferredInstall = e; if (screen === 'today' && !RUN) refresh(); });
     window.addEventListener('appinstalled', function () { deferredInstall = null; });

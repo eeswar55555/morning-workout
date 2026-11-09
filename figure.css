@@ -1,52 +1,72 @@
-/* Colours for the exercise figure and furniture (light + dark) */
+/* Colours for the illustrated exercise character, furniture and highlights (light + dark) */
 :root {
-  --skin: #f0bd94; --shirt: #14b8a6; --shirt-far: #0d8277; --pants: #3b4a6b; --pants-far: #2a3550;
-  --shoe: #f97316; --bag: #ef4444; --bag2: #b91c1c;
-  --stage-bg: #eef6f5; --floor: #d6e4e2; --floor-line: #9db8b4;
-  --furn: #b08a5a; --furn2: #8a6a40; --wall: #dfe6ee; --wall-edge: #8fa1b8; --mat: #94a3f0; --label: #6b7a8a;
+  --skin: #efbf9d; --skin-f: #d9a280; --hair: #3a2a22; --tee: #4a5a7e; --tee-f: #374463; --shorts: #1f2a44; --shorts-f: #161f35;
+  --shoe: #f8fafc; --shoe-f: #d3dbe4; --sole: #14b8a6; --eye: #2b2220;
+  --mus: #84cc16; --mus2: #a3e635;
+  --stage-bg: #eaf3f2; --stage-hi: #f8fcfc; --floor: #d3e3e1; --floor-edge: #b5cbc8; --shadow: rgba(20, 50, 60, .20);
+  --furn: #b8946a; --furn2: #8f6f47; --furn-hi: rgba(255,255,255,.32); --wall: #dbe4ee; --wall-edge: #a3b4c8; --mat: #8fa0f2; --label: #51666f;
+  --bag: #ef4444; --bag2: #b91c1c; --plate: #2b3445; --plate2: #8da0b5;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --skin: #e7b48c; --shirt: #2dd4bf; --shirt-far: #17958a; --pants: #8aa0d6; --pants-far: #5d70a0;
-    --shoe: #fb923c; --bag: #f87171; --bag2: #dc2626;
-    --stage-bg: #17232a; --floor: #22343b; --floor-line: #3f5d66;
-    --furn: #a0804f; --furn2: #7a5f38; --wall: #25323f; --wall-edge: #50657d; --mat: #4b57a8; --label: #8fa0b0;
+    --skin: #e9b48d; --skin-f: #c58e69; --tee: #6577a8; --tee-f: #4a5a86; --shorts: #0f172a; --shorts-f: #0a1020;
+    --shoe-f: #aab6c4; --sole: #2dd4bf; --mus: #a3e635; --mus2: #bef264;
+    --stage-bg: #131f26; --stage-hi: #1f3139; --floor: #1b2a31; --floor-edge: #2c434c; --shadow: rgba(0, 0, 0, .38);
+    --furn: #a0804f; --furn2: #7a5f38; --furn-hi: rgba(255,255,255,.14); --wall: #22303c; --wall-edge: #4a5f77; --mat: #4b57a8; --label: #9db0bb;
+    --plate: #cfd9e6; --plate2: #5a6b80;
   }
 }
 :root[data-theme="dark"] {
-  --skin: #e7b48c; --shirt: #2dd4bf; --shirt-far: #17958a; --pants: #8aa0d6; --pants-far: #5d70a0;
-  --shoe: #fb923c; --bag: #f87171; --bag2: #dc2626;
-  --stage-bg: #17232a; --floor: #22343b; --floor-line: #3f5d66;
-  --furn: #a0804f; --furn2: #7a5f38; --wall: #25323f; --wall-edge: #50657d; --mat: #4b57a8; --label: #8fa0b0;
+  --skin: #e9b48d; --skin-f: #c58e69; --tee: #6577a8; --tee-f: #4a5a86; --shorts: #0f172a; --shorts-f: #0a1020;
+  --shoe-f: #aab6c4; --sole: #2dd4bf; --mus: #a3e635; --mus2: #bef264;
+  --stage-bg: #131f26; --stage-hi: #1f3139; --floor: #1b2a31; --floor-edge: #2c434c; --shadow: rgba(0, 0, 0, .38);
+  --furn: #a0804f; --furn2: #7a5f38; --furn-hi: rgba(255,255,255,.14); --wall: #22303c; --wall-edge: #4a5f77; --mat: #4b57a8; --label: #9db0bb;
+  --plate: #cfd9e6; --plate2: #5a6b80;
 }
-.limb { fill: none; stroke-linecap: round; stroke-linejoin: round; }
-.limb.shirt { stroke: var(--shirt); }
-.limb.shirt.far { stroke: var(--shirt-far); }
-.limb.pants { stroke: var(--pants); }
-.limb.pants.far { stroke: var(--pants-far); }
-.limb.shoe { stroke: var(--shoe); }
-.limb.shoe.far { stroke: var(--shoe); opacity: .8; }
-.fill-skin { fill: var(--skin); }
-.fill-skin.far-skin { opacity: .85; }
-.fill-pants { fill: var(--pants); }
-.fill-bag { fill: var(--bag); }
-.fill-bag2 { fill: var(--bag2); }
-.floor { fill: var(--floor); }
-.floorLine { stroke: var(--floor-line); stroke-width: 1.5; }
-.pr-furn { fill: var(--furn); }
-.pr-furn2 { fill: var(--furn2); }
-.pr-wall { fill: var(--wall); }
-.pr-wallEdge { stroke: var(--wall-edge); stroke-width: 2; }
-.pr-mat { fill: var(--mat); opacity: .55; }
+
+/* the stage behind the character: a soft spotlight */
+.demo, .rstage, .thumb { background: radial-gradient(120% 95% at 50% 32%, var(--stage-hi), var(--stage-bg) 72%); }
+
+svg.fig, .thumb svg { shape-rendering: geometricPrecision; }
+.sk { fill: var(--skin); } .sk.f { fill: var(--skin-f); }
+.tee { fill: var(--tee); } .tee.f { fill: var(--tee-f); }
+.sh { fill: var(--shorts); } .sh.f { fill: var(--shorts-f); }
+.shoe { fill: var(--shoe); } .shoe.f { fill: var(--shoe-f); }
+.sole { fill: none; stroke: var(--sole); stroke-width: 1.7; stroke-linecap: round; }
+.hair { fill: var(--hair); }
+.ear { fill: var(--skin-f); } .eye { fill: var(--eye); } .nose { fill: var(--skin-f); }
+.mouth { fill: none; stroke: var(--eye); stroke-width: 1; stroke-linecap: round; opacity: .55; }
+.shd { fill: #0b1a2b; opacity: .12; } .hil { fill: #fff; opacity: .2; }
+.shadow { fill: var(--shadow); }
+.floor { fill: var(--floor); } .floorEdge { fill: var(--floor-edge); }
+.bag { fill: var(--bag); } .bag2 { fill: var(--bag2); }
+.plate { fill: var(--plate); } .plate2 { fill: var(--plate2); }
+.bar { fill: none; stroke: var(--plate2); stroke-width: 2.2; stroke-linecap: round; }
+
+/* highlights: working muscles in an accent colour (strong = primary, soft = secondary), end-position ghost, motion arrow */
+.mus path { fill: var(--mus); stroke: none; mix-blend-mode: normal; }
+.mus path.ms { fill: var(--mus2); }
+.ghost { opacity: .15; } .ghost .gh { fill: var(--mus); }
+.gh { fill: var(--mus); }
+.trail { fill: none; stroke: var(--mus); stroke-width: 1.5; stroke-linecap: round; stroke-dasharray: 0.1 4; opacity: .9; }
+.arrow { fill: var(--mus); stroke: var(--mus); stroke-width: 1; stroke-linejoin: round; }
+.lbl { font: 700 7.4px system-ui, -apple-system, "Segoe UI", sans-serif; fill: var(--label); letter-spacing: .01em; }
+.lbld { fill: var(--mus); }
+
+/* furniture */
+.pr-furn { fill: var(--furn); } .pr-furn2 { fill: var(--furn2); } .pr-hi { fill: var(--furn-hi); }
+.pr-wall { fill: var(--wall); } .pr-wallEdge { stroke: var(--wall-edge); stroke-width: 2; }
+.pr-mat { fill: var(--mat); opacity: .6; }
 .pr-label { fill: var(--label); font: 600 8px system-ui, sans-serif; }
 
-/* Muscle activation overlay: the app adds hl-legs / hl-torso / hl-arms to the figure's <svg> while a
-   set is running, and the working body part is tinted and gently pulses. */
-:root { --hot: #d6336c; --hot-far: #a61e4d; }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --hot: #ff6b9a; --hot-far: #d6457a; } }
-:root[data-theme="dark"] { --hot: #ff6b9a; --hot-far: #d6457a; }
-.hl-legs .z-legs.limb, .hl-torso .z-torso.limb, .hl-arms .z-arms.limb { stroke: var(--hot); }
-.hl-legs .z-legs.limb.far, .hl-arms .z-arms.limb.far { stroke: var(--hot-far); }
-.hl-legs .fill-pants.z-legs { fill: var(--hot); }
-.hl-legs .z-legs, .hl-torso .z-torso, .hl-arms .z-arms { animation: hotpulse 1.4s ease-in-out infinite; }
-@keyframes hotpulse { 50% { opacity: .72; } }
+/* classes used by custom drawings in exercises.js (e.g. the top-down knee rolls) */
+.limb { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.limb.shirt { stroke: var(--tee); } .limb.shirt.far { stroke: var(--tee-f); }
+.limb.pants { stroke: var(--shorts); } .limb.pants.far { stroke: var(--shorts-f); }
+.fill-skin { fill: var(--skin); } .fill-skin.far-skin { opacity: .85; }
+.fill-pants { fill: var(--shorts); }
+
+.shoe { stroke: var(--shoe-line); stroke-width: .7; stroke-linejoin: round; }
+:root { --hot: var(--mus); --shoe-line: #9fb0bf; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --shoe-line: #6f8394; } }
+:root[data-theme="dark"] { --shoe-line: #6f8394; }
