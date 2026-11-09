@@ -8,7 +8,7 @@
   var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
   var cap = function (s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : s; };
   var DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-  var screen = 'today', RUN = null, deferredInstall = null;
+  var screen = 'today', RUN = null, deferredInstall = null, openRows = {};
 
   /* ====================== icons (inline SVG: same look on every phone, follows the theme) ====================== */
   var ICONS = {
@@ -28,7 +28,10 @@
     warning: '<path d="M12 3.5l10 17.5H2z"/><path d="M12 10v5M12 18h.01"/>',
     check: '<path d="M5 12.5l5 5 9-11"/>',
     search: '<circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/>',
-    plus: '<path d="M12 5v14M5 12h14"/>'
+    plus: '<path d="M12 5v14M5 12h14"/>',
+    info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v5.5M12 7.8h.01"/>',
+    prev: '<path d="M19 5L9 12l10 7z" fill="currentColor"/><path d="M5 5v14"/>',
+    chev: '<path d="M6 9l6 6 6-6"/>'
   };
   function ico(n, cls) {
     return '<svg class="i ' + (cls || '') + '" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + ICONS[n] + '</svg>';
@@ -87,6 +90,31 @@
   }
   var thumbHtml = function (id) { return '<div class="thumb" data-ex="' + esc(id) + '"></div>'; };
 
+  /* Which body parts an exercise works, read from its `area` text (drives the muscle overlay). */
+  function zonesOf(ex) {
+    var a = (ex.area || '').toLowerCase(), z = [];
+    if (/whole body/.test(a)) return ['legs', 'torso', 'arms'];
+    if (/thigh|glute|hamstring|calf|calves|ankle|hip|\bleg/.test(a)) z.push('legs');
+    if (/back|spine|abdomen|trunk|core|chest|posture/.test(a)) z.push('torso');
+    if (/shoulder|tricep|bicep|\barm/.test(a)) z.push('arms');
+    return z;
+  }
+  function muscleList(ex) {
+    return zonesOf(ex).length ? (ex.area || '').split('·').map(function (s) { return cap(s.trim()); }).filter(Boolean) : [];
+  }
+  /* The optional reading material: muscles, steps, tips, common mistake. Used by the pre-workout
+     preview and by the in-workout Instructions sheet, so the two always agree. */
+  function instrHtml(ex) {
+    var ln = C.levelNote(ex), ms = muscleList(ex), tips = [];
+    if (ex.breath) tips.push('<b>Breathing:</b> ' + esc(ex.breath));
+    if (ex.easier) tips.push('<b>Easier:</b> ' + esc(ex.easier));
+    if (ln) tips.push('<b>At your level:</b> ' + esc(ln));
+    return (ms.length ? '<h3>Muscles worked</h3><div class="mchips">' + ms.map(function (m) { return '<span class="chip">' + esc(m) + '</span>'; }).join('') + '</div>' : '') +
+      '<h3>How to do it</h3><ol class="steps">' + (ex.steps || []).map(function (s) { return '<li>' + esc(s) + '</li>'; }).join('') + '</ol>' +
+      (tips.length ? '<h3>Tips</h3><ul class="tips">' + tips.map(function (t) { return '<li>' + t + '</li>'; }).join('') + '</ul>' : '') +
+      (ex.mistake ? '<h3>Common mistake</h3><p>' + esc(ex.mistake) + '</p>' : '');
+  }
+
   /* ====================== navigation ====================== */
   function go(name) {
     screen = name; var v = $('#view');
@@ -111,7 +139,8 @@
     } else {
       h += '<section class="hero"><span class="eyebrow">' + (plan.light ? 'Lighter day' : done ? 'Done today · go again?' : 'Today\'s workout') + '</span>' +
         '<div class="hero-stats"><div><b>' + mins + '</b><span>minutes</span></div><div><b>' + nEx + '</b><span>exercises</span></div><div><b>' + nRounds + '</b><span>' + (nRounds === 1 ? 'round' : 'rounds') + '</span></div></div>' +
-        '<button class="btn big" id="start">' + ico('play') + '<span>' + (done ? 'Do it again' : 'Start workout') + '</span></button></section>';
+        '<button class="btn big" id="start">' + ico('play') + '<span>' + (done ? 'Do it again' : 'Start workout') + '</span></button>' +
+        '<p class="hint">It moves on by itself. Pause, skip or go back any time.</p></section>';
     }
     if (plan.light) h += '<div class="card note"><b>Lighter day today</b><p>Warm-up, back stability and cool-down only. After that, take a gentle 20–30 minute walk.</p><button class="link" id="fullDay">Do the full routine instead</button></div>';
     else if (C.isLightDay(key) && S.plans[key] && S.plans[key].full) h += '<div class="card note"><p>Full routine chosen for your lighter day.</p><button class="link" id="lightDay">Back to the lighter day</button></div>';
@@ -120,14 +149,17 @@
     h += '<section class="card" aria-labelledby="painQ"><div class="row"><b id="painQ">How is your back this morning?</b><span class="muted small">optional</span></div><div class="painrow" id="pain" role="group" aria-labelledby="painQ">';
     for (var i = 0; i <= 10; i++) h += '<button class="pn' + (pain === i ? ' on' : '') + '" data-p="' + i + '" aria-pressed="' + (pain === i) + '">' + i + '</button>';
     h += '</div><div class="painend small muted"><span>0 · none</span><span>10 · worst</span></div></section>';
-    h += '<div class="planhead"><h2>Today\'s plan</h2><span class="muted">about ' + mins + ' min</span></div>';
+    h += '<div class="planhead"><h2>Today\'s plan</h2><span class="muted">about ' + mins + ' min</span></div><p class="muted small planhint">Tap an exercise to read how it is done. You never have to.</p>';
+    var seq = 0;
     plan.blocks.forEach(function (b) {
       var rounds = b.circuit ? L.rounds : 1;
       h += '<section class="card block"><h3 class="bt">' + esc(b.title) + (rounds > 1 ? ' <span class="muted">· ' + rounds + ' rounds</span>' : '') + '</h3>';
       b.items.forEach(function (it) {
-        var ex = C.getEx(it.id);
-        h += '<div class="item">' + thumbHtml(ex.id) + '<div class="meta" data-open="' + esc(ex.id) + '" role="button" tabindex="0"><div class="nm">' + esc(ex.name) + '</div><div class="muted small">' + esc(C.doseText(ex)) + '</div></div>' +
-          (it.options.length > 1 ? '<button class="swap" data-swap="' + esc(it.key) + '" aria-label="Swap ' + esc(ex.name) + ' for another exercise" title="Swap for another exercise">' + ico('swap') + '</button>' : '') + '</div>';
+        var ex = C.getEx(it.id), open = !!openRows[ex.id]; seq++;
+        h += '<div class="item pv' + (open ? ' open' : '') + '">' + thumbHtml(ex.id) +
+          '<button class="meta" data-exp="' + esc(ex.id) + '" aria-expanded="' + open + '" aria-controls="xp-' + esc(ex.id) + '"><span class="mt"><span class="nm">' + seq + '. ' + esc(ex.name) + '</span><span class="muted small">' + esc(C.doseText(ex)) + '</span></span>' + ico('chev', 'chev') + '</button>' +
+          (it.options.length > 1 ? '<button class="swap" data-swap="' + esc(it.key) + '" aria-label="Swap ' + esc(ex.name) + ' for another exercise" title="Swap for another exercise">' + ico('swap') + '</button>' : '') +
+          '<div class="xp" id="xp-' + esc(ex.id) + '"' + (open ? '' : ' hidden') + '>' + instrHtml(ex) + '<button class="link" data-open="' + esc(ex.id) + '">Change amount and more</button></div></div>';
       });
       h += '</section>';
     });
@@ -141,7 +173,14 @@
     var ep2 = $('#editPlan2'); if (ep2) ep2.onclick = openPlanEditor;
     $$('#pain .pn').forEach(function (b) { b.onclick = function () { var p = +b.getAttribute('data-p'); if (S.pain[key] === p) delete S.pain[key]; else S.pain[key] = p; C.save(); refresh(); }; });
     $$('[data-swap]').forEach(function (b) { b.onclick = function () { var k = b.getAttribute('data-swap'); var it = null; plan.blocks.forEach(function (bl) { bl.items.forEach(function (i) { if (i.key === k) it = i; }); }); C.swap(key, k, it.options, it.id); refresh(); }; });
-    $$('[data-open]').forEach(function (m) { m.onclick = function () { openDetail(m.getAttribute('data-open')); }; m.onkeydown = function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openDetail(m.getAttribute('data-open')); } }; });
+    $$('[data-open]', v).forEach(function (m) { m.onclick = function () { openDetail(m.getAttribute('data-open')); }; });
+    $$('[data-exp]', v).forEach(function (m) {
+      m.onclick = function () {
+        var id = m.getAttribute('data-exp'), on = !openRows[id], row = m.closest('.item');
+        if (on) openRows[id] = 1; else delete openRows[id];
+        m.setAttribute('aria-expanded', on); row.classList.toggle('open', on); $('#xp-' + id, row).hidden = !on;
+      };
+    });
     $('#shuf').onclick = function () { C.shuffle(key); refresh(); toast('Mixed it up'); };
     $('#editPlan').onclick = openPlanEditor;
     var fd = $('#fullDay'); if (fd) fd.onclick = function () { C.buildPlan(key); S.plans[key].full = true; C.save(); refresh(); };
@@ -350,10 +389,11 @@
     var st = S.settings;
     var h = '<header class="top"><div><h1>Settings</h1></div></header>';
     h += '<section class="card"><b>Voice</b>' +
-      '<label class="check"><input type="checkbox" id="sVoice"' + (st.voice ? ' checked' : '') + '> Speak instructions and count reps</label>' +
+      '<label class="check"><input type="checkbox" id="sVoice"' + (st.voice ? ' checked' : '') + '> Voice coach: exercise names, countdowns and rep counts</label>' +
+      '<p class="muted small">Voice is only a bonus. The workout runs the same with it off, muted or unavailable.</p>' +
       (V.ok ? '' : '<p class="warn small">This browser has no built-in voice. Use Chrome on Android.</p>') +
       '<label class="field">Speaking speed: <b id="rv">' + st.rate.toFixed(2) + '×</b><input type="range" id="sRate" min="0.7" max="1.3" step="0.05" value="' + st.rate + '"></label>' +
-      '<label class="field">How much to explain<select id="sDetail"><option value="auto"' + (st.detail === 'auto' ? ' selected' : '') + '>Full the first 3 times, then short</option><option value="full"' + (st.detail === 'full' ? ' selected' : '') + '>Always full</option><option value="short"' + (st.detail === 'short' ? ' selected' : '') + '>Always short</option></select></label>' +
+      '<label class="field">Short coaching tip before each exercise<select id="sDetail"><option value="auto"' + (st.detail === 'auto' ? ' selected' : '') + '>The first 3 times, then names only</option><option value="full"' + (st.detail === 'full' ? ' selected' : '') + '>Every time</option><option value="short"' + (st.detail === 'short' ? ' selected' : '') + '>Never</option></select></label>' +
       '<button class="ghost" id="sTest">' + ico('volume') + 'Test voice</button></section>';
     h += '<section class="card"><b>Workout</b>' +
       '<label class="field">Rep speed<select id="sPace"><option value="1.25"' + (st.pace === 1.25 ? ' selected' : '') + '>Slower</option><option value="1"' + (st.pace === 1 ? ' selected' : '') + '>Normal</option><option value="0.8"' + (st.pace === 0.8 ? ' selected' : '') + '>Faster</option></select></label>' +
@@ -373,7 +413,7 @@
     $('#sVoice').onchange = function () { st.voice = this.checked; save(); };
     $('#sRate').oninput = function () { st.rate = +this.value; $('#rv').textContent = st.rate.toFixed(2) + '×'; save(); };
     $('#sDetail').onchange = function () { st.detail = this.value; save(); };
-    $('#sTest').onclick = function () { SND.unlock(); V.warm(); if (!V.enabled()) toast('Voice is off'); else V.now('Good morning. Let us get moving. Chair sit to stand. Eight reps.'); };
+    $('#sTest').onclick = function () { SND.unlock(); V.warm(); if (!V.enabled()) toast('Voice is off'); else V.now('Next: chair sit to stand. 3, 2, 1, begin.'); };
     $('#sPace').onchange = function () { st.pace = +this.value; save(); };
     $('#sRest').oninput = function () { st.restStrength = +this.value; $('#rr').textContent = st.restStrength + ' s'; save(); };
     $('#sLight').onchange = function () { st.lightDay = +this.value; save(); };
@@ -402,15 +442,20 @@
     $('#ack', sh.root).onclick = function () { S.ack = true; C.save(); sh.close(); };
   }
 
-  /* ====================== WORKOUT PLAYER ====================== */
+  /* ====================== WORKOUT PLAYER ======================
+   * Workout-first. An exercise never waits for the user:
+   *   get-ready lead-in -> exercise -> rest, then "Next up ... 3-2-1" -> exercise -> ...
+   * and it advances by itself. Voice, beeps and vibration are best-effort extras; nothing in here
+   * waits for speech to finish, so a muted phone or a failed speech engine changes nothing.
+   * Controls: Pause / Resume, Skip, Previous, End (on the pause screen). Instructions are optional. */
   function startWorkout(plan) {
     var built = C.buildSteps(plan);
     if (!built.steps.length) { toast('Nothing in the plan. Add exercises first.'); return; }
     SND.unlock(); V.warm(); C.WakeLock.on();
     var cum = [], tot = 0;
-    built.steps.forEach(function (st) { var ex = built.insts[st.exi].ex; var e = st.kind === 'intro' ? 14 : st.kind === 'rest' ? st.secs : st.mode === 'reps' ? st.n * C.period(ex) : st.secs; cum.push(tot); tot += e; });
+    built.steps.forEach(function (st) { var ex = built.insts[st.exi].ex; var e = st.kind === 'rest' ? st.secs : st.mode === 'reps' ? st.n * C.period(ex) : st.secs; cum.push(tot); tot += e; });
     RUN = { plan: plan, steps: built.steps, insts: built.insts, i: -1, step: null, paused: false, t: 0, tok: 0, active: 0, clock: 0,
-      skipped: {}, done: {}, started: Date.now(), cum: cum, total: tot, firstIntro: true, phase: null, key: '' };
+      skipped: {}, done: {}, started: Date.now(), cum: cum, total: tot, lead: false, key: '' };
     buildRunnerDom();
     try { history.pushState({ run: 1 }, ''); } catch (e) {}
     RUN.stopAnim = addAnim(runTick);
@@ -420,31 +465,28 @@
   function buildRunnerDom() {
     var r = document.createElement('div'); r.id = 'runner'; r.className = 'runner';
     r.innerHTML =
-      '<div class="rtop"><button class="ic" id="rClose" aria-label="Stop workout">' + ico('close') + '</button><div class="rprog"><div class="rbar" id="rBar"></div></div><button class="ic" id="rMute" aria-label="Voice on or off"></button></div>' +
+      '<div class="rtop"><button class="ic" id="rClose" aria-label="Pause. End workout is on the pause screen">' + ico('close') + '</button><div class="rprog"><div class="rbar" id="rBar"></div></div><button class="ic" id="rMute" aria-label="Voice on or off"></button></div>' +
       '<div class="rblock" id="rBlock"></div>' +
-      '<div class="rstage" id="rStage"></div>' +
+      '<div class="rstage" id="rStage"><button class="rinstr" id="rHow" aria-label="Instructions">' + ico('info', 'sm') + '<span>Instructions</span></button></div>' +
       '<div class="rinfo"><div class="eyebrow" id="rArea"></div><h2 id="rName"></h2><div class="sub" id="rSub"></div>' +
-      '<div class="rscroll" id="rScroll"><div class="rmain" id="rMain"></div><ol class="rsteps" id="rSteps"></ol><div class="rcue" id="rCue"></div>' +
-      '<button class="btn small" id="rGo" hidden></button></div></div>' +
-      '<div class="rctrl"><button class="rc" id="rRepeat" aria-label="Repeat this exercise"><span>' + ico('repeat') + '</span><small>Repeat</small></button>' +
+      '<div class="rmain" id="rMain"></div><div class="rcue" id="rCue"></div></div>' +
+      '<div class="rctrl"><button class="rc" id="rPrev" aria-label="Previous exercise"><span>' + ico('prev') + '</span><small>Previous</small></button>' +
       '<button class="rc big" id="rPause" aria-label="Pause"><span>' + ico('pause') + '</span><small>Pause</small></button>' +
       '<button class="rc" id="rSkip" aria-label="Skip this exercise"><span>' + ico('skip') + '</span><small>Skip</small></button></div>' +
-      '<div class="rlinks"><button class="link" id="rHow">How to do it</button><button class="link" id="rSafe">' + ico('warning', 'sm') + ' Safety</button></div>' +
-      '<div class="pauseov" id="rPaused" hidden><div>Paused</div><button class="btn" id="rResume">' + ico('play') + 'Resume</button><button class="ghost" id="rEnd">End workout</button></div>';
+      '<div class="pauseov" id="rPaused" hidden role="dialog" aria-label="Workout paused"><div>Paused</div><button class="btn" id="rResume">' + ico('play') + 'Resume</button><button class="ghost" id="rEnd">End workout</button></div>';
     document.body.appendChild(r);
     document.body.classList.add('running');
-    var svg = document.createElementNS(NS, 'svg'); svg.setAttribute('class', 'fig'); $('#rStage', r).appendChild(svg);
+    var svg = document.createElementNS(NS, 'svg'); svg.setAttribute('class', 'fig');
+    var stage = $('#rStage', r); stage.insertBefore(svg, stage.firstChild);
     RUN.fig = Figure.create(svg);
-    $('#rClose').onclick = function () { pause(true); askStop(); };
-    $('#rMute').onclick = function () { S.settings.voice = !S.settings.voice; C.save(); if (!S.settings.voice) V.cancel(); muteIcon(); if (RUN.step && RUN.step.kind === 'intro') enter(RUN.i); };
+    $('#rClose').onclick = function () { pause(); };           // shows the pause screen, which holds End workout
+    $('#rMute').onclick = function () { S.settings.voice = !S.settings.voice; C.save(); if (!S.settings.voice) V.cancel(); muteIcon(); };
     $('#rPause').onclick = function () { RUN.paused ? resume() : pause(); };
     $('#rResume').onclick = resume;
-    $('#rEnd').onclick = askStop;
+    $('#rEnd').onclick = function () { finish(false); };
     $('#rSkip').onclick = skip;
-    $('#rRepeat').onclick = repeat;
-    $('#rGo').onclick = function () { if (RUN.step.kind === 'intro' && RUN.phase !== 'count') { V.cancel(); beginCount(); } };
-    $('#rHow').onclick = function () { pause(); var ex = RUN.insts[RUN.step.exi].ex; var sh = sheet('<h2>' + esc(ex.name) + '</h2><ol class="steps">' + ex.steps.map(function (s) { return '<li>' + esc(s) + '</li>'; }).join('') + '</ol><p><b>Breathing:</b> ' + esc(ex.breath || '') + '</p>' + (ex.mistake ? '<p><b>Avoid:</b> ' + esc(ex.mistake) + '</p>' : '') + (ex.easier ? '<p class="tip"><b>Easier:</b> ' + esc(ex.easier) + '</p>' : '') + '<div class="rowbtns"><button class="btn small" data-close>Back to workout</button></div>', { tall: true, onClose: function () { /* stays paused */ } }); };
-    $('#rSafe').onclick = function () { pause(); sheet(safetyHtml() + '<div class="rowbtns"><button class="btn small" data-close>Back to workout</button></div>', { tall: true }); };
+    $('#rPrev').onclick = previous;
+    $('#rHow').onclick = openInstructions;
     muteIcon();
   }
   function muteIcon() { var b = $('#rMute'), on = S.settings.voice && V.ok; if (b) { b.innerHTML = ico(on ? 'volume' : 'mute'); b.setAttribute('aria-label', on ? 'Voice on. Tap to mute' : 'Voice off. Tap to turn on'); } }
@@ -458,70 +500,39 @@
   function setMain(num, label) { var k = num + '|' + label; if (RUN.numKey === k) return; RUN.numKey = k; var n = $('#rNum'); if (n) { n.innerHTML = num; $('#rLbl').textContent = label; } }
   function ringTo(f) { var r = $('#rRing'); if (r) r.style.strokeDashoffset = (RING * (1 - Math.max(0, Math.min(1, f)))).toFixed(1); }
 
-  function exName(i) { return RUN.insts[i].ex.name; }
-
-  /* ---- build the spoken script for an exercise ---- */
-  function introScript(inst, first) {
-    var ex = inst.ex, d = C.dose(ex), st = S.settings, out = [], offset = 0;
-    var full = st.detail === 'full' || (st.detail === 'auto' && (S.counts[ex.id] || 0) < 3);
-    if (first) { out.push('Let us begin. If you feel sharp pain, tingling or numbness, stop and rest.'); }
-    var head = (inst.rounds > 1 ? 'Round ' + inst.round + ' of ' + inst.rounds + '. ' : '') + ex.name + '. ' + C.spokenDose(ex, d) + '.';
-    out.push(head);
-    offset = out.length;
-    if (full) {
-      ex.steps.forEach(function (s) { out.push(s); });
-      if (ex.breath) out.push(ex.breath);
-      var ln = C.levelNote(ex); if (ln) out.push('At your level: ' + ln);
-    } else if (ex.cue) out.push(ex.cue);
-    out.push('Get ready.');
-    return { list: out, offset: offset, full: full, nSteps: full ? ex.steps.length : 0 };
-  }
-
-  /* ---- state machine ---- */
-  function enter(i) {
+  /* ---- state machine ----
+   * leadSecs (Skip / Previous): start the transition at its last few seconds, so jumping to another
+   * exercise gives a quick "Next up ... 3-2-1" instead of repeating a long rest. */
+  function enter(i, leadSecs) {
     var prev = RUN.step;
-    if (prev && RUN.steps[i] && RUN.steps[i].exi !== prev.exi && !RUN.skipped[prev.exi]) RUN.done[prev.exi] = 1;
-    RUN.i = i; RUN.step = RUN.steps[i]; RUN.t = 0; RUN.cnt = 99; RUN.reps = 0; RUN.flags = {}; RUN.phase = null; RUN.tok++;
+    // an exercise counts as done once we move forward past it (moving back never marks anything done)
+    if (prev && RUN.steps[i] && RUN.steps[i].exi > prev.exi && !RUN.skipped[prev.exi]) RUN.done[prev.exi] = 1;
+    RUN.i = i; RUN.step = RUN.steps[i]; RUN.t = 0; RUN.cnt = 99; RUN.reps = 0; RUN.flags = {}; RUN.lead = false; RUN.tok++;
     RUN.clock = 0;
     var st = RUN.step, inst = RUN.insts[st.exi];
+    if (leadSecs && st.kind === 'rest') RUN.t = Math.max(0, st.secs - leadSecs);
     renderStep();
-    if (st.kind === 'intro') startIntro(inst);
-    else if (st.kind === 'rest') startRest(st, inst);
-    else startWork(st, inst);
+    if (st.kind === 'rest') startRest(st, inst, RUN.t > 0); else startWork(st, inst);
   }
   function goNext() { if (RUN.i + 1 >= RUN.steps.length) finish(true); else enter(RUN.i + 1); }
 
-  function startIntro(inst) {
-    var sc = RUN.script = introScript(inst, RUN.firstIntro);
-    RUN.firstIntro = false;
-    RUN.speakFrom = 0;
-    renderSteps(sc);
-    if (V.enabled()) { RUN.phase = 'speak'; speakIntro(); }
-    else { RUN.phase = 'wait'; $('#rGo').hidden = false; $('#rGo').textContent = "I'm ready — start"; }
-    if (V.enabled()) { $('#rGo').hidden = false; $('#rGo').textContent = 'Skip instructions'; }
-  }
-  function speakIntro() {
-    var tok = RUN.tok, sc = RUN.script;
-    V.seq(sc.list, RUN.speakFrom, function (i) {
-      RUN.speakFrom = i;
-      var li = $$('#rSteps li'); li.forEach(function (x) { x.classList.remove('now'); });
-      var idx = i - sc.offset; if (sc.full && idx >= 0 && li[idx]) { li[idx].classList.add('now'); li[idx].scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
-    }).then(function (ok) { if (ok && tok === RUN.tok && !RUN.paused && RUN.phase === 'speak') beginCount(); });
-  }
-  function beginCount() { RUN.phase = 'count'; RUN.t = 0; RUN.cnt = 99; mkRing(); $('#rGo').hidden = true; $('#rSteps').hidden = true; $$('#rSteps li').forEach(function (x) { x.classList.remove('now'); }); }
-
-  function startRest(st, inst) {
-    if (st.why === 'between') V.say(st.secs <= 6 ? 'Next: ' + inst.ex.name + '.' : 'Rest. Next up: ' + inst.ex.name + '.');
-    else if (st.why === 'switch') {
-      var ex = inst.ex;
-      V.say(ex.sides === true ? 'Switch sides. Now the ' + st.side + ' side.' : 'Now ' + st.side + '.');
-    } else V.say('Relax and breathe.');
+  /* ---- short spoken cues (all optional, none of them is ever waited for) ---- */
+  function spokenTip(ex) { var d = S.settings.detail; return !!ex.cue && (d === 'full' || (d === 'auto' && (S.counts[ex.id] || 0) < 3)); }
+  function startRest(st, inst, brief) {
+    var ex = inst.ex;
+    if (brief) V.say(ex.name + '.');
+    else if (st.why === 'start') V.say('Let us begin. Stop if you feel sharp pain.');
+    else if (st.why === 'between') {
+      V.say(st.secs <= 6 ? 'Next: ' + ex.name + '.' : 'Rest. Next up: ' + ex.name + '.');
+      if (st.secs >= 8 && spokenTip(ex)) V.say(ex.cue);
+    } else if (st.why === 'switch') V.say(ex.sides === true ? 'Switch sides. Now the ' + st.side + ' side.' : 'Now ' + st.side + '.');
+    else V.say('Relax and breathe.');
   }
   function startWork(st, inst) {
     var ex = inst.ex;
-    if (st.mode === 'reps') V.say(st.side && st.sideIdx === 0 ? 'Start with ' + (ex.sides === true ? 'the ' + st.side + ' side' : st.side) + '. Go.' : 'Go.');
+    if (st.mode === 'reps') V.say(st.side && st.sideIdx === 0 ? 'Start with ' + (ex.sides === true ? 'the ' + st.side + ' side' : st.side) + '. Begin.' : 'Begin.');
     else if (st.mode === 'hold') V.say(st.set === 1 && st.side && st.sideIdx === 0 ? 'Start with the ' + st.side + ' side. Hold.' : 'Hold.');
-    else V.say(st.side && st.sideIdx === 0 ? 'Start with the ' + st.side + ' side. Go.' : 'Go.');
+    else V.say(st.side && st.sideIdx === 0 ? 'Start with the ' + st.side + ' side. Begin.' : 'Begin.');
   }
 
   function runTick(dt) {
@@ -530,21 +541,19 @@
     var inst = RUN.insts[st.exi], ex = inst.ex;
     if (!RUN.paused) RUN.clock += dt;
     drawStage(st, inst, ex);
-    $('#rBar').style.width = Math.min(100, 100 * (RUN.cum[RUN.i] + (st.kind === 'work' && st.mode === 'reps' ? Math.min(RUN.t, st.n * C.period(ex)) : st.kind === 'rest' || st.kind === 'work' ? Math.min(RUN.t, st.secs) : 0)) / RUN.total) + '%';
+    $('#rBar').style.width = Math.min(100, 100 * (RUN.cum[RUN.i] + (st.kind === 'work' && st.mode === 'reps' ? Math.min(RUN.t, st.n * C.period(ex)) : Math.min(RUN.t, st.secs))) / RUN.total) + '%';
     if (RUN.paused) return;
     RUN.t += dt; RUN.active += dt;
-    if (st.kind === 'intro') {
-      if (RUN.phase === 'count') {
-        var left = 3 - RUN.t, n = Math.ceil(left);
-        if (n !== RUN.cnt && n > 0) { RUN.cnt = n; SND.beep(700, 0.1); setMain(n, 'get ready'); }
-        ringTo(RUN.t / 3);
-        if (left <= 0) { SND.beep(1000, 0.25, 0.18); goNext(); }
+    if (st.kind === 'rest') {
+      // rest, then the last 3 seconds become "Next up: <exercise>  3-2-1"; the exercise then starts by itself
+      var rem = st.secs - RUN.t, n2 = Math.max(0, Math.ceil(rem)), lead = n2 <= 3;
+      if (lead !== RUN.lead) { RUN.lead = lead; setTexts(restTexts(st, inst, lead)); }
+      if (n2 !== RUN.cnt) {
+        RUN.cnt = n2; setMain(n2, lead ? 'starting in' : 'seconds rest');
+        if (lead && n2 > 0) { SND.beep(600, 0.08); if (st.why !== 'breathe') V.now(String(n2)); }
       }
-    } else if (st.kind === 'rest') {
-      var rem = st.secs - RUN.t, n2 = Math.max(0, Math.ceil(rem));
-      if (n2 !== RUN.cnt) { RUN.cnt = n2; setMain(n2, 'seconds rest'); if (n2 <= 3 && n2 > 0) SND.beep(600, 0.08); }
       ringTo(RUN.t / st.secs);
-      if (rem <= 0) goNext();
+      if (rem <= 0) { SND.beep(1000, 0.25, 0.18); SND.buzz(40); goNext(); }
     } else if (st.mode === 'reps') {
       var per = C.period(ex), cyc = Math.floor(RUN.t / per), u = (RUN.t % per) / per, f = ex.anim.down || 0.5;
       var cues = ex.breathCue;
@@ -587,35 +596,49 @@
     RUN.fig.show(opts);
   }
 
+  /* What the big text says during a transition. In the last 3 seconds ("lead") it turns into
+     "Next up: <exercise>" with the 3-2-1 countdown. */
+  function restTexts(st, inst, lead) {
+    var ex = inst.ex, dose = [];
+    if (inst.rounds > 1) dose.push('Round ' + inst.round + ' of ' + inst.rounds);
+    dose.push(C.doseText(ex));
+    if (st.why === 'start') return lead ? { area: 'First up', title: ex.name, sub: dose.join(' · ') } : { area: '', title: 'Get ready', sub: 'First up: ' + ex.name };
+    if (st.why === 'between') return lead ? { area: 'Next up', title: ex.name, sub: dose.join(' · ') } : { area: '', title: 'Rest', sub: 'Next up: ' + ex.name };
+    if (st.why === 'switch') return { area: '', title: 'Switch sides', sub: 'Now: ' + (ex.sides === true ? st.side + ' side' : st.side) };
+    return { area: '', title: 'Breathe', sub: ex.name };
+  }
+  function setTexts(t) { var ar = $('#rArea'); ar.textContent = t.area; ar.classList.toggle('muscle', !!t.muscle); $('#rName').textContent = t.title; $('#rSub').textContent = t.sub; }
+
   function renderStep() {
-    var st = RUN.step, inst = RUN.insts[st.exi], ex = inst.ex, d = C.dose(ex);
+    var st = RUN.step, inst = RUN.insts[st.exi], ex = inst.ex, sub = [];
     $('#rBlock').textContent = inst.block.title + ' · exercise ' + (st.exi + 1) + ' of ' + RUN.insts.length;
-    var title = ex.name, sub = [];
     if (st.kind === 'rest') {
-      title = st.why === 'between' ? 'Rest' : st.why === 'switch' ? 'Switch sides' : 'Breathe';
-      sub.push(st.why === 'between' ? 'Next up: ' + ex.name : st.why === 'switch' ? 'Now: ' + (ex.sides === true ? st.side + ' side' : st.side) : ex.name);
+      RUN.lead = st.secs - RUN.t <= 3;
+      setTexts(restTexts(st, inst, RUN.lead));
     } else {
       if (inst.rounds > 1) sub.push('Round ' + inst.round + ' of ' + inst.rounds);
-      if (st.kind === 'work' && st.side) sub.push(cap(ex.sides === true ? st.side + ' side' : st.side));
-      if (st.kind === 'intro') sub.push(C.doseText(ex, d));
-      if (st.kind === 'work' && st.mode === 'hold' && st.sets > 1) sub.push('Hold ' + st.set + ' of ' + st.sets);
+      if (st.side) sub.push(cap(ex.sides === true ? st.side + ' side' : st.side));
+      if (st.mode === 'hold' && st.sets > 1) sub.push('Hold ' + st.set + ' of ' + st.sets);
+      setTexts({ area: muscleList(ex).join(' · '), muscle: true, title: ex.name, sub: sub.join(' · ') });
     }
-    $('#rName').textContent = title; $('#rSub').textContent = sub.join(' · ');
-    $('#rArea').textContent = st.kind === 'rest' ? '' : (ex.area || '');
-    if (st.kind === 'intro') $('#rMain').innerHTML = ''; else mkRing();
-    $('#rSteps').hidden = st.kind !== 'intro';
-    $('#rGo').hidden = true;
-    $('#rCue').textContent = st.kind === 'work' ? (ex.cue || ex.breath || '') : '';
-    if (st.kind !== 'intro') $('#rSteps').innerHTML = '';
+    mkRing();
+    // muscle overlay: tint the working body part while a set runs (the muscle names show above the exercise name)
+    var z = st.kind === 'work' ? zonesOf(ex) : [], cls = RUN.fig.svg.classList;
+    ['legs', 'torso', 'arms'].forEach(function (k) { cls.toggle('hl-' + k, z.indexOf(k) >= 0); });
+    $('#rCue').textContent = st.kind === 'work' ? (ex.cue || ex.breath || '') : st.why === 'start' ? 'Stop if you feel sharp pain, tingling or numbness.' : '';
     pauseBtn(false);
     RUN.cnt = 99;
   }
-  function renderSteps(sc) {
-    var ex = RUN.insts[RUN.step.exi].ex;
-    $('#rSteps').innerHTML = ex.steps.map(function (s) { return '<li>' + esc(s) + '</li>'; }).join('') +
-      (ex.breath ? '<li class="aux">' + esc(ex.breath) + '</li>' : '');
-    // map spoken indexes: steps then breath
-    $('#rCue').textContent = ex.cue || '';
+
+  /* Optional reading: pauses the workout while open and resumes when closed (if it was running). */
+  function openInstructions() {
+    if (!RUN || $('.backdrop')) return;
+    var ex = RUN.insts[RUN.step.exi].ex, wasPaused = RUN.paused;
+    pause(true);
+    sheet('<h2>' + esc(ex.name) + '</h2>' + (wasPaused ? '' : '<p class="muted small">The workout is paused while this is open.</p>') + instrHtml(ex) +
+      '<div class="warn small">' + ico('warning', 'sm') + ' Stop if this causes sharp pain, or pain, tingling or numbness in your leg.</div>' +
+      '<div class="rowbtns"><button class="btn" data-close>Back to workout</button></div>',
+      { tall: true, onClose: function () { if (!wasPaused && RUN) resume(); } });
   }
 
   function pause(silent) {
@@ -629,27 +652,21 @@
     RUN.paused = false; $('#rPaused').hidden = true;
     pauseBtn(false);
     SND.unlock();
-    if (RUN.step.kind === 'intro' && RUN.phase === 'speak') speakIntro();
   }
   function skip() {
     V.cancel(); var st = RUN.step;
-    if (st.kind === 'rest') { goNext(); return; }
+    if (st.kind === 'rest') { goNext(); return; }           // skipping a rest = start now
     RUN.skipped[st.exi] = 1;
     var j = RUN.i + 1; while (j < RUN.steps.length && RUN.steps[j].exi <= st.exi) j++;
     if (j >= RUN.steps.length) { finish(true); return; }
-    enter(j);
+    enter(j, 3);
   }
-  function repeat() {
-    V.cancel(); var st = RUN.step, exi = st.kind === 'rest' && st.why === 'between' ? Math.max(0, st.exi - 1) : st.exi, j = 0;
-    while (j < RUN.steps.length && !(RUN.steps[j].exi === exi && RUN.steps[j].kind === 'work')) j++;
-    delete RUN.skipped[exi]; delete RUN.done[exi];
-    enter(Math.min(j, RUN.steps.length - 1));
-    if (RUN.paused) resume();
-  }
-  function askStop() {
-    var sh = sheet('<h2>End the workout?</h2><p>Exercises you finished are saved to your progress.</p><div class="rowbtns"><button class="btn" id="kg">Keep going</button><button class="ghost danger" id="es">End workout</button></div>', { sticky: true });
-    $('#kg', sh.root).onclick = function () { sh.close(); resume(); };
-    $('#es', sh.root).onclick = function () { sh.close(); finish(false); };
+  function previous() {
+    V.cancel();
+    var st = RUN.step, target = Math.max(0, st.exi - 1), j = 0;   // on the first exercise this restarts it
+    while (j < RUN.steps.length && RUN.steps[j].exi !== target) j++;
+    delete RUN.skipped[target]; delete RUN.done[target];
+    enter(j, 3);
   }
 
   function teardownRunner() {
@@ -707,7 +724,13 @@
       if (document.hidden) { if (RUN && !RUN.paused) pause(); }
       else if (RUN) C.WakeLock.on();
     });
-    window.addEventListener('popstate', function () { if (RUN) { pause(); if (!$('.backdrop')) askStop(); try { history.pushState({ run: 1 }, ''); } catch (e) {} } });
+    // Android back button during a workout: close an open sheet, otherwise pause (the pause screen has End workout)
+    window.addEventListener('popstate', function () {
+      if (!RUN) return;
+      var b = $$('.backdrop').pop();
+      if (b) b.click(); else pause();
+      try { history.pushState({ run: 1 }, ''); } catch (e) {}
+    });
     window.addEventListener('keydown', function (e) { if (e.key === 'Escape') { var b = $('.backdrop'); if (b && !b.querySelector('#ack')) b.click(); } });
     go('today');
     requestAnimationFrame(function (t) { lastT = t; requestAnimationFrame(frame); });
@@ -717,7 +740,7 @@
       navigator.serviceWorker.addEventListener('controllerchange', function () { if (hadController && !reloaded && !RUN) { reloaded = true; location.reload(); } });
       navigator.serviceWorker.register('sw.js').catch(function () {});
     }
-    window.__app = { go: go, startWorkout: startWorkout, get RUN() { return RUN; }, skip: skip, pause: pause, resume: resume };
+    window.__app = { go: go, startWorkout: startWorkout, get RUN() { return RUN; }, skip: skip, previous: previous, pause: pause, resume: resume };
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
 })();

@@ -24,8 +24,20 @@ Pick **one**:
 - Tap **Settings → Test voice** to confirm you can hear the coach (turn the media volume up, not on silent).
 
 ## Every morning
-Open the icon → **Start workout**. That's it. The screen stays on, the coach talks you through each move,
-counts reps, times holds and tells you when to rest. Pause / Repeat / Skip are the three big buttons.
+Open the icon → **Start workout**. That's it. The screen stays on and the workout runs by itself:
+exercise → rest → **"Next up: Push ups, 3-2-1"** → next exercise, with no taps needed.
+
+- **Nothing blocks the workout.** There is no instruction screen. Every exercise starts straight away with its
+  animation, name and timer or rep count. The working muscles are tinted on the figure and named above the exercise name.
+- **Instructions are optional.** Tap **Instructions** on the animation (or an exercise in the plan before you start) to
+  see muscles, steps, tips and the common mistake. Opening it pauses the workout and closing it carries on.
+- **Controls:** Previous · Pause/Resume · Skip. The top-left ✕ (and the phone's back button) pauses and shows
+  **End workout** — no confirmation pop-ups. Previous goes back one exercise (on the first one it restarts it).
+- **Voice is a bonus.** It says short things ("Next: Chair sit to stand", "3, 2, 1, Begin", rep counts). If speech fails,
+  is blocked or muted, the on-screen countdown, beeps and vibration still run the workout identically.
+- **Preview first:** the Today screen lists the whole session in order (1, 2, 3…); tap any row to expand its instructions.
+- Rest lengths are unchanged (Settings → rest between strength exercises, `rest` in `routine.js`). The last 3 seconds of
+  every rest become the "Next up … 3-2-1" lead-in. Set a rest to 3 in `routine.js` for a pure 3-second transition.
 
 ## What changes day to day
 Some slots in the plan hold several exercises (e.g. *sit-to-stand / wall sit / step-up*). The app rotates through
@@ -52,7 +64,7 @@ After editing, re-upload the folder (Netlify Drop again / `git push`). The phone
 | `index.html`, `app.css`, `figure.css` | Page and look |
 | `app.js` | Screens + the workout player (voice, timers, controls) |
 | `core.js` | Plan rotation, progress rules, voice, sound |
-| `figure.js` | The moving stick-figure demonstrations |
+| `figure.js`, `figure.css` | The moving stick-figure demonstrations and the muscle tint (`hl-legs/torso/arms`) |
 | `exercises.js` | **Exercise library (edit me)** |
 | `routine.js` | **Daily plan and levels (edit me)** |
 | `sw.js`, `manifest.webmanifest`, `icons/` | Offline + install support |

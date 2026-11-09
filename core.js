@@ -125,7 +125,9 @@
   }
 
   /* ---------- turn a plan into the ordered list of steps the player runs ---------- */
-  var DEFAULT_REST = 8, SWITCH_REST = 6, BREATHE_REST = 3;
+  /* There is no instruction step any more: every exercise starts straight from a short transition
+     ("Next: X, starting in 3-2-1"). Instructions are optional and live in a bottom sheet. */
+  var DEFAULT_REST = 8, SWITCH_REST = 6, BREATHE_REST = 3, START_LEAD = 6;
   function buildSteps(plan) {
     var R = routine(), L = level(), insts = [], steps = [];
     plan.blocks.forEach(function (b) {
@@ -138,8 +140,7 @@
         var secs = prev.block.id !== inst.block.id ? 10 :
           (inst.block.id === 'strength' && S.settings.restStrength ? S.settings.restStrength : (R.rest && R.rest[inst.block.id] != null ? R.rest[inst.block.id] : DEFAULT_REST));
         steps.push({ kind: 'rest', why: 'between', secs: secs, exi: i });
-      }
-      steps.push({ kind: 'intro', exi: i });
+      } else steps.push({ kind: 'rest', why: 'start', secs: START_LEAD, exi: i });
       var sides = d.sides || [null];
       if (d.type === 'reps') {
         sides.forEach(function (sd, si) {
@@ -159,11 +160,10 @@
     return { steps: steps, insts: insts };
   }
   function estimate(built) {
-    var tot = 0, pace = S.settings.pace || 1;
+    var tot = 0;
     built.steps.forEach(function (st) {
       var ex = built.insts[st.exi].ex;
-      if (st.kind === 'intro') tot += 14;
-      else if (st.kind === 'rest') tot += st.secs;
+      if (st.kind === 'rest') tot += st.secs;
       else if (st.mode === 'reps') tot += st.n * period(ex);
       else tot += st.secs;
     });

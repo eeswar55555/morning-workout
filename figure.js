@@ -181,13 +181,14 @@
     var cur = { anim: null, mirror: false };
 
     var E = {};
+    /* z-legs / z-torso / z-arms let the app tint the working body part (muscle overlay) from CSS */
     function mk(name, cls, w) { E[name] = el('path', { class: 'limb ' + cls, 'stroke-width': w, fill: 'none' }, body); }
-    mk('legF', 'pants far', 10); mk('footF', 'shoe far', 7); mk('armF', 'shirt far', 8);
-    mk('spine', 'shirt', 14);
-    E.hipDot = el('circle', { r: 7, class: 'fill-pants' }, body);
-    mk('legN', 'pants', 10); mk('footN', 'shoe', 7);
+    mk('legF', 'pants far z-legs', 10); mk('footF', 'shoe far', 7); mk('armF', 'shirt far z-arms', 8);
+    mk('spine', 'shirt z-torso', 14);
+    E.hipDot = el('circle', { r: 7, class: 'fill-pants z-legs' }, body);
+    mk('legN', 'pants z-legs', 10); mk('footN', 'shoe', 7);
     E.head = el('circle', { r: 9, class: 'fill-skin' }, body);
-    mk('armN', 'shirt', 8);
+    mk('armN', 'shirt z-arms', 8);
     E.handF = el('circle', { r: 4.2, class: 'fill-skin far-skin' }, body);
     E.handN = el('circle', { r: 4.2, class: 'fill-skin' }, body);
     E.bag = el('g', { style: 'display:none' }, body);

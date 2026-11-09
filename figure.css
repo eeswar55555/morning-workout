@@ -39,3 +39,14 @@
 .pr-wallEdge { stroke: var(--wall-edge); stroke-width: 2; }
 .pr-mat { fill: var(--mat); opacity: .55; }
 .pr-label { fill: var(--label); font: 600 8px system-ui, sans-serif; }
+
+/* Muscle activation overlay: the app adds hl-legs / hl-torso / hl-arms to the figure's <svg> while a
+   set is running, and the working body part is tinted and gently pulses. */
+:root { --hot: #d6336c; --hot-far: #a61e4d; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --hot: #ff6b9a; --hot-far: #d6457a; } }
+:root[data-theme="dark"] { --hot: #ff6b9a; --hot-far: #d6457a; }
+.hl-legs .z-legs.limb, .hl-torso .z-torso.limb, .hl-arms .z-arms.limb { stroke: var(--hot); }
+.hl-legs .z-legs.limb.far, .hl-arms .z-arms.limb.far { stroke: var(--hot-far); }
+.hl-legs .fill-pants.z-legs { fill: var(--hot); }
+.hl-legs .z-legs, .hl-torso .z-torso, .hl-arms .z-arms { animation: hotpulse 1.4s ease-in-out infinite; }
+@keyframes hotpulse { 50% { opacity: .72; } }
