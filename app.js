@@ -50,18 +50,11 @@
   function loopPeriod(ex) { return ex.type === 'reps' || ex.anim.dynamic ? C.period(ex) : 5; }
   function mountDemo(box, ex) {
     var svg = document.createElementNS(NS, 'svg'); svg.setAttribute('class', 'fig'); box.appendChild(svg);
-    var fig = Figure.create(svg), clock = 0, cur = null, v3 = null, dead = false;
+    var fig = Figure.create(svg), clock = 0, cur = null;
     function set(e, mirror) { cur = e; fig.setAnim(e.anim, mirror); }
     set(ex, false);
-    var stop = addAnim(function (dt) { clock += dt; var u = (clock / loopPeriod(cur)) % 1; if (v3) v3.ctl.drive(u); else fig.show({ u: u }); });
-    function lose() { if (!v3) return; try { v3.ctl.destroy(); } catch (e) {} v3.host.remove(); v3 = null; box.classList.remove('viz'); svg.style.display = ''; }
-    // the 3D avatar replaces the SVG figure as soon as the viewer has loaded (the SVG shows meanwhile, and if anything fails)
-    if (Viz3D.wants(ex.id)) Viz3D.open(box, { exercise: ex.id, compact: true, onError: lose }).then(function (r) {
-      if (!r) return;
-      if (dead) { r.ctl.destroy(); r.host.remove(); return; }
-      v3 = r; box.classList.add('viz'); svg.style.display = 'none';
-    });
-    return { stop: function () { dead = true; stop(); if (v3) { try { v3.ctl.destroy(); } catch (e) {} v3 = null; } }, set: set };
+    var stop = addAnim(function (dt) { clock += dt; fig.show({ u: (clock / loopPeriod(cur)) % 1 }); });
+    return { stop: stop, set: set };
   }
   function thumbs(root) {
     $$('.thumb[data-ex]', root).forEach(function (d) {
@@ -409,7 +402,6 @@
       '<label class="field">Usual morning back pain (0–10)<input type="number" id="sBase" min="0" max="10" inputmode="numeric" placeholder="auto" value="' + (st.basePain == null ? '' : st.basePain) + '"></label>' +
       '<label class="check"><input type="checkbox" id="sBeep"' + (st.beep ? ' checked' : '') + '> Beeps for countdowns</label>' +
       '<label class="check"><input type="checkbox" id="sVib"' + (st.vibrate ? ' checked' : '') + '> Vibrate when a set ends</label>' +
-      '<label class="check"><input type="checkbox" id="sViz"' + (st.viz !== false ? ' checked' : '') + '> 3D exercise demos (downloads a small viewer the first time)</label>' +
       '<label class="field">Theme<select id="sTheme"><option value="auto"' + (st.theme === 'auto' ? ' selected' : '') + '>Match my phone</option><option value="light"' + (st.theme === 'light' ? ' selected' : '') + '>Light</option><option value="dark"' + (st.theme === 'dark' ? ' selected' : '') + '>Dark</option></select></label></section>';
     h += '<section class="card"><b>Safety</b><p class="small">This is general fitness guidance, not medical advice.</p><button class="ghost" id="sSafety">Read the safety guidance</button></section>';
     h += '<section class="card"><b>Install</b><p class="small">In Chrome on Android: tap ⋮ and choose <b>Add to Home screen</b> (or <b>Install app</b>). It then opens full screen and works with no internet.</p>' +
@@ -428,7 +420,6 @@
     $('#sBase').onchange = function () { st.basePain = this.value === '' ? null : Math.max(0, Math.min(10, +this.value)); save(); };
     $('#sBeep').onchange = function () { st.beep = this.checked; save(); };
     $('#sVib').onchange = function () { st.vibrate = this.checked; save(); };
-    $('#sViz').onchange = function () { st.viz = this.checked; save(); };
     $('#sTheme').onchange = function () { st.theme = this.value; save(); applyTheme(); };
     $('#sSafety').onclick = function () { openSafety(false); };
     var si = $('#sInstall'); if (si) si.onclick = function () { deferredInstall.prompt(); };
@@ -488,13 +479,6 @@
     var svg = document.createElementNS(NS, 'svg'); svg.setAttribute('class', 'fig');
     var stage = $('#rStage', r); stage.insertBefore(svg, stage.firstChild);
     RUN.fig = Figure.create(svg);
-    RUN.v3 = null; RUN.vis3 = null;
-    var any3 = false; for (var k in RUN.insts) { if (Viz3D.wants(RUN.insts[k].ex.id)) { any3 = true; break; } }
-    if (any3) Viz3D.open(stage, { compact: true, onError: lose3d }).then(function (r) {
-      if (!r) return;
-      if (!RUN || !r.host.isConnected) { r.ctl.destroy(); return; }
-      RUN.v3 = r; RUN.vis3 = null; RUN.key = ''; stage.classList.add('viz');
-    });
     $('#rClose').onclick = function () { pause(); };           // shows the pause screen, which holds End workout
     $('#rMute').onclick = function () { S.settings.voice = !S.settings.voice; C.save(); if (!S.settings.voice) V.cancel(); muteIcon(); };
     $('#rPause').onclick = function () { RUN.paused ? resume() : pause(); };
@@ -602,22 +586,14 @@
   function drawStage(st, inst, ex) {
     var mirror = (st.kind === 'work' || st.kind === 'rest') && st.why !== 'between' && (st.sideIdx || 0) === 1;
     var key = ex.id + (mirror ? 'm' : '');
-    var use3 = !!(RUN.v3 && Viz3D.has(ex.id));
-    if (RUN.v3 && use3 !== RUN.vis3) { RUN.vis3 = use3; RUN.v3.host.style.display = use3 ? '' : 'none'; RUN.fig.svg.style.display = use3 ? 'none' : ''; RUN.v3.ctl.setActive(use3); }
-    if (RUN.key !== key) { RUN.key = key; RUN.fig.setAnim(ex.anim, mirror); if (use3) { RUN.v3.ctl.setExercise(ex.id); RUN.v3.ctl.setMirror(mirror); } }
+    if (RUN.key !== key) { RUN.key = key; RUN.fig.setAnim(ex.anim, mirror); }
     var n = ex.anim.poses.length, opts;
     if (st.kind === 'work') {
       if (st.mode === 'reps') { var per = C.period(ex), u = (RUN.t % per) / per; if (ex.anim.reverseSide2 && st.sideIdx === 1) u = 1 - u; opts = { u: u }; }
       else if (ex.anim.dynamic) opts = { u: (RUN.t / C.period(ex)) % 1 };
       else { var f = Math.min(1, RUN.t / 1.2); opts = { pos: (0.5 - 0.5 * Math.cos(Math.PI * f)) * (n - 1), u: 0.25 }; }
     } else opts = { u: (RUN.clock / loopPeriod(ex)) % 1 };
-    if (use3) RUN.v3.ctl.drive(opts.pos != null ? (opts.pos / Math.max(1, n - 1)) * 0.5 : opts.u);   // 'hold' poses sit at the middle of the loop
-    else RUN.fig.show(opts);
-  }
-  function lose3d() {
-    if (!RUN || !RUN.v3) return;
-    try { RUN.v3.ctl.destroy(); } catch (e) {}
-    RUN.v3.host.remove(); RUN.v3 = null; RUN.fig.svg.style.display = ''; RUN.key = '';
+    RUN.fig.show(opts);
   }
 
   /* What the big text says during a transition. In the last 3 seconds ("lead") it turns into
@@ -649,7 +625,6 @@
     // muscle overlay: tint the working body part while a set runs (the muscle names show above the exercise name)
     var z = st.kind === 'work' ? zonesOf(ex) : [], cls = RUN.fig.svg.classList;
     ['legs', 'torso', 'arms'].forEach(function (k) { cls.toggle('hl-' + k, z.indexOf(k) >= 0); });
-    if (RUN.v3) RUN.v3.ctl.setDim(st.kind !== 'work');   // muscle glow only while a set is running
     $('#rCue').textContent = st.kind === 'work' ? (ex.cue || ex.breath || '') : st.why === 'start' ? 'Stop if you feel sharp pain, tingling or numbness.' : '';
     pauseBtn(false);
     RUN.cnt = 99;
@@ -696,7 +671,6 @@
 
   function teardownRunner() {
     if (RUN && RUN.stopAnim) RUN.stopAnim();
-    if (RUN && RUN.v3) { try { RUN.v3.ctl.destroy(); } catch (e) {} RUN.v3 = null; }
     V.cancel(); C.WakeLock.off();
     var r = $('#runner'); if (r) r.remove();
     document.body.classList.remove('running');
@@ -743,7 +717,6 @@
   /* ====================== boot ====================== */
   function boot() {
     C.load(); S = C.S; V.init(); applyTheme();
-    Viz3D.enabled = function () { return S.settings.viz !== false; };
     $$('#nav button').forEach(function (b) { b.onclick = function () { go(b.getAttribute('data-go')); }; });
     window.addEventListener('beforeinstallprompt', function (e) { e.preventDefault(); deferredInstall = e; if (screen === 'today' && !RUN) refresh(); });
     window.addEventListener('appinstalled', function () { deferredInstall = null; });

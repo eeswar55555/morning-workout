@@ -64,20 +64,10 @@ After editing, re-upload the folder (Netlify Drop again / `git push`). The phone
 | `index.html`, `app.css`, `figure.css` | Page and look |
 | `app.js` | Screens + the workout player (voice, timers, controls) |
 | `core.js` | Plan rotation, progress rules, voice, sound |
-| `figure.js`, `figure.css` | The 2D stick-figure demonstrations (fallback when 3D is off or unavailable) and thumbnails |
-| `viz-config.js` | **3D exercise config (edit me)**: per exercise animation, camera, primary/secondary muscles |
-| `viz-bridge.js`, `viz/`, `viz-src/` | The 3D avatar viewer (React + Three.js). `viz/` is the build output, `viz-src/` the source — see `viz-src/README.md` |
+| `figure.js`, `figure.css` | The moving stick-figure demonstrations and the muscle tint (`hl-legs/torso/arms`) |
 | `exercises.js` | **Exercise library (edit me)** |
 | `routine.js` | **Daily plan and levels (edit me)** |
 | `sw.js`, `manifest.webmanifest`, `icons/` | Offline + install support |
-
-## 3D demos
-Exercise demos are shown by a 3D avatar with a camera angle chosen per exercise, glowing muscles (red = main, amber =
-also working), a *Ghost form* overlay and four view modes (tap the eye button). One finger rotates, two fingers pinch-zoom.
-The viewer (~330 KB) downloads the first time a 3D demo opens; until then — and on phones without WebGL, or with
-**Settings → 3D exercise demos** off — the original 2D figure is shown. Rep counting stays in sync with the avatar.
-To add or change exercises edit `viz-config.js` (no build needed). Details, Mixamo workflow and rebuild steps:
-`viz-src/README.md`.
 
 ## Safety
 General fitness guidance, not medical advice. Stop if an exercise makes pain worse or sends pain, tingling or numbness into a leg.

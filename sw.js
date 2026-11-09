@@ -1,8 +1,8 @@
 /* Service worker: offline support without ever serving a mix of old and new files.
  * Online  -> always fetch the latest file (bypassing the browser's HTTP cache) and refresh the offline copy.
  * Offline / slow network (> 4 s) -> use the saved copy. */
-const CACHE = 'morning-workout-v5';
-const FILES = ['./', 'index.html', 'app.css', 'figure.css', 'figure.js', 'exercises.js', 'routine.js', 'core.js', 'app.js', 'viz-config.js', 'viz-bridge.js',
+const CACHE = 'morning-workout-v4';
+const FILES = ['./', 'index.html', 'app.css', 'figure.css', 'figure.js', 'exercises.js', 'routine.js', 'core.js', 'app.js',
   'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/icon-maskable-512.png'];
 
 self.addEventListener('install', e => {
