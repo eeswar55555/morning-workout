@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "plans": [
+    {
+      "id": "beginner_30_day_plan",
+      "name": "30 Day Beginner Plan",
+      "description": "A gentle month: full-body days, core days, a recovery day and a weekly rest day. Intervals join in week 3.",
+      "difficulty": "beginner",
+      "tags": ["full_body", "beginner", "no_equipment"],
+      "days": [
+        { "day": 1, "workoutId": "beginner_full_body_01" },
+        { "day": 2, "workoutId": "core_basics_01" },
+        { "day": 3, "workoutId": "recovery_day_01" },
+        { "day": 4, "workoutId": "beginner_full_body_02" },
+        { "day": 5, "workoutId": "core_basics_01" },
+        { "day": 6, "workoutId": "beginner_full_body_03" },
+        { "day": 7, "type": "rest", "note": "Rest day. Walk, stretch, sleep well." },
+        { "day": 8, "workoutId": "beginner_full_body_01" },
+        { "day": 9, "workoutId": "core_basics_01" },
+        { "day": 10, "workoutId": "recovery_day_01" },
+        { "day": 11, "workoutId": "beginner_full_body_02" },
+        { "day": 12, "workoutId": "core_basics_01" },
+        { "day": 13, "workoutId": "beginner_full_body_03" },
+        { "day": 14, "type": "rest", "note": "Rest day. Walk, stretch, sleep well." },
+        { "day": 15, "workoutId": "beginner_full_body_01" },
+        { "day": 16, "workoutId": "core_basics_01" },
+        { "day": 17, "workoutId": "recovery_day_01" },
+        { "day": 18, "workoutId": "beginner_full_body_02" },
+        { "day": 19, "workoutId": "hiit_cardio_01" },
+        { "day": 20, "workoutId": "beginner_full_body_03" },
+        { "day": 21, "type": "rest", "note": "Rest day. Walk, stretch, sleep well." },
+        { "day": 22, "workoutId": "beginner_full_body_01" },
+        { "day": 23, "workoutId": "core_basics_01" },
+        { "day": 24, "workoutId": "recovery_day_01" },
+        { "day": 25, "workoutId": "beginner_full_body_02" },
+        { "day": 26, "workoutId": "hiit_cardio_01" },
+        { "day": 27, "workoutId": "beginner_full_body_03" },
+        { "day": 28, "type": "rest", "note": "Rest day. Walk, stretch, sleep well." },
+        { "day": 29, "workoutId": "beginner_full_body_01" },
+        { "day": 30, "workoutId": "beginner_full_body_03" }
+      ]
+    }
+  ]
+}

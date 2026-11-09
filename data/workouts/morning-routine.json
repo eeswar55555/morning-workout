@@ -1,0 +1,407 @@
+{
+  "schemaVersion": 1,
+  "workouts": [
+    {
+      "id": "warmup_a",
+      "name": "Warm-up A",
+      "description": "Cat-cow, arm circles and marching to get the body moving.",
+      "category": "warmup",
+      "difficulty": "beginner",
+      "restSeconds": 5,
+      "exercises": [
+        { "exerciseId": "cat_cow", "repetitions": 8 },
+        { "exerciseId": "arm_circles", "repetitions": 10 },
+        { "exerciseId": "march_in_place", "durationSeconds": 60 }
+      ]
+    },
+    {
+      "id": "warmup_b",
+      "name": "Warm-up B",
+      "description": "Cat-cow, overhead reaches and marching.",
+      "category": "warmup",
+      "difficulty": "beginner",
+      "restSeconds": 5,
+      "exercises": [
+        { "exerciseId": "cat_cow", "repetitions": 8 },
+        { "exerciseId": "overhead_reach", "repetitions": 8 },
+        { "exerciseId": "march_in_place", "durationSeconds": 60 }
+      ]
+    },
+    {
+      "id": "strength_1_round_a",
+      "name": "Strength circuit A",
+      "description": "Stage 1 · get started. One round of six full-body moves.",
+      "category": "strength",
+      "difficulty": "beginner",
+      "rounds": 1,
+      "restSeconds": 15,
+      "exercises": [
+        { "exerciseId": "sit_to_stand", "repetitions": 8 },
+        { "exerciseId": "incline_push_up", "repetitions": 6 },
+        { "exerciseId": "glute_bridge", "repetitions": 10 },
+        { "exerciseId": "backpack_row", "repetitions": 8 },
+        { "exerciseId": "reverse_lunge", "repetitions": 6 },
+        { "exerciseId": "calf_raise", "repetitions": 10 }
+      ]
+    },
+    {
+      "id": "strength_1_round_b",
+      "name": "Strength circuit B",
+      "description": "Stage 1 · get started. One round of six full-body moves.",
+      "category": "strength",
+      "difficulty": "beginner",
+      "rounds": 1,
+      "restSeconds": 15,
+      "exercises": [
+        { "exerciseId": "wall_sit", "durationSeconds": 20, "sets": 2 },
+        { "exerciseId": "wall_push_up", "repetitions": 8 },
+        { "exerciseId": "donkey_kick", "repetitions": 8 },
+        { "exerciseId": "backpack_row", "repetitions": 8 },
+        { "exerciseId": "split_squat", "repetitions": 6 },
+        { "exerciseId": "calf_raise", "repetitions": 10 }
+      ]
+    },
+    {
+      "id": "strength_1_round_c",
+      "name": "Strength circuit C",
+      "description": "Stage 1 · get started. One round of six full-body moves.",
+      "category": "strength",
+      "difficulty": "beginner",
+      "rounds": 1,
+      "restSeconds": 15,
+      "exercises": [
+        { "exerciseId": "step_up", "repetitions": 6 },
+        { "exerciseId": "incline_push_up", "repetitions": 6 },
+        { "exerciseId": "donkey_kick", "repetitions": 8 },
+        { "exerciseId": "backpack_row", "repetitions": 8 },
+        { "exerciseId": "reverse_lunge", "repetitions": 6 },
+        { "exerciseId": "calf_raise", "repetitions": 10 }
+      ]
+    },
+    {
+      "id": "strength_2_rounds_a",
+      "name": "Strength circuit A",
+      "description": "Stage 2 · second round. 2 rounds of six full-body moves.",
+      "category": "strength",
+      "difficulty": "beginner",
+      "rounds": 2,
+      "restSeconds": 15,
+      "exercises": [
+        { "exerciseId": "sit_to_stand", "repetitions": 8 },
+        { "exerciseId": "incline_push_up", "repetitions": 6 },
+        { "exerciseId": "glute_bridge", "repetitions": 10 },
+        { "exerciseId": "backpack_row", "repetitions": 8 },
+        { "exerciseId": "reverse_lunge", "repetitions": 6 },
+        { "exerciseId": "calf_raise", "repetitions": 10 }
+      ]
+    },
+    {
+      "id": "strength_2_rounds_b",
+      "name": "Strength circuit B",
+      "description": "Stage 2 · second round. 2 rounds of six full-body moves.",
+      "category": "strength",
+      "difficulty": "beginner",
+      "rounds": 2,
+      "restSeconds": 15,
+      "exercises": [
+        { "exerciseId": "wall_sit", "durationSeconds": 20, "sets": 2 },
+        { "exerciseId": "wall_push_up", "repetitions": 8 },
+        { "exerciseId": "donkey_kick", "repetitions": 8 },
+        { "exerciseId": "backpack_row", "repetitions": 8 },
+        { "exerciseId": "split_squat", "repetitions": 6 },
+        { "exerciseId": "calf_raise", "repetitions": 10 }
+      ]
+    },
+    {
+      "id": "strength_2_rounds_c",
+      "name": "Strength circuit C",
+      "description": "Stage 2 · second round. 2 rounds of six full-body moves.",
+      "category": "strength",
+      "difficulty": "beginner",
+      "rounds": 2,
+      "restSeconds": 15,
+      "exercises": [
+        { "exerciseId": "step_up", "repetitions": 6 },
+        { "exerciseId": "incline_push_up", "repetitions": 6 },
+        { "exerciseId": "donkey_kick", "repetitions": 8 },
+        { "exerciseId": "backpack_row", "repetitions": 8 },
+        { "exerciseId": "reverse_lunge", "repetitions": 6 },
+        { "exerciseId": "calf_raise", "repetitions": 10 }
+      ]
+    },
+    {
+      "id": "strength_more_reps_a",
+      "name": "Strength circuit A",
+      "description": "Stage 3 · more reps. 2 rounds of six full-body moves.",
+      "category": "strength",
+      "difficulty": "beginner",
+      "rounds": 2,
+      "restSeconds": 15,
+      "exercises": [
+        { "exerciseId": "sit_to_stand", "repetitions": 10 },
+        { "exerciseId": "incline_push_up", "repetitions": 8 },
+        { "exerciseId": "glute_bridge", "repetitions": 12 },
+        { "exerciseId": "backpack_row", "repetitions": 10 },
+        { "exerciseId": "reverse_lunge", "repetitions": 8 },
+        { "exerciseId": "calf_raise", "repetitions": 12 }
+      ]
+    },
+    {
+      "id": "strength_more_reps_b",
+      "name": "Strength circuit B",
+      "description": "Stage 3 · more reps. 2 rounds of six full-body moves.",
+      "category": "strength",
+      "difficulty": "beginner",
+      "rounds": 2,
+      "restSeconds": 15,
+      "exercises": [
+        { "exerciseId": "wall_sit", "durationSeconds": 20, "sets": 2 },
+        { "exerciseId": "wall_push_up", "repetitions": 10 },
+        { "exerciseId": "donkey_kick", "repetitions": 10 },
+        { "exerciseId": "backpack_row", "repetitions": 10 },
+        { "exerciseId": "split_squat", "repetitions": 8 },
+        { "exerciseId": "calf_raise", "repetitions": 12 }
+      ]
+    },
+    {
+      "id": "strength_more_reps_c",
+      "name": "Strength circuit C",
+      "description": "Stage 3 · more reps. 2 rounds of six full-body moves.",
+      "category": "strength",
+      "difficulty": "beginner",
+      "rounds": 2,
+      "restSeconds": 15,
+      "exercises": [
+        { "exerciseId": "step_up", "repetitions": 8 },
+        { "exerciseId": "incline_push_up", "repetitions": 8 },
+        { "exerciseId": "donkey_kick", "repetitions": 10 },
+        { "exerciseId": "backpack_row", "repetitions": 10 },
+        { "exerciseId": "reverse_lunge", "repetitions": 8 },
+        { "exerciseId": "calf_raise", "repetitions": 12 }
+      ]
+    },
+    {
+      "id": "strength_harder_a",
+      "name": "Strength circuit A",
+      "description": "Stage 4 · harder versions. 2 rounds of six full-body moves.",
+      "category": "strength",
+      "difficulty": "beginner",
+      "rounds": 2,
+      "restSeconds": 15,
+      "exercises": [
+        { "exerciseId": "sit_to_stand", "repetitions": 10, "note": "Use a lower seat." },
+        { "exerciseId": "incline_push_up", "repetitions": 8, "note": "Use a lower surface, such as a sturdy chair seat." },
+        { "exerciseId": "glute_bridge", "repetitions": 12, "note": "Hold the top position for three seconds." },
+        { "exerciseId": "backpack_row", "repetitions": 10 },
+        { "exerciseId": "reverse_lunge", "repetitions": 8, "note": "Do it without the wall for support." },
+        { "exerciseId": "calf_raise", "repetitions": 12 }
+      ]
+    },
+    {
+      "id": "strength_harder_b",
+      "name": "Strength circuit B",
+      "description": "Stage 4 · harder versions. 2 rounds of six full-body moves.",
+      "category": "strength",
+      "difficulty": "beginner",
+      "rounds": 2,
+      "restSeconds": 15,
+      "exercises": [
+        { "exerciseId": "wall_sit", "durationSeconds": 20, "sets": 2 },
+        { "exerciseId": "wall_push_up", "repetitions": 10 },
+        { "exerciseId": "donkey_kick", "repetitions": 10 },
+        { "exerciseId": "backpack_row", "repetitions": 10 },
+        { "exerciseId": "split_squat", "repetitions": 8 },
+        { "exerciseId": "calf_raise", "repetitions": 12 }
+      ]
+    },
+    {
+      "id": "strength_harder_c",
+      "name": "Strength circuit C",
+      "description": "Stage 4 · harder versions. 2 rounds of six full-body moves.",
+      "category": "strength",
+      "difficulty": "beginner",
+      "rounds": 2,
+      "restSeconds": 15,
+      "exercises": [
+        { "exerciseId": "step_up", "repetitions": 8 },
+        { "exerciseId": "incline_push_up", "repetitions": 8, "note": "Use a lower surface, such as a sturdy chair seat." },
+        { "exerciseId": "donkey_kick", "repetitions": 10 },
+        { "exerciseId": "backpack_row", "repetitions": 10 },
+        { "exerciseId": "reverse_lunge", "repetitions": 8, "note": "Do it without the wall for support." },
+        { "exerciseId": "calf_raise", "repetitions": 12 }
+      ]
+    },
+    {
+      "id": "strength_slow_a",
+      "name": "Strength circuit A",
+      "description": "Stage 5 · slow and controlled. 2 rounds of six full-body moves.",
+      "category": "strength",
+      "difficulty": "beginner",
+      "rounds": 2,
+      "restSeconds": 15,
+      "exercises": [
+        { "exerciseId": "sit_to_stand", "repetitions": 10, "note": "Use a lower seat." },
+        { "exerciseId": "incline_push_up", "repetitions": 8, "note": "Lower for three seconds." },
+        { "exerciseId": "glute_bridge", "repetitions": 12, "note": "Hold the top position for three seconds." },
+        { "exerciseId": "backpack_row", "repetitions": 10, "note": "Lower the bag for three seconds." },
+        { "exerciseId": "reverse_lunge", "repetitions": 8, "note": "Do it without the wall for support." },
+        { "exerciseId": "calf_raise", "repetitions": 12, "note": "Lower your heels for three seconds." }
+      ]
+    },
+    {
+      "id": "strength_slow_b",
+      "name": "Strength circuit B",
+      "description": "Stage 5 · slow and controlled. 2 rounds of six full-body moves.",
+      "category": "strength",
+      "difficulty": "beginner",
+      "rounds": 2,
+      "restSeconds": 15,
+      "exercises": [
+        { "exerciseId": "wall_sit", "durationSeconds": 20, "sets": 2, "note": "Slide a little lower." },
+        { "exerciseId": "wall_push_up", "repetitions": 10 },
+        { "exerciseId": "donkey_kick", "repetitions": 10 },
+        { "exerciseId": "backpack_row", "repetitions": 10, "note": "Lower the bag for three seconds." },
+        { "exerciseId": "split_squat", "repetitions": 8 },
+        { "exerciseId": "calf_raise", "repetitions": 12, "note": "Lower your heels for three seconds." }
+      ]
+    },
+    {
+      "id": "strength_slow_c",
+      "name": "Strength circuit C",
+      "description": "Stage 5 · slow and controlled. 2 rounds of six full-body moves.",
+      "category": "strength",
+      "difficulty": "beginner",
+      "rounds": 2,
+      "restSeconds": 15,
+      "exercises": [
+        { "exerciseId": "step_up", "repetitions": 8 },
+        { "exerciseId": "incline_push_up", "repetitions": 8, "note": "Lower for three seconds." },
+        { "exerciseId": "donkey_kick", "repetitions": 10 },
+        { "exerciseId": "backpack_row", "repetitions": 10, "note": "Lower the bag for three seconds." },
+        { "exerciseId": "reverse_lunge", "repetitions": 8, "note": "Do it without the wall for support." },
+        { "exerciseId": "calf_raise", "repetitions": 12, "note": "Lower your heels for three seconds." }
+      ]
+    },
+    {
+      "id": "strength_loaded_a",
+      "name": "Strength circuit A",
+      "description": "Stage 6 · add load. 2 rounds of six full-body moves.",
+      "category": "strength",
+      "difficulty": "beginner",
+      "rounds": 2,
+      "restSeconds": 15,
+      "exercises": [
+        { "exerciseId": "sit_to_stand", "repetitions": 10, "note": "Hold your backpack against your chest." },
+        { "exerciseId": "incline_push_up", "repetitions": 8, "note": "Lower for three seconds." },
+        { "exerciseId": "glute_bridge", "repetitions": 12, "note": "Hold the top position for three seconds." },
+        { "exerciseId": "backpack_row", "repetitions": 10, "note": "Put more weight in the bag." },
+        { "exerciseId": "reverse_lunge", "repetitions": 8, "note": "Do it without the wall for support." },
+        { "exerciseId": "calf_raise", "repetitions": 12, "note": "Lower your heels for three seconds." }
+      ]
+    },
+    {
+      "id": "strength_loaded_b",
+      "name": "Strength circuit B",
+      "description": "Stage 6 · add load. 2 rounds of six full-body moves.",
+      "category": "strength",
+      "difficulty": "beginner",
+      "rounds": 2,
+      "restSeconds": 15,
+      "exercises": [
+        { "exerciseId": "wall_sit", "durationSeconds": 20, "sets": 2, "note": "Slide a little lower." },
+        { "exerciseId": "wall_push_up", "repetitions": 10 },
+        { "exerciseId": "donkey_kick", "repetitions": 10 },
+        { "exerciseId": "backpack_row", "repetitions": 10, "note": "Put more weight in the bag." },
+        { "exerciseId": "split_squat", "repetitions": 8 },
+        { "exerciseId": "calf_raise", "repetitions": 12, "note": "Lower your heels for three seconds." }
+      ]
+    },
+    {
+      "id": "strength_loaded_c",
+      "name": "Strength circuit C",
+      "description": "Stage 6 · add load. 2 rounds of six full-body moves.",
+      "category": "strength",
+      "difficulty": "beginner",
+      "rounds": 2,
+      "restSeconds": 15,
+      "exercises": [
+        { "exerciseId": "step_up", "repetitions": 8 },
+        { "exerciseId": "incline_push_up", "repetitions": 8, "note": "Lower for three seconds." },
+        { "exerciseId": "donkey_kick", "repetitions": 10 },
+        { "exerciseId": "backpack_row", "repetitions": 10, "note": "Put more weight in the bag." },
+        { "exerciseId": "reverse_lunge", "repetitions": 8, "note": "Do it without the wall for support." },
+        { "exerciseId": "calf_raise", "repetitions": 12, "note": "Lower your heels for three seconds." }
+      ]
+    },
+    {
+      "id": "stability_3_holds",
+      "name": "Back stability",
+      "description": "The McGill \"Big 3\": 3 holds of 10 seconds each.",
+      "category": "core",
+      "difficulty": "beginner",
+      "restSeconds": 5,
+      "tags": ["mcgill_big_3", "back_friendly"],
+      "exercises": [
+        { "exerciseId": "curl_up", "durationSeconds": 10, "sets": 3 },
+        { "exerciseId": "side_plank", "durationSeconds": 10, "sets": 3 },
+        { "exerciseId": "bird_dog", "durationSeconds": 10, "sets": 3 }
+      ]
+    },
+    {
+      "id": "stability_4_holds",
+      "name": "Back stability",
+      "description": "The McGill \"Big 3\": 4 holds of 10 seconds each.",
+      "category": "core",
+      "difficulty": "beginner",
+      "restSeconds": 5,
+      "tags": ["mcgill_big_3", "back_friendly"],
+      "exercises": [
+        { "exerciseId": "curl_up", "durationSeconds": 10, "sets": 4 },
+        { "exerciseId": "side_plank", "durationSeconds": 10, "sets": 4 },
+        { "exerciseId": "bird_dog", "durationSeconds": 10, "sets": 4 }
+      ]
+    },
+    {
+      "id": "stability_5_holds",
+      "name": "Back stability",
+      "description": "The McGill \"Big 3\": 5 holds of 10 seconds each.",
+      "category": "core",
+      "difficulty": "beginner",
+      "restSeconds": 5,
+      "tags": ["mcgill_big_3", "back_friendly"],
+      "exercises": [
+        { "exerciseId": "curl_up", "durationSeconds": 10, "sets": 5 },
+        { "exerciseId": "side_plank", "durationSeconds": 10, "sets": 5 },
+        { "exerciseId": "bird_dog", "durationSeconds": 10, "sets": 5 }
+      ]
+    },
+    {
+      "id": "cooldown_a",
+      "name": "Cool-down A",
+      "description": "Gentle stretches for the back, hips and chest.",
+      "category": "cooldown",
+      "difficulty": "beginner",
+      "restSeconds": 5,
+      "exercises": [
+        { "exerciseId": "knee_rolls", "repetitions": 10 },
+        { "exerciseId": "hip_flexor_stretch", "durationSeconds": 30 },
+        { "exerciseId": "chest_stretch", "durationSeconds": 30 },
+        { "exerciseId": "childs_pose", "durationSeconds": 30 }
+      ]
+    },
+    {
+      "id": "cooldown_b",
+      "name": "Cool-down B",
+      "description": "Gentle stretches for the back, hips and calves.",
+      "category": "cooldown",
+      "difficulty": "beginner",
+      "restSeconds": 5,
+      "exercises": [
+        { "exerciseId": "knee_rolls", "repetitions": 10 },
+        { "exerciseId": "hip_flexor_stretch", "durationSeconds": 30 },
+        { "exerciseId": "calf_stretch", "durationSeconds": 30 },
+        { "exerciseId": "childs_pose", "durationSeconds": 30 }
+      ]
+    }
+  ]
+}

@@ -38,6 +38,7 @@ svg.fig, .thumb svg { shape-rendering: geometricPrecision; }
 .mouth { fill: none; stroke: var(--eye); stroke-width: 1; stroke-linecap: round; opacity: .55; }
 .shd { fill: #0b1a2b; opacity: .12; } .hil { fill: #fff; opacity: .2; }
 .shadow { fill: var(--shadow); }
+.lip { fill: #d98a84; }
 .floor { fill: var(--floor); } .floorEdge { fill: var(--floor-edge); }
 .bag { fill: var(--bag); } .bag2 { fill: var(--bag2); }
 .plate { fill: var(--plate); } .plate2 { fill: var(--plate2); }
@@ -59,7 +60,7 @@ svg.fig, .thumb svg { shape-rendering: geometricPrecision; }
 .pr-mat { fill: var(--mat); opacity: .6; }
 .pr-label { fill: var(--label); font: 600 8px system-ui, sans-serif; }
 
-/* classes used by custom drawings in exercises.js (e.g. the top-down knee rolls) */
+/* classes used by custom drawings in animations.js (e.g. the top-down knee rolls) */
 .limb { fill: none; stroke-linecap: round; stroke-linejoin: round; }
 .limb.shirt { stroke: var(--tee); } .limb.shirt.far { stroke: var(--tee-f); }
 .limb.pants { stroke: var(--shorts); } .limb.pants.far { stroke: var(--shorts-f); }

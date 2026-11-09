@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "defaultPlanId": "morning_12_week",
+  "files": [
+    "exercises/core.json",
+    "workouts/morning-routine.json",
+    "workouts/starter.json",
+    "plans/morning-12-week.json",
+    "plans/beginner-30-day.json",
+    "exercises/face-and-neck.json",
+    "workouts/face-and-neck.json",
+    "plans/face-and-posture.json"
+  ]
+}

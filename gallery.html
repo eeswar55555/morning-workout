@@ -20,35 +20,37 @@
 </head>
 <body>
 <h1>Exercise illustrations</h1>
-<p class="sub">Every exercise of the app plus the extra ones in illus-config.js. Add <code>?t=0.5</code> to freeze at a loop position (0 = start, 0.5 = end), <code>&amp;f=1</code> for the female style.</p>
+<p class="sub">Every exercise in the library (data/exercises). Pictures live in animations.js. Add <code>?t=0.5</code> to freeze at a loop position (0 = start, 0.5 = end), <code>&amp;f=1</code> for the female style.</p>
 <div class="grid" id="grid"></div>
 <script src="figure.js"></script>
-<script src="exercises.js"></script>
+<script src="animations.js"></script>
 <script src="illus.js"></script>
-<script src="illus-config.js"></script>
+<script src="face.js"></script>
+<script src="catalog.js"></script>
 <script>
-  var q = new URLSearchParams(location.search), freeze = q.has('t') ? parseFloat(q.get('t')) : null;
+  var q = new URLSearchParams(location.search), freeze = q.has('t') ? parseFloat(q.get('t')) : null, figs = [];
   if (q.get('f') === '1') Illus.female = true;
-  var items = ILLUS.extra.concat(EXERCISES.filter(function (e) { return !ILLUS.extra.some(function (x) { return x.id === e.id; }); }));
-  var figs = [];
-  items.forEach(function (ex) {
-    var c = document.createElement('div'); c.className = 'card';
-    var d = document.createElement('div'); d.className = 'demo'; c.appendChild(d);
-    var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); svg.setAttribute('class', 'fig'); d.appendChild(svg);
-    var h = document.createElement('h2'); h.textContent = ex.name; var t = document.createElement('span'); t.className = 'tag'; t.textContent = ((ILLUS.exercises[ex.id] || ex).view || 'side'); h.appendChild(t); c.appendChild(h);
-    var s = document.createElement('small'); s.textContent = ex.area || ((ex.primary || []).join(', ')); c.appendChild(s);
-    document.getElementById('grid').appendChild(c);
-    var fig = Figure.create(svg); fig.setAnim(ex.anim, false); figs.push({ fig: fig, ex: ex });
-  });
-  var t0 = performance.now();
-  function frame(now) {
-    figs.forEach(function (f) {
-      var per = f.ex.tempo || 4, u = freeze != null ? freeze : (((now - t0) / 1000) / per) % 1;
-      f.fig.show({ u: u });
+  Catalog.load().then(function () {
+    Catalog.exercises.forEach(function (ex) {
+      var c = document.createElement('div'); c.className = 'card';
+      var d = document.createElement('div'); d.className = 'demo'; c.appendChild(d);
+      var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); svg.setAttribute('class', 'fig'); d.appendChild(svg);
+      var h = document.createElement('h2'); h.textContent = ex.name;
+      var t = document.createElement('span'); t.className = 'tag'; t.textContent = ex.anim.placeholder ? 'no picture yet' : ex.anim.face ? 'face' : ((ex.anim._cfg || {}).view || 'side'); h.appendChild(t); c.appendChild(h);
+      var s = document.createElement('small'); s.textContent = ex.id + ' · ' + ex.area; c.appendChild(s);
+      document.getElementById('grid').appendChild(c);
+      var fig = Figure.create(svg); fig.setAnim(ex.anim, false); figs.push({ fig: fig, ex: ex });
     });
-    if (freeze == null) requestAnimationFrame(frame);
-  }
-  requestAnimationFrame(frame);
+    var t0 = performance.now();
+    function frame(now) {
+      figs.forEach(function (f) {
+        var per = f.ex.tempoSeconds || 4, u = freeze != null ? freeze : (((now - t0) / 1000) / per) % 1;
+        f.fig.show({ u: u });
+      });
+      if (freeze == null) requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  }, function (e) { document.getElementById('grid').textContent = 'Could not load data: ' + e.message + ' (serve this folder over http)'; });
 </script>
 </body>
 </html>

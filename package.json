@@ -1,0 +1,8 @@
+{
+  "name": "morning-workout",
+  "private": true,
+  "description": "Morning Workout PWA. No build step; npm is only used to run the content validator.",
+  "scripts": {
+    "validate": "node scripts/validate-data.js"
+  }
+}

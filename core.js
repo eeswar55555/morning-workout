@@ -1,12 +1,19 @@
-/* core.js — data, planning, progress rules, voice and sound. No screens in here. */
+/* core.js — saved state, today's session, progress rules, voice and sound. No screens in here.
+ *
+ * What to do today comes from the content in data/ (see catalog.js):  plan day -> workouts -> exercise entries -> exercises.
+ * This file only decides WHICH plan day it is, turns the workouts of that day into the steps the player runs, and keeps
+ * the user's own state (settings, history, pain log). It contains no week- or level-specific rules.
+ */
 (function (root) {
   'use strict';
-  var KEY = 'morningfit.v1';
+  var KEY = 'morningfit.v1';          // the storage key stays; the data inside is versioned by `v`
+  var VERSION = 2;
+  var WEEK = 7;                        // the review window for "ready for the next week?" (calendar days, not plan content)
 
   var DEFAULTS = {
-    v: 1, start: null, level: 1, ack: false,
-    settings: { voice: true, rate: 1, voiceName: '', beep: true, vibrate: true, detail: 'auto', pace: 1, restStrength: 0, lightDay: 0, theme: 'auto', basePain: null },
-    disabled: {}, custom: [], routine: null, dose: {}, history: [], pain: {}, plans: {}, counts: {}
+    v: VERSION, start: null, planId: null, ack: false, reviewed: '',
+    settings: { voice: true, rate: 1, voiceName: '', beep: true, vibrate: true, detail: 'auto', pace: 1, restStrength: 0, theme: 'auto', basePain: null },
+    disabled: {}, dose: {}, history: [], pain: {}, counts: {}
   };
   var clone = function (o) { return JSON.parse(JSON.stringify(o)); };
   var S;
@@ -31,131 +38,121 @@
       Object.assign(S.settings, raw.settings || {});
     }
     if (!S.start) S.start = dateKey();
-    var cutoff = addDays(dateKey(), -30);
-    Object.keys(S.plans || {}).forEach(function (k) { if (k < cutoff) delete S.plans[k]; });
+    migrate(S);
     return S;
+  }
+  /* v1 -> v2: exercise ids became snake_case, the six "levels" became days of a plan, and the in-app plan editor,
+   * custom exercises and per-day swaps were dropped (content now lives in data/*.json). */
+  var OLD_ID = { 'incline-pushup': 'incline_push_up', 'wall-pushup': 'wall_push_up', 'march': 'march_in_place' };
+  function newId(id) { return OLD_ID[id] || String(id).replace(/-/g, '_'); }
+  function renameKeys(o) { var r = {}; Object.keys(o || {}).forEach(function (k) { r[newId(k)] = o[k]; }); return r; }
+  function migrate(s) {
+    if ((s.v || 1) >= VERSION) return s;
+    s.disabled = renameKeys(s.disabled); s.counts = renameKeys(s.counts); s.dose = renameKeys(s.dose);
+    (s.history || []).forEach(function (h) { h.done = (h.done || []).map(newId); h.skipped = (h.skipped || []).map(newId); });
+    if (s.level > 1) s.start = addDays(dateKey(), -(s.level - 1) * 14);       // old level N = day 1 of the matching two weeks
+    ['level', 'routine', 'custom', 'plans'].forEach(function (k) { delete s[k]; });
+    if (s.settings) delete s.settings.lightDay;
+    s.reviewed = s.reviewed || ''; s.planId = s.planId || null;
+    s.v = VERSION;
+    return s;
   }
   var saveFailed = false;
   function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); saveFailed = false; } catch (e) { saveFailed = true; } }
 
-  /* ---------- exercise library ---------- */
-  var _map = null;
-  function resolveCustom(c) {
-    var src = root.EXERCISES.filter(function (e) { return e.id === c.looks; })[0] || root.EXERCISES[0];
-    return Object.assign({}, c, { anim: src.anim, isCustom: true, area: c.area || 'My exercise', breath: c.breath || 'Breathe steadily.', tempo: c.tempo || 4 });
-  }
-  function lib() { return root.EXERCISES.concat((S.custom || []).map(resolveCustom)); }
-  function invalidate() { _map = null; }
-  function exMap() { if (!_map) { _map = {}; lib().forEach(function (e) { _map[e.id] = e; }); } return _map; }
-  function getEx(id) { return exMap()[id]; }
-  function routine() { return S.routine || root.ROUTINE; }
-  function level() {
-    var L = routine().levels || root.ROUTINE.levels;
-    return L.filter(function (l) { return l.n === S.level; })[0] || L[0];
-  }
-  function maxLevel() { var L = routine().levels; return L[L.length - 1].n; }
+  /* ---------- content (exercise library, workouts, plans) ---------- */
+  function lib() { return root.Catalog.exercises; }
+  function getEx(id) { return root.Catalog.exercise(id); }
+  function plan() { return root.Catalog.plan(S.planId) || root.Catalog.plan(root.Catalog.defaultPlanId); }
 
-  function sidesOf(ex) { return ex.sides === true ? ['right', 'left'] : (Array.isArray(ex.sides) ? ex.sides : null); }
-  function dose(ex) {
-    var o = S.dose[ex.id] || {}, L = level();
-    var d = { type: ex.type, sides: sidesOf(ex) };
-    if (ex.type === 'reps') d.reps = (o.n != null ? o.n : ex.reps || 8) + (ex.scale === false ? 0 : (L.repsBonus || 0));
-    else {
-      d.secs = o.n != null ? o.n : (ex.secs || 20);
-      d.holds = ex.type === 'hold' ? (ex.holds === 'level' ? L.holds : (ex.holds || 1)) : 1;
-    }
+  function sidesOf(ex) { return ex.sides && ex.sides.length ? ex.sides : null; }
+
+  /* How much of an exercise to do: the workout entry says (repetitions / durationSeconds / sets); a number the user typed
+   * in the exercise sheet replaces the plan's amount for that exercise. */
+  var DEFAULT_REPS = 10, DEFAULT_SECS = 30;
+  function dose(ex, entry) {
+    var o = S.dose[ex.id] || {}, e = entry || {};
+    var d = { type: ex.type, sides: sidesOf(ex), sets: Math.max(1, e.sets || 1) };
+    if (ex.type === 'reps') d.reps = o.n != null ? o.n : (e.repetitions || DEFAULT_REPS);
+    else d.secs = o.n != null ? o.n : (e.durationSeconds || DEFAULT_SECS);
     return d;
   }
-  function doseText(ex, d) {
-    d = d || dose(ex);
-    var sd = d.sides ? (ex.sides === true ? ' each side' : ' each way') : '';
-    if (d.type === 'reps') return d.reps + ' reps' + sd;
-    if (d.type === 'hold') return d.holds + ' × ' + d.secs + ' s hold' + sd;
-    return d.secs + ' s' + sd;
+  function planAmount(ex, entry) { var e = entry || {}; return ex.type === 'reps' ? (e.repetitions || DEFAULT_REPS) : (e.durationSeconds || DEFAULT_SECS); }
+  function eachWord(ex) { return root.Catalog.leftRight(ex) ? 'each side' : 'each way'; }
+  function doseText(ex, entry) {
+    var d = dose(ex, entry), sd = d.sides ? ' ' + eachWord(ex) : '', sets = d.sets > 1 ? d.sets + ' × ' : '';
+    if (d.type === 'reps') return sets + d.reps + ' reps' + sd;
+    if (d.type === 'hold') return sets + d.secs + ' s hold' + sd;
+    return sets + d.secs + ' s' + sd;
   }
-  function spokenDose(ex, d) {
-    d = d || dose(ex);
-    var sd = d.sides ? (ex.sides === true ? ' on each side' : ' in each direction') : '';
-    if (d.type === 'reps') return d.reps + ' reps' + sd;
-    if (d.type === 'hold') return 'Hold for ' + d.secs + ' seconds, ' + d.holds + ' times' + sd;
-    return d.secs + ' seconds' + sd;
+  function spokenDose(ex, entry) {
+    var d = dose(ex, entry), sd = d.sides ? (root.Catalog.leftRight(ex) ? ' on each side' : ' in each direction') : '';
+    var times = d.sets > 1 ? ', ' + d.sets + ' times' : '';
+    if (d.type === 'reps') return d.reps + ' reps' + times + sd;
+    if (d.type === 'hold') return 'Hold for ' + d.secs + ' seconds' + times + sd;
+    return d.secs + ' seconds' + times + sd;
   }
-  function levelNote(ex) {
-    var n = ex.levelNotes; if (!n) return '';
-    var best = 0;
-    for (var k in n) if (+k <= S.level && +k > best) best = +k;
-    return best ? n[best] : '';
-  }
-  function period(ex) { return Math.max(1, (ex.tempo || 4) * (S.settings.pace || 1)); }
+  function period(ex) { return Math.max(1, (ex.tempoSeconds || 4) * (S.settings.pace || 1)); }
 
-  /* ---------- the daily plan (rotates so it keeps changing) ---------- */
-  function isLightDay(key) { return parseKey(key).getDay() === +S.settings.lightDay; }
-  function mod(a, n) { return ((a % n) + n) % n; }
+  /* ---------- which day of the plan is it? ----------
+   * Day 1 is the start date; the plan then advances one day per calendar day. Past the last day it starts again. */
+  function planPosition(key) {
+    var p = plan(), n = p.days.length, idx = Math.max(0, daysBetween(S.start, key));
+    return { plan: p, idx: idx, day: p.days[idx % n], total: n, looped: idx >= n };
+  }
+  function shiftPlan(days) {                         // +7 = repeat the last week; never before day 1
+    S.start = addDays(S.start, days);
+    if (daysBetween(S.start, dateKey()) < 0) S.start = dateKey();
+    S.reviewed = dateKey(); save();
+  }
+  function setPlanDay(n) { S.start = addDays(dateKey(), -(Math.max(1, n) - 1)); save(); }
+  function setPlan(id) { S.planId = id; S.start = dateKey(); S.reviewed = ''; save(); }
 
+  /* today's session: the workouts of the plan day, minus exercises the user switched off */
   function buildPlan(key) {
-    var R = routine();
-    var ps = S.plans[key] || (S.plans[key] = { shuffle: 0, swaps: {}, full: false });
-    var light = isLightDay(key) && !ps.full;
-    var dayNum = daysBetween(S.start, key), used = {}, idx = 0, blocks = [];
-    R.blocks.forEach(function (b) {
-      if (light && R.lightDayBlocks.indexOf(b.id) < 0) return;
-      var items = [];
-      b.items.forEach(function (it, i) {
-        idx++;
-        var opts = it.pick.filter(function (id) { return exMap()[id] && !S.disabled[id]; });
-        if (!opts.length) return;
-        var k = b.id + ':' + i, id = ps.swaps[k];
-        if (!id || opts.indexOf(id) < 0) {
-          id = null;
-          var start = mod(dayNum + ps.shuffle + idx, opts.length);
-          for (var t = 0; t < opts.length; t++) { var c = opts[(start + t) % opts.length]; if (!used[c]) { id = c; break; } }
-          if (!id) id = opts[start];
-        }
-        used[id] = 1;
-        items.push({ key: k, id: id, options: opts });
+    var pos = planPosition(key), day = pos.day, blocks = [];
+    if (!day.rest) day.workoutIds.forEach(function (wid, wi) {
+      var w = root.Catalog.workout(wid), items = [];
+      if (!w) return;
+      w.exercises.forEach(function (en, i) {
+        var ex = getEx(en.exerciseId);
+        if (ex && !S.disabled[ex.id]) items.push({ key: wi + ':' + i, id: ex.id, entry: en });
       });
-      if (items.length) blocks.push({ id: b.id, title: b.title, circuit: !!b.circuit, items: items });
+      if (items.length) blocks.push({ id: wid, title: w.name, workout: w, rounds: Math.max(1, w.rounds || 1), items: items });
     });
-    return { date: key, light: light, blocks: blocks };
-  }
-  function shuffle(key) { var ps = S.plans[key] || (S.plans[key] = { shuffle: 0, swaps: {}, full: false }); ps.shuffle += 1; ps.swaps = {}; save(); }
-  function swap(key, itemKey, opts, cur) {
-    var ps = S.plans[key] || (S.plans[key] = { shuffle: 0, swaps: {}, full: false });
-    ps.swaps[itemKey] = opts[(opts.indexOf(cur) + 1) % opts.length]; save();
+    return { date: key, planId: pos.plan.id, planName: pos.plan.name, day: day.day, total: pos.total, looped: pos.looped,
+      rest: day.rest, note: day.note, blocks: blocks };
   }
 
-  /* ---------- turn a plan into the ordered list of steps the player runs ---------- */
-  /* There is no instruction step any more: every exercise starts straight from a short transition
+  /* ---------- turn a session into the ordered list of steps the player runs ---------- */
+  /* There is no instruction step: every exercise starts straight from a short transition
      ("Next: X, starting in 3-2-1"). Instructions are optional and live in a bottom sheet. */
-  var DEFAULT_REST = 8, SWITCH_REST = 6, BREATHE_REST = 3, START_LEAD = 6;
-  function buildSteps(plan) {
-    var R = routine(), L = level(), insts = [], steps = [];
-    plan.blocks.forEach(function (b) {
-      var rounds = b.circuit ? L.rounds : 1;
-      for (var r = 1; r <= rounds; r++) b.items.forEach(function (it) { insts.push({ block: b, ex: getEx(it.id), round: r, rounds: rounds }); });
+  var DEFAULT_REST = 8, MIN_REST = 3, WORKOUT_REST = 10, SWITCH_REST = 6, START_LEAD = 6;
+  function restAfter(inst) {                         // rest taken after a set of this entry
+    var w = inst.block.workout, en = inst.entry, s;
+    if (en.restSeconds != null) s = en.restSeconds;
+    else if (w.category === 'strength' && S.settings.restStrength) s = S.settings.restStrength;   // the "rest between strength exercises" setting
+    else s = w.restSeconds != null ? w.restSeconds : DEFAULT_REST;
+    return Math.max(MIN_REST, s);
+  }
+  function buildSteps(session) {
+    var insts = [], steps = [];
+    session.blocks.forEach(function (b) {
+      for (var r = 1; r <= b.rounds; r++) b.items.forEach(function (it) { insts.push({ block: b, ex: getEx(it.id), entry: it.entry, round: r, rounds: b.rounds }); });
     });
     insts.forEach(function (inst, i) {
-      var ex = inst.ex, d = dose(ex), prev = insts[i - 1];
-      if (prev) {
-        var secs = prev.block.id !== inst.block.id ? 10 :
-          (inst.block.id === 'strength' && S.settings.restStrength ? S.settings.restStrength : (R.rest && R.rest[inst.block.id] != null ? R.rest[inst.block.id] : DEFAULT_REST));
-        steps.push({ kind: 'rest', why: 'between', secs: secs, exi: i });
-      } else steps.push({ kind: 'rest', why: 'start', secs: START_LEAD, exi: i });
-      var sides = d.sides || [null];
-      if (d.type === 'reps') {
-        sides.forEach(function (sd, si) {
-          if (si > 0) steps.push({ kind: 'rest', why: 'switch', secs: SWITCH_REST, exi: i, sideIdx: si, side: sd });
-          steps.push({ kind: 'work', mode: 'reps', n: d.reps, side: sd, sideIdx: si, exi: i });
-        });
-      } else {
-        sides.forEach(function (sd, si) {
-          if (si > 0) steps.push({ kind: 'rest', why: 'switch', secs: SWITCH_REST, exi: i, sideIdx: si, side: sd });
-          for (var h = 1; h <= d.holds; h++) {
-            if (h > 1) steps.push({ kind: 'rest', why: 'breathe', secs: BREATHE_REST, exi: i, sideIdx: si, side: sd });
-            steps.push({ kind: 'work', mode: d.type, secs: d.secs, side: sd, sideIdx: si, set: h, sets: d.holds, exi: i });
-          }
-        });
-      }
+      var ex = inst.ex, d = dose(ex, inst.entry), prev = insts[i - 1];
+      if (prev) steps.push({ kind: 'rest', why: 'between', secs: prev.block !== inst.block ? WORKOUT_REST : restAfter(prev), exi: i });
+      else steps.push({ kind: 'rest', why: 'start', secs: START_LEAD, exi: i });
+      (d.sides || [null]).forEach(function (sd, si) {
+        if (si > 0) steps.push({ kind: 'rest', why: 'switch', secs: SWITCH_REST, exi: i, sideIdx: si, side: sd });
+        for (var s = 1; s <= d.sets; s++) {
+          if (s > 1) steps.push({ kind: 'rest', why: 'breathe', secs: restAfter(inst), exi: i, sideIdx: si, side: sd });
+          var st = { kind: 'work', mode: d.type, side: sd, sideIdx: si, set: s, sets: d.sets, exi: i };
+          if (d.type === 'reps') st.n = d.reps; else st.secs = d.secs;
+          steps.push(st);
+        }
+      });
     });
     return { steps: steps, insts: insts };
   }
@@ -184,23 +181,27 @@
     var ks = Object.keys(S.pain).sort();
     return ks.length ? S.pain[ks[0]] : null;
   }
-  /* "move up only after a full week where every set was finished with good form, you could have done
-      2+ more reps, and back pain was no worse than your baseline" */
+  /* "move on only after a full week where every set was finished with good form, you could have done
+      2+ more reps, and back pain was no worse than your baseline". The plan itself advances daily; this only
+      suggests repeating the week (or stepping back after a pain flare) at the start of each new week. */
   function advice() {
-    var today = dateKey(), from = addDays(today, -6);
-    var wk = sessions().filter(function (h) { return !h.light && h.level === S.level && h.date >= from && h.date <= today; });
-    var base = basePain(), out = { up: false, down: false, text: '', count: wk.length };
+    var today = dateKey(), from = addDays(today, -WEEK), pos = planPosition(today);
+    var wk = sessions().filter(function (h) { return h.date >= from && h.date <= today; });
+    var base = basePain(), out = { back: false, repeat: false, text: '', count: wk.length };
+    var weekStart = !pos.looped && pos.idx >= WEEK && pos.idx % WEEK === 0 && S.reviewed !== today;
     var lastFlare = Object.keys(S.pain).sort().slice(-1).map(function (k) { return { k: k, v: S.pain[k] }; })[0];
     if (lastFlare && base != null && lastFlare.v >= base + 3 && lastFlare.k >= addDays(today, -2)) {
-      out.down = S.level > 1;
-      out.text = 'Your back was much sorer than usual recently. If it flared up, drop back one level for a week.';
+      out.back = pos.idx >= WEEK && S.reviewed !== today;
+      out.text = 'Your back was much sorer than usual recently. If it flared up, go back one week in the plan.';
       return out;
     }
-    if (S.level >= maxLevel()) { out.text = 'You are on the top level. Keep it up!'; return out; }
     var form = wk.every(function (h) { return h.form === true; }), extra = wk.every(function (h) { return h.extra === true; });
     var painOk = Object.keys(S.pain).filter(function (k) { return k >= from; }).every(function (k) { return base == null || S.pain[k] <= base; });
-    if (wk.length >= 5 && form && extra && painOk) { out.up = true; out.text = 'Great week. Every set felt good and you had reps in reserve. You are ready for level ' + (S.level + 1) + '.'; }
-    else out.text = 'Move up after a week of 5 or more sessions where you finish every set with good form, could do 2+ more reps, and your back is no worse than usual. This week: ' + wk.length + ' of 5 sessions.';
+    if (wk.length >= 5 && form && extra && painOk) out.text = 'Great week. Every set felt good and you had reps in reserve. Carry on with the plan.';
+    else {
+      out.repeat = weekStart;
+      out.text = 'Ready for the next week after 5 or more sessions where you finish every set with good form, could do 2+ more reps, and your back is no worse than usual. Last 7 days: ' + wk.length + ' session' + (wk.length === 1 ? '' : 's') + '.';
+    }
     return out;
   }
 
@@ -315,9 +316,9 @@
   root.Core = {
     get S() { return S; }, load: load, save: save, clone: clone, DEFAULTS: DEFAULTS,
     dateKey: dateKey, parseKey: parseKey, daysBetween: daysBetween, addDays: addDays,
-    lib: lib, invalidate: invalidate, exMap: exMap, getEx: getEx, routine: routine, level: level, maxLevel: maxLevel,
-    sidesOf: sidesOf, dose: dose, doseText: doseText, spokenDose: spokenDose, levelNote: levelNote, period: period,
-    isLightDay: isLightDay, buildPlan: buildPlan, shuffle: shuffle, swap: swap, buildSteps: buildSteps, estimate: estimate,
+    lib: lib, getEx: getEx, plan: plan, planPosition: planPosition, setPlan: setPlan, setPlanDay: setPlanDay, shiftPlan: shiftPlan,
+    sidesOf: sidesOf, dose: dose, planAmount: planAmount, doseText: doseText, spokenDose: spokenDose, period: period,
+    buildPlan: buildPlan, buildSteps: buildSteps, estimate: estimate,
     sessions: sessions, streak: streak, basePain: basePain, advice: advice,
     Sound: Sound, Voice: Voice, WakeLock: WakeLock, saveFailed: function () { return saveFailed; }
   };

@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "plans": [
+    {
+      "id": "face_and_posture_14_day",
+      "name": "Face and posture · 14 days",
+      "description": "Alternating facial-exercise days and neck-and-spine days, with a rest day each week.",
+      "difficulty": "beginner",
+      "tags": ["face", "posture", "neck", "no_equipment"],
+      "days": [
+        { "day": 1, "workoutId": "face_sharpening_01", "note": "Stop any move that causes jaw or neck pain." },
+        { "day": 2, "workoutId": "neck_and_spine_01" },
+        { "day": 3, "workoutId": "face_sharpening_01" },
+        { "day": 4, "workoutId": "neck_and_spine_01" },
+        { "day": 5, "workoutId": "face_sharpening_01" },
+        { "day": 6, "workoutId": "neck_and_spine_01" },
+        { "day": 7, "type": "rest", "note": "Rest day. Let your face, jaw and neck relax." },
+        { "day": 8, "workoutId": "face_sharpening_01" },
+        { "day": 9, "workoutId": "neck_and_spine_01" },
+        { "day": 10, "workoutId": "face_sharpening_01" },
+        { "day": 11, "workoutId": "neck_and_spine_01" },
+        { "day": 12, "workoutId": "face_sharpening_01" },
+        { "day": 13, "workoutId": "neck_and_spine_01" },
+        { "day": 14, "type": "rest", "note": "Rest day. Let your face, jaw and neck relax." }
+      ]
+    }
+  ]
+}

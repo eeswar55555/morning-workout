@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "workouts": [
+    {
+      "id": "face_sharpening_01",
+      "name": "Face Sharpening 01",
+      "description": "Jawline, cheeks, lips and brow: about six minutes of facial exercises. Results from facial exercises vary and are not guaranteed.",
+      "category": "facial",
+      "difficulty": "beginner",
+      "restSeconds": 5,
+      "tags": ["face", "jawline", "hollow_cheeks"],
+      "exercises": [
+        { "exerciseId": "tongue_posture", "durationSeconds": 20 },
+        { "exerciseId": "jaw_drop", "repetitions": 6 },
+        { "exerciseId": "jaw_side_slide", "repetitions": 6 },
+        { "exerciseId": "jaw_jut", "durationSeconds": 10, "sets": 3 },
+        { "exerciseId": "fish_face", "durationSeconds": 10, "sets": 3 },
+        { "exerciseId": "cheek_puff", "repetitions": 6 },
+        { "exerciseId": "smile_cheek_lift", "durationSeconds": 10, "sets": 2 },
+        { "exerciseId": "vowel_shapes", "durationSeconds": 30 },
+        { "exerciseId": "chin_lift_pucker", "repetitions": 8 },
+        { "exerciseId": "platysma_pull", "durationSeconds": 10, "sets": 2 },
+        { "exerciseId": "brow_raise", "repetitions": 8 },
+        { "exerciseId": "eye_squeeze", "repetitions": 8 },
+        { "exerciseId": "lion_face", "repetitions": 4 }
+      ]
+    },
+    {
+      "id": "neck_and_spine_01",
+      "name": "Neck and Spine 01",
+      "description": "Gentle neck, upper-back and spine mobility to undo hours of sitting.",
+      "category": "mobility",
+      "difficulty": "beginner",
+      "restSeconds": 5,
+      "tags": ["neck", "spine", "posture", "back_friendly"],
+      "exercises": [
+        { "exerciseId": "chin_tuck", "repetitions": 8 },
+        { "exerciseId": "neck_side_stretch", "durationSeconds": 20 },
+        { "exerciseId": "neck_forward_stretch", "durationSeconds": 20 },
+        { "exerciseId": "scapular_squeeze", "repetitions": 10 },
+        { "exerciseId": "wall_angel", "repetitions": 8 },
+        { "exerciseId": "standing_back_extension", "repetitions": 6 },
+        { "exerciseId": "cat_cow", "repetitions": 8 },
+        { "exerciseId": "pelvic_tilt", "repetitions": 8 },
+        { "exerciseId": "knee_to_chest", "durationSeconds": 20 },
+        { "exerciseId": "cobra_stretch", "durationSeconds": 15, "sets": 2 },
+        { "exerciseId": "childs_pose", "durationSeconds": 30 }
+      ]
+    }
+  ]
+}

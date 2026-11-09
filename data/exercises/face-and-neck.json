@@ -1,0 +1,489 @@
+{
+  "schemaVersion": 1,
+  "exercises": [
+    {
+      "id": "jaw_jut",
+      "name": "Jaw jut",
+      "description": "Push the lower jaw forward and hold. A popular jawline exercise; it works the muscles under the chin and along the jaw.",
+      "type": "hold",
+      "primaryMuscles": ["jaw"],
+      "secondaryMuscles": ["neck"],
+      "difficulty": "beginner",
+      "category": "facial",
+      "bodyRegion": "face",
+      "tags": ["face", "jawline", "low_impact"],
+      "instructions": {
+        "steps": [
+          "Sit or stand tall, looking straight ahead, shoulders relaxed.",
+          "Slowly push your lower jaw forward so your lower teeth sit in front of your upper teeth.",
+          "Feel the muscles under your chin and along your jaw working.",
+          "Hold, breathing normally, then release slowly."
+        ],
+        "breathing": "Breathe normally through your nose.",
+        "commonMistake": "Do not tilt your head back or clench hard. Stop if your jaw clicks painfully or hurts, and do not clench hard.",
+        "easier": "Push the jaw forward only a little."
+      }
+    },
+    {
+      "id": "fish_face",
+      "name": "Fish face (hollow cheeks)",
+      "description": "Suck the cheeks in toward the back teeth and hold. Works the cheek muscles and gives the hollow-cheek look.",
+      "type": "hold",
+      "primaryMuscles": ["cheeks", "lips"],
+      "secondaryMuscles": ["jaw"],
+      "difficulty": "beginner",
+      "category": "facial",
+      "bodyRegion": "face",
+      "tags": ["face", "hollow_cheeks", "low_impact"],
+      "instructions": {
+        "steps": [
+          "Relax your face and close your mouth.",
+          "Suck your cheeks in toward your back teeth, like a fish.",
+          "Try to smile while keeping the hollow shape.",
+          "Hold, then relax your face completely."
+        ],
+        "commonMistake": "Do not bite your cheeks or hold your breath.",
+        "easier": "Suck in gently and hold for a shorter time."
+      }
+    },
+    {
+      "id": "cheek_puff",
+      "name": "Cheek puff",
+      "description": "Fill the cheeks with air, hold briefly and release. Wakes up the cheek and lip muscles.",
+      "type": "reps",
+      "primaryMuscles": ["cheeks", "lips"],
+      "difficulty": "beginner",
+      "category": "facial",
+      "bodyRegion": "face",
+      "tags": ["face", "hollow_cheeks", "low_impact"],
+      "tempoSeconds": 4,
+      "instructions": {
+        "steps": [
+          "Take a breath in through your nose.",
+          "Close your lips tightly and puff both cheeks out with air.",
+          "Hold for a second or two.",
+          "Let the air out slowly, then relax."
+        ],
+        "commonMistake": "Do not let air leak out of your lips, and do not push so hard that it hurts.",
+        "easier": "Puff gently and hold for less time."
+      }
+    },
+    {
+      "id": "smile_cheek_lift",
+      "name": "Smile cheek lift",
+      "description": "A closed-lip smile that lifts the cheeks toward the eyes. Works the cheek muscles that give a lifted look.",
+      "type": "hold",
+      "primaryMuscles": ["cheeks"],
+      "secondaryMuscles": ["lips", "eyes"],
+      "difficulty": "beginner",
+      "category": "facial",
+      "bodyRegion": "face",
+      "tags": ["face", "cheekbones", "low_impact"],
+      "instructions": {
+        "steps": [
+          "Close your lips and smile as wide as you can without showing teeth.",
+          "Lift your cheeks up toward your eyes.",
+          "Keep your forehead relaxed.",
+          "Hold, then release slowly."
+        ],
+        "commonMistake": "Do not squint hard or wrinkle your forehead.",
+        "easier": "Smile a little less wide."
+      }
+    },
+    {
+      "id": "jaw_drop",
+      "name": "Jaw drop",
+      "description": "Slowly open and close the mouth through a comfortable range to loosen and use the jaw muscles.",
+      "type": "reps",
+      "primaryMuscles": ["jaw"],
+      "secondaryMuscles": ["lips"],
+      "difficulty": "beginner",
+      "category": "facial",
+      "bodyRegion": "face",
+      "tags": ["face", "jawline", "jaw_mobility", "low_impact"],
+      "tempoSeconds": 5,
+      "instructions": {
+        "steps": [
+          "Sit tall and relax your tongue and face.",
+          "Let your jaw drop open slowly, as far as is comfortable.",
+          "Pause for a moment.",
+          "Close slowly and smoothly."
+        ],
+        "commonMistake": "Do not force the mouth wide open. Stop if your jaw clicks painfully or hurts, and do not clench hard.",
+        "easier": "Open only halfway."
+      }
+    },
+    {
+      "id": "jaw_side_slide",
+      "name": "Jaw side slide",
+      "description": "Slide the lower jaw from side to side with control.",
+      "type": "reps",
+      "primaryMuscles": ["jaw"],
+      "secondaryMuscles": ["cheeks"],
+      "difficulty": "beginner",
+      "category": "facial",
+      "bodyRegion": "face",
+      "tags": ["face", "jawline", "jaw_mobility", "low_impact"],
+      "sides": ["right", "left"],
+      "tempoSeconds": 4,
+      "instructions": {
+        "steps": [
+          "Sit tall with your lips relaxed and teeth slightly apart.",
+          "Slowly slide your lower jaw to one side.",
+          "Return to the middle with control.",
+          "Finish all reps on one side, then switch sides."
+        ],
+        "commonMistake": "Do not move your head or force the jaw. Stop if your jaw clicks painfully or hurts, and do not clench hard.",
+        "easier": "Slide only a little."
+      }
+    },
+    {
+      "id": "chin_lift_pucker",
+      "name": "Chin lift pucker",
+      "description": "Tilt the head back and pucker the lips toward the ceiling (\"kiss the ceiling\"). Works the front of the neck, under the chin and the lips.",
+      "type": "reps",
+      "primaryMuscles": ["neck", "lips"],
+      "secondaryMuscles": ["jaw"],
+      "difficulty": "beginner",
+      "category": "facial",
+      "bodyRegion": "face",
+      "tags": ["face", "jawline", "neck", "low_impact"],
+      "tempoSeconds": 5,
+      "instructions": {
+        "steps": [
+          "Sit tall and slowly tilt your head back to look at the ceiling.",
+          "Close your lips and push them up toward the ceiling, as if kissing it.",
+          "Hold for a moment, feeling the stretch under your chin.",
+          "Relax your lips and bring your head back to neutral."
+        ],
+        "commonMistake": "Do not tilt your head back sharply. Skip it if you feel dizzy or it hurts your neck.",
+        "easier": "Tilt your head back only a little."
+      }
+    },
+    {
+      "id": "platysma_pull",
+      "name": "Neck tightener (platysma pull)",
+      "description": "Pull the corners of the mouth down to tighten the broad muscle of the front neck.",
+      "type": "hold",
+      "primaryMuscles": ["neck"],
+      "secondaryMuscles": ["jaw", "lips"],
+      "difficulty": "beginner",
+      "category": "facial",
+      "bodyRegion": "face",
+      "tags": ["face", "neck", "jawline", "low_impact"],
+      "instructions": {
+        "steps": [
+          "Sit tall with your chin level.",
+          "Pull the corners of your mouth down and back, as if grimacing.",
+          "Feel the neck tendons tighten and show.",
+          "Hold, then relax completely."
+        ],
+        "commonMistake": "Do not lift your chin or shrug your shoulders.",
+        "easier": "Pull less hard and hold for less time."
+      }
+    },
+    {
+      "id": "vowel_shapes",
+      "name": "Vowel shapes (O and E)",
+      "description": "Alternate an exaggerated \"ooo\" with a wide \"eee\" to work the lips and cheeks.",
+      "type": "time",
+      "primaryMuscles": ["lips", "cheeks"],
+      "secondaryMuscles": ["jaw"],
+      "difficulty": "beginner",
+      "category": "facial",
+      "bodyRegion": "face",
+      "tags": ["face", "lips", "low_impact"],
+      "tempoSeconds": 2.5,
+      "instructions": {
+        "steps": [
+          "Sit tall and relax your face.",
+          "Push your lips into a small, tight \"ooo\" shape.",
+          "Then stretch them into a wide \"eee\" smile.",
+          "Keep alternating smoothly, exaggerating each shape."
+        ],
+        "cue": "Round, then wide, then round again.",
+        "commonMistake": "Do not strain your neck or hold your breath.",
+        "easier": "Make the shapes smaller."
+      }
+    },
+    {
+      "id": "brow_raise",
+      "name": "Brow raise",
+      "description": "Lift the eyebrows and open the eyes to work the forehead muscle.",
+      "type": "reps",
+      "primaryMuscles": ["forehead"],
+      "secondaryMuscles": ["eyes"],
+      "difficulty": "beginner",
+      "category": "facial",
+      "bodyRegion": "face",
+      "tags": ["face", "forehead", "low_impact"],
+      "tempoSeconds": 3,
+      "instructions": {
+        "steps": [
+          "Relax your face and look straight ahead.",
+          "Raise your eyebrows as high as is comfortable.",
+          "Open your eyes wide and hold for a second.",
+          "Lower them smoothly."
+        ],
+        "commonMistake": "Do not scrunch your forehead hard or tilt your head back.",
+        "easier": "Raise them only a little."
+      }
+    },
+    {
+      "id": "eye_squeeze",
+      "name": "Eye squeeze",
+      "description": "Squeeze the eyes shut, then open them wide, to work the muscles around the eyes.",
+      "type": "reps",
+      "primaryMuscles": ["eyes"],
+      "secondaryMuscles": ["cheeks", "forehead"],
+      "difficulty": "beginner",
+      "category": "facial",
+      "bodyRegion": "face",
+      "tags": ["face", "eyes", "low_impact"],
+      "tempoSeconds": 3,
+      "instructions": {
+        "steps": [
+          "Open your eyes wide with relaxed eyebrows.",
+          "Squeeze your eyes shut firmly, without scrunching your forehead.",
+          "Hold for a second.",
+          "Open them wide again."
+        ],
+        "commonMistake": "Do not squeeze so hard that it hurts or gives you a headache.",
+        "easier": "Squeeze more gently."
+      }
+    },
+    {
+      "id": "lion_face",
+      "name": "Lion face",
+      "description": "Open the mouth wide, stick out the tongue and widen the eyes to stretch and use the whole face.",
+      "type": "reps",
+      "primaryMuscles": ["jaw", "lips"],
+      "secondaryMuscles": ["eyes", "cheeks"],
+      "difficulty": "beginner",
+      "category": "facial",
+      "bodyRegion": "face",
+      "tags": ["face", "jaw_mobility", "low_impact"],
+      "tempoSeconds": 5,
+      "instructions": {
+        "steps": [
+          "Take a breath in through your nose.",
+          "Open your mouth wide, stick your tongue out toward your chin and widen your eyes.",
+          "Breathe out with a long \"haaa\" while you hold for a few seconds.",
+          "Relax your face and close your mouth."
+        ],
+        "breathing": "Breathe in through your nose, out through your mouth.",
+        "commonMistake": "Do not strain your jaw. Stop if your jaw clicks painfully or hurts, and do not clench hard.",
+        "easier": "Open less wide."
+      }
+    },
+    {
+      "id": "tongue_posture",
+      "name": "Tongue posture",
+      "description": "Rest the tongue on the roof of the mouth with the lips closed. A resting-posture habit often practised for the jaw and chin area.",
+      "type": "hold",
+      "primaryMuscles": ["jaw"],
+      "secondaryMuscles": ["lips", "neck"],
+      "difficulty": "beginner",
+      "category": "facial",
+      "bodyRegion": "face",
+      "tags": ["face", "jawline", "posture", "low_impact"],
+      "instructions": {
+        "steps": [
+          "Close your lips and let your teeth rest lightly together or just apart.",
+          "Rest your whole tongue gently on the roof of your mouth, with the tip just behind your upper front teeth.",
+          "Breathe slowly through your nose and keep your neck long.",
+          "Hold, keeping your face and jaw relaxed."
+        ],
+        "cue": "Tongue up, lips closed, jaw relaxed.",
+        "commonMistake": "Do not press hard with your tongue or clench your teeth.",
+        "easier": "Hold for a shorter time."
+      }
+    },
+    {
+      "id": "chin_tuck",
+      "name": "Chin tuck",
+      "description": "Glide the head straight back, making a double chin, to retrain the neck and fix forward-head posture.",
+      "type": "reps",
+      "primaryMuscles": ["neck"],
+      "secondaryMuscles": ["back"],
+      "difficulty": "beginner",
+      "category": "posture",
+      "bodyRegion": "neck",
+      "tags": ["neck", "posture", "desk_worker", "low_impact"],
+      "tempoSeconds": 4,
+      "instructions": {
+        "steps": [
+          "Sit or stand tall and look straight ahead.",
+          "Without tilting your head, glide your chin straight back, as if making a double chin.",
+          "Hold for two seconds, feeling the back of your neck lengthen.",
+          "Release slowly."
+        ],
+        "breathing": "Breathe normally.",
+        "commonMistake": "Do not tilt your head down or up. The movement is straight back.",
+        "easier": "Make the movement smaller."
+      }
+    },
+    {
+      "id": "neck_side_stretch",
+      "name": "Neck side stretch",
+      "description": "Tip one ear toward the shoulder to stretch the side of the neck.",
+      "type": "hold",
+      "primaryMuscles": ["neck"],
+      "secondaryMuscles": ["shoulders"],
+      "difficulty": "beginner",
+      "category": "stretching",
+      "bodyRegion": "neck",
+      "tags": ["neck", "stretch", "desk_worker", "low_impact"],
+      "sides": ["right", "left"],
+      "instructions": {
+        "steps": [
+          "Sit or stand tall with your shoulders relaxed and down.",
+          "Slowly tip your ear toward your shoulder, without lifting the shoulder.",
+          "You can rest your hand lightly on your head, without pulling.",
+          "Hold, breathing slowly, then return and switch sides."
+        ],
+        "commonMistake": "Do not pull on your head or lift your shoulder to meet your ear. Stop if you feel tingling in your arm.",
+        "easier": "Tip your head less far."
+      }
+    },
+    {
+      "id": "neck_forward_stretch",
+      "name": "Neck forward stretch",
+      "description": "Lower the chin toward the chest to stretch the back of the neck.",
+      "type": "hold",
+      "primaryMuscles": ["neck"],
+      "secondaryMuscles": ["back"],
+      "difficulty": "beginner",
+      "category": "stretching",
+      "bodyRegion": "neck",
+      "tags": ["neck", "stretch", "desk_worker", "low_impact"],
+      "instructions": {
+        "steps": [
+          "Sit or stand tall with your shoulders relaxed.",
+          "Slowly lower your chin toward your chest.",
+          "Rest your hands lightly behind your head, without pulling.",
+          "Hold, breathing slowly, then lift your head back up slowly."
+        ],
+        "commonMistake": "Do not pull hard on your head or round your upper back. Stop if you feel tingling in your arms.",
+        "easier": "Lower your chin only a little."
+      }
+    },
+    {
+      "id": "scapular_squeeze",
+      "name": "Shoulder blade squeeze",
+      "description": "Squeeze the shoulder blades together to strengthen the upper back and counter slouching.",
+      "type": "reps",
+      "primaryMuscles": ["back"],
+      "secondaryMuscles": ["shoulders"],
+      "difficulty": "beginner",
+      "category": "strength",
+      "bodyRegion": "upper_body",
+      "tags": ["posture", "upper_back", "desk_worker", "low_impact"],
+      "tempoSeconds": 4,
+      "instructions": {
+        "steps": [
+          "Stand or sit tall with your elbows bent at your sides.",
+          "Squeeze your shoulder blades together and slightly down.",
+          "Hold for two or three seconds.",
+          "Release slowly."
+        ],
+        "commonMistake": "Do not shrug your shoulders or arch your lower back.",
+        "easier": "Squeeze gently and hold for less time."
+      }
+    },
+    {
+      "id": "wall_angel",
+      "name": "Wall angel",
+      "description": "Slide the arms up and down a wall while keeping the back flat. Mobilises the shoulders and upper back.",
+      "type": "reps",
+      "primaryMuscles": ["back", "shoulders"],
+      "secondaryMuscles": ["core", "neck"],
+      "difficulty": "beginner",
+      "category": "mobility",
+      "bodyRegion": "upper_body",
+      "equipment": ["wall"],
+      "tags": ["posture", "upper_back", "desk_worker", "low_impact"],
+      "tempoSeconds": 5,
+      "instructions": {
+        "steps": [
+          "Stand with your back, head and hips against a wall, feet a small step away.",
+          "Bend your elbows to 90 degrees with the backs of your hands on the wall.",
+          "Slowly slide your arms up overhead, keeping contact with the wall.",
+          "Slide back down with control."
+        ],
+        "commonMistake": "Do not arch your lower back or let your ribs flare.",
+        "easier": "Do not go as high, or let your hands leave the wall."
+      }
+    },
+    {
+      "id": "standing_back_extension",
+      "name": "Standing back extension",
+      "description": "A gentle lean backward with the hands on the lower back, to ease stiffness from sitting.",
+      "type": "reps",
+      "primaryMuscles": ["lower_back"],
+      "secondaryMuscles": ["core"],
+      "difficulty": "beginner",
+      "category": "mobility",
+      "bodyRegion": "core",
+      "tags": ["spine", "back_friendly", "desk_worker", "low_impact"],
+      "tempoSeconds": 4,
+      "instructions": {
+        "steps": [
+          "Stand with your feet hip-width apart and your hands on your lower back.",
+          "Gently lean back, only as far as is comfortable.",
+          "Pause for a second.",
+          "Return to standing tall."
+        ],
+        "commonMistake": "Do not lean back far or hold your breath. Skip it if it increases your pain or sends pain, tingling or numbness into a leg.",
+        "easier": "Lean back only a little."
+      }
+    },
+    {
+      "id": "knee_to_chest",
+      "name": "Knee to chest",
+      "description": "Hug one knee toward the chest while lying down to stretch the lower back and hip.",
+      "type": "hold",
+      "primaryMuscles": ["lower_back", "glutes"],
+      "secondaryMuscles": ["hamstrings"],
+      "difficulty": "beginner",
+      "category": "stretching",
+      "bodyRegion": "core",
+      "tags": ["spine", "back_friendly", "low_impact"],
+      "sides": ["right", "left"],
+      "instructions": {
+        "steps": [
+          "Lie on your back with your knees bent and feet flat.",
+          "Bring one knee toward your chest and hold it with both hands.",
+          "Keep your head down and your other foot flat.",
+          "Hold, breathing slowly, then lower and switch legs."
+        ],
+        "commonMistake": "Do not pull so hard that your lower back lifts off the floor or it hurts.",
+        "easier": "Hold behind your thigh instead of your shin."
+      }
+    },
+    {
+      "id": "pelvic_tilt",
+      "name": "Pelvic tilt",
+      "description": "Gently flatten the lower back into the floor by tilting the pelvis. A basic spine and core control exercise.",
+      "type": "reps",
+      "primaryMuscles": ["core", "lower_back"],
+      "secondaryMuscles": ["glutes"],
+      "difficulty": "beginner",
+      "category": "core",
+      "bodyRegion": "core",
+      "tags": ["spine", "back_friendly", "low_impact"],
+      "tempoSeconds": 4,
+      "instructions": {
+        "steps": [
+          "Lie on your back with your knees bent and feet flat.",
+          "Tighten your tummy and tilt your pelvis so your lower back presses gently into the floor.",
+          "Hold for three seconds without holding your breath.",
+          "Release back to a relaxed position."
+        ],
+        "breathing": "Keep breathing normally.",
+        "commonMistake": "Do not push with your legs or squeeze your buttocks hard.",
+        "easier": "Make the movement smaller."
+      }
+    }
+  ]
+}

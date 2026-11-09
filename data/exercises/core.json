@@ -1,0 +1,1282 @@
+{
+  "schemaVersion": 1,
+  "exercises": [
+    {
+      "id": "cat_cow",
+      "name": "Cat-cow",
+      "description": "Gentle spine mobility on hands and knees, rounding and arching the back.",
+      "type": "reps",
+      "primaryMuscles": ["back", "core"],
+      "secondaryMuscles": ["shoulders"],
+      "difficulty": "beginner",
+      "category": "mobility",
+      "bodyRegion": "core",
+      "tags": ["warmup", "spine", "low_impact"],
+      "tempoSeconds": 5,
+      "instructions": {
+        "steps": [
+          "Get on your hands and knees. Hands under your shoulders, knees under your hips.",
+          "Slowly round your back up toward the ceiling and tuck your chin.",
+          "Then slowly let your belly sink and look gently forward.",
+          "Move only as far as feels comfortable."
+        ],
+        "breathing": "Breathe out as you round your back, and in as your belly sinks.",
+        "breathCues": ["Breathe out, round your back", "Breathe in, belly down, look forward"],
+        "commonMistake": "Do not force the end of the movement, and keep your arms straight.",
+        "easier": "Make the movement smaller. Put a folded towel under your knees."
+      }
+    },
+    {
+      "id": "arm_circles",
+      "name": "Arm circles",
+      "description": "Big controlled arm circles that warm up the shoulders.",
+      "type": "reps",
+      "primaryMuscles": ["shoulders"],
+      "secondaryMuscles": ["back"],
+      "difficulty": "beginner",
+      "category": "mobility",
+      "bodyRegion": "upper_body",
+      "tags": ["warmup", "shoulders", "low_impact"],
+      "sides": ["forward", "backward"],
+      "tempoSeconds": 3,
+      "instructions": {
+        "steps": [
+          "Stand tall with your feet hip-width apart.",
+          "Hold your arms out and draw big, smooth circles.",
+          "Keep your neck relaxed and shoulders away from your ears.",
+          "After the first set, reverse the direction."
+        ],
+        "breathing": "Breathe steadily. Do not hold your breath.",
+        "commonMistake": "Do not shrug your shoulders up to your ears.",
+        "easier": "Make the circles smaller."
+      }
+    },
+    {
+      "id": "overhead_reach",
+      "name": "Overhead reach",
+      "description": "Raise both arms overhead to open up the shoulders and upper back.",
+      "type": "reps",
+      "primaryMuscles": ["shoulders"],
+      "secondaryMuscles": ["back", "core"],
+      "difficulty": "beginner",
+      "category": "mobility",
+      "bodyRegion": "upper_body",
+      "tags": ["warmup", "posture", "low_impact"],
+      "tempoSeconds": 5,
+      "instructions": {
+        "steps": [
+          "Stand tall, feet hip-width apart, arms by your sides.",
+          "Slowly raise both arms forward and up over your head.",
+          "Reach gently toward the ceiling. Keep your ribs down and do not arch your back.",
+          "Lower your arms slowly back down."
+        ],
+        "breathing": "Breathe in as you reach up, and out as you lower.",
+        "breathCues": ["Breathe in, reach up tall", "Breathe out, arms down"],
+        "commonMistake": "Do not lean back or lift your ribs.",
+        "easier": "Raise your arms only as high as is comfortable."
+      }
+    },
+    {
+      "id": "march_in_place",
+      "name": "March in place",
+      "description": "Marching on the spot to raise the heart rate gently.",
+      "type": "time",
+      "primaryMuscles": ["quadriceps", "core"],
+      "secondaryMuscles": ["glutes"],
+      "difficulty": "beginner",
+      "category": "cardio",
+      "bodyRegion": "full_body",
+      "tags": ["warmup", "low_impact"],
+      "tempoSeconds": 1.6,
+      "instructions": {
+        "steps": [
+          "Stand tall.",
+          "March on the spot, lifting your knees to a comfortable height.",
+          "Swing your arms naturally, opposite arm to leg."
+        ],
+        "breathing": "Breathe easily and stay relaxed.",
+        "commonMistake": "Do not lean back or slump forward.",
+        "easier": "Lift your knees lower, or hold on to a chair."
+      }
+    },
+    {
+      "id": "sit_to_stand",
+      "name": "Chair sit-to-stand",
+      "description": "Stand up from a chair and sit back down with control.",
+      "type": "reps",
+      "primaryMuscles": ["quadriceps", "glutes"],
+      "secondaryMuscles": ["hamstrings", "core"],
+      "difficulty": "beginner",
+      "category": "strength",
+      "bodyRegion": "lower_body",
+      "equipment": ["chair"],
+      "tags": ["legs", "functional", "low_impact"],
+      "tempoSeconds": 4,
+      "instructions": {
+        "steps": [
+          "Sit near the front edge of a sturdy chair, feet hip-width apart, arms stretched forward.",
+          "Lean slightly forward from your hips.",
+          "Push through your heels and stand all the way up tall.",
+          "Sit back down slowly and with control."
+        ],
+        "breathing": "Breathe out as you stand, and in as you sit.",
+        "breathCues": ["Breathe out, stand tall", "Breathe in, sit back slowly"],
+        "cue": "Sit back, knees over toes, stand tall.",
+        "commonMistake": "Do not let your knees fall inward, and do not flop into the chair.",
+        "easier": "Use a higher seat, or push off your thighs with your hands."
+      }
+    },
+    {
+      "id": "wall_sit",
+      "name": "Wall sit",
+      "description": "Hold a shallow seated position with your back against a wall.",
+      "type": "hold",
+      "primaryMuscles": ["quadriceps", "glutes"],
+      "secondaryMuscles": ["calves", "core"],
+      "difficulty": "beginner",
+      "category": "strength",
+      "bodyRegion": "lower_body",
+      "equipment": ["wall"],
+      "tags": ["legs", "isometric", "low_impact"],
+      "instructions": {
+        "steps": [
+          "Stand with your back flat against a wall, feet a step forward.",
+          "Slide down until your knees are bent a little, like a shallow chair sit.",
+          "Keep your whole back against the wall and hold.",
+          "Slide back up to finish."
+        ],
+        "breathing": "Keep breathing steadily. Do not hold your breath.",
+        "commonMistake": "Keep your knees over your ankles, not past your toes.",
+        "easier": "Do not slide down as far."
+      }
+    },
+    {
+      "id": "step_up",
+      "name": "Low step-up",
+      "description": "Step onto a low step and stand tall, then lower back down.",
+      "type": "reps",
+      "primaryMuscles": ["quadriceps", "glutes"],
+      "secondaryMuscles": ["hamstrings", "calves"],
+      "difficulty": "beginner",
+      "category": "strength",
+      "bodyRegion": "lower_body",
+      "equipment": ["step"],
+      "tags": ["legs", "balance", "low_impact"],
+      "sides": ["right", "left"],
+      "tempoSeconds": 4,
+      "instructions": {
+        "steps": [
+          "Stand facing a low, sturdy step, such as the bottom stair. Hold a rail or wall if you need to.",
+          "Place one whole foot on the step.",
+          "Push through that heel and stand up tall on the step.",
+          "Lower back down slowly, then repeat. After the set, switch legs."
+        ],
+        "breathing": "Breathe out as you step up, and in as you step down.",
+        "commonMistake": "Do not push off the back foot. Drive through the heel on the step.",
+        "easier": "Use a lower step and hold on to a rail."
+      }
+    },
+    {
+      "id": "incline_push_up",
+      "name": "Incline push-up",
+      "description": "A push-up with your hands on a sturdy table or counter.",
+      "type": "reps",
+      "primaryMuscles": ["chest", "triceps", "shoulders"],
+      "secondaryMuscles": ["core"],
+      "difficulty": "beginner",
+      "category": "strength",
+      "bodyRegion": "upper_body",
+      "equipment": ["sturdy_surface"],
+      "tags": ["push", "low_impact"],
+      "tempoSeconds": 4,
+      "instructions": {
+        "steps": [
+          "Place your hands on a sturdy table or counter, a little wider than your shoulders.",
+          "Walk your feet back until your body is one straight line from head to heels.",
+          "Bend your elbows and lower your chest toward the table for two seconds.",
+          "Push back up, keeping your body straight."
+        ],
+        "breathing": "Breathe in as you lower, and out as you push up.",
+        "breathCues": ["Breathe in, lower your chest slowly", "Breathe out, press up"],
+        "cue": "Straight line from head to heels, lower for two seconds.",
+        "commonMistake": "Do not let your hips sag or your head drop.",
+        "easier": "Use a higher surface, or do wall push-ups."
+      }
+    },
+    {
+      "id": "wall_push_up",
+      "name": "Wall push-up",
+      "description": "A push-up standing at a wall: the easiest way to start pressing.",
+      "type": "reps",
+      "primaryMuscles": ["chest", "triceps", "shoulders"],
+      "secondaryMuscles": ["core"],
+      "difficulty": "beginner",
+      "category": "strength",
+      "bodyRegion": "upper_body",
+      "equipment": ["wall"],
+      "tags": ["push", "low_impact"],
+      "tempoSeconds": 4,
+      "instructions": {
+        "steps": [
+          "Stand about an arm and a half from a wall, feet hip-width apart.",
+          "Put your hands on the wall at chest height, a little wider than your shoulders.",
+          "Bend your elbows and lean your chest toward the wall.",
+          "Push back to the start, keeping your body in one straight line."
+        ],
+        "breathing": "Breathe in as you lean in, and out as you push away.",
+        "breathCues": ["Breathe in, lean toward the wall", "Breathe out, push away"],
+        "commonMistake": "Do not stick your bottom out or let your hips sag.",
+        "easier": "Stand closer to the wall.",
+        "harder": "Step your feet further back, or use a table instead."
+      }
+    },
+    {
+      "id": "glute_bridge",
+      "name": "Glute bridge",
+      "description": "Lie on your back and lift your hips by squeezing the glutes.",
+      "type": "reps",
+      "primaryMuscles": ["glutes"],
+      "secondaryMuscles": ["hamstrings", "core"],
+      "difficulty": "beginner",
+      "category": "strength",
+      "bodyRegion": "lower_body",
+      "tags": ["glutes", "back_friendly", "low_impact"],
+      "tempoSeconds": 4,
+      "instructions": {
+        "steps": [
+          "Lie on your back with your knees bent and feet flat, hip-width apart. Arms by your sides.",
+          "Squeeze your glutes and lift your hips until your shoulders, hips and knees make a straight line.",
+          "Squeeze at the top, keeping your ribs down.",
+          "Lower slowly back to the floor."
+        ],
+        "breathing": "Breathe out as you lift, and in as you lower.",
+        "breathCues": ["Breathe out, lift your hips", "Breathe in, lower slowly"],
+        "cue": "Ribs down, squeeze the glutes, do not arch your back.",
+        "commonMistake": "Do not arch your lower back or push up onto your toes.",
+        "easier": "Lift your hips only part of the way."
+      }
+    },
+    {
+      "id": "donkey_kick",
+      "name": "Donkey kick",
+      "description": "On hands and knees, lift one bent leg toward the ceiling.",
+      "type": "reps",
+      "primaryMuscles": ["glutes"],
+      "secondaryMuscles": ["hamstrings", "core"],
+      "difficulty": "beginner",
+      "category": "strength",
+      "bodyRegion": "lower_body",
+      "tags": ["glutes", "low_impact"],
+      "sides": ["right", "left"],
+      "tempoSeconds": 4,
+      "instructions": {
+        "steps": [
+          "Get on your hands and knees, hands under your shoulders, knees under your hips.",
+          "Keep your back flat and your tummy gently tight.",
+          "Keep your knee bent and lift one foot up toward the ceiling.",
+          "Stop when your thigh is level with your back. Lower slowly. After the set, switch legs."
+        ],
+        "breathing": "Breathe out as you lift, and in as you lower.",
+        "commonMistake": "Do not swing your leg high, arch your back or twist your hips.",
+        "easier": "Lift your leg only a little off the floor."
+      }
+    },
+    {
+      "id": "backpack_row",
+      "name": "Backpack row",
+      "description": "A one-arm row using a loaded backpack, hinged forward with a flat back.",
+      "type": "reps",
+      "primaryMuscles": ["back"],
+      "secondaryMuscles": ["biceps", "shoulders"],
+      "difficulty": "beginner",
+      "category": "strength",
+      "bodyRegion": "upper_body",
+      "equipment": ["backpack", "chair"],
+      "tags": ["pull", "low_impact"],
+      "sides": ["right", "left"],
+      "tempoSeconds": 4,
+      "instructions": {
+        "steps": [
+          "Hold a backpack with some weight in one hand. Rest your other hand on a chair or counter.",
+          "Bend your knees slightly and hinge forward from your hips, with a flat back.",
+          "Let the bag hang down, then pull your elbow up toward your hip.",
+          "Lower the bag slowly. Finish all reps, then switch sides."
+        ],
+        "breathing": "Breathe out as you pull, and in as you lower.",
+        "breathCues": ["Breathe out, pull your elbow to your hip", "Breathe in, lower slowly"],
+        "cue": "Hinge from the hips, back flat, elbow to hip.",
+        "commonMistake": "Do not round your back or twist your body.",
+        "easier": "Use a lighter bag, or no weight at all."
+      }
+    },
+    {
+      "id": "reverse_lunge",
+      "name": "Reverse lunge",
+      "description": "Step one foot back and lower until both knees bend, then stand.",
+      "type": "reps",
+      "primaryMuscles": ["quadriceps", "glutes"],
+      "secondaryMuscles": ["hamstrings", "calves", "core"],
+      "difficulty": "beginner",
+      "category": "strength",
+      "bodyRegion": "lower_body",
+      "equipment": ["wall"],
+      "tags": ["legs", "balance", "low_impact"],
+      "sides": ["right", "left"],
+      "tempoSeconds": 4,
+      "instructions": {
+        "steps": [
+          "Stand beside a wall with one hand resting on it, feet together.",
+          "Step one foot back and lower until both knees are bent, the front knee above your ankle.",
+          "Keep your body upright.",
+          "Push through your front heel to stand. Finish one side, then switch."
+        ],
+        "breathing": "Breathe in as you step back, and out as you stand.",
+        "breathCues": ["Breathe in, step back and lower", "Breathe out, push up"],
+        "cue": "Step back, front knee over the ankle.",
+        "commonMistake": "Do not let your front knee travel past your toes, and do not lean forward.",
+        "easier": "Take a smaller step back, or do the split squat instead."
+      }
+    },
+    {
+      "id": "split_squat",
+      "name": "Split squat",
+      "description": "Lower straight down in a split stance, front foot forward.",
+      "type": "reps",
+      "primaryMuscles": ["quadriceps", "glutes"],
+      "secondaryMuscles": ["hamstrings", "calves", "core"],
+      "difficulty": "beginner",
+      "category": "strength",
+      "bodyRegion": "lower_body",
+      "tags": ["legs", "balance", "low_impact"],
+      "sides": ["right", "left"],
+      "tempoSeconds": 4,
+      "instructions": {
+        "steps": [
+          "Stand with one foot a big step in front of the other. Hold a wall or chair if you need.",
+          "Keep your body upright, back heel lifted.",
+          "Bend both knees and lower straight down.",
+          "Push through the front heel to rise. Finish one side, then switch the front foot."
+        ],
+        "breathing": "Breathe in as you lower, and out as you rise.",
+        "breathCues": ["Breathe in, lower straight down", "Breathe out, push up"],
+        "commonMistake": "Do not lean forward or let your front knee collapse inward.",
+        "easier": "Shorten the stance and lower only a little."
+      }
+    },
+    {
+      "id": "calf_raise",
+      "name": "Calf raise",
+      "description": "Rise onto the balls of your feet and lower slowly.",
+      "type": "reps",
+      "primaryMuscles": ["calves"],
+      "secondaryMuscles": ["quadriceps"],
+      "difficulty": "beginner",
+      "category": "strength",
+      "bodyRegion": "lower_body",
+      "equipment": ["wall"],
+      "tags": ["calves", "low_impact"],
+      "tempoSeconds": 3,
+      "instructions": {
+        "steps": [
+          "Stand tall with your fingertips on a wall for balance, feet hip-width apart.",
+          "Rise up onto the balls of your feet as high as you can.",
+          "Pause for a moment at the top.",
+          "Lower your heels slowly back down."
+        ],
+        "breathing": "Breathe out as you rise, and in as you lower.",
+        "commonMistake": "Do not roll your ankles outward. Rise straight up.",
+        "easier": "Hold the wall firmly with your whole hand."
+      }
+    },
+    {
+      "id": "curl_up",
+      "name": "Modified curl-up",
+      "description": "A small head-and-shoulder lift with hands under the lower back (not a sit-up).",
+      "type": "hold",
+      "primaryMuscles": ["core"],
+      "secondaryMuscles": ["shoulders"],
+      "difficulty": "beginner",
+      "category": "core",
+      "bodyRegion": "core",
+      "tags": ["mcgill_big_3", "back_friendly", "isometric", "low_impact"],
+      "instructions": {
+        "steps": [
+          "Lie on your back with one knee bent and the other leg straight.",
+          "Slide both hands, palms down, under the curve of your lower back.",
+          "Gently lift just your head and shoulders a little off the floor. Keep your neck long.",
+          "Hold, keep breathing, then lower. This is not a sit-up."
+        ],
+        "breathing": "Breathe normally. Do not hold your breath.",
+        "cue": "Lift head and shoulders just clear. This is not a sit-up.",
+        "commonMistake": "Do not pull on your neck, and do not flatten your lower back.",
+        "easier": "Lift only a tiny amount, or just tighten your tummy."
+      }
+    },
+    {
+      "id": "side_plank",
+      "name": "Side plank (on your knees)",
+      "description": "Hold a side bridge on your forearm with your knees bent.",
+      "type": "hold",
+      "primaryMuscles": ["core"],
+      "secondaryMuscles": ["shoulders", "glutes"],
+      "difficulty": "beginner",
+      "category": "core",
+      "bodyRegion": "core",
+      "tags": ["mcgill_big_3", "back_friendly", "isometric", "low_impact"],
+      "sides": ["right", "left"],
+      "instructions": {
+        "steps": [
+          "Lie on your side with your knees bent. Rest on your forearm, elbow right under your shoulder.",
+          "Lift your hips so your shoulders, hips and knees make one straight line.",
+          "Hold, breathing steadily.",
+          "Lower gently, rest, then switch sides."
+        ],
+        "breathing": "Breathe steadily. Do not hold your breath.",
+        "cue": "Hips and shoulders in one line.",
+        "commonMistake": "Do not let your hips sag, or roll forward or backward.",
+        "easier": "Lift your hips only a little, and rest longer between holds."
+      }
+    },
+    {
+      "id": "bird_dog",
+      "name": "Bird dog",
+      "description": "On hands and knees, reach one arm and the opposite leg long and hold.",
+      "type": "hold",
+      "primaryMuscles": ["core", "back", "glutes"],
+      "secondaryMuscles": ["shoulders", "hamstrings"],
+      "difficulty": "beginner",
+      "category": "core",
+      "bodyRegion": "core",
+      "tags": ["mcgill_big_3", "back_friendly", "isometric", "low_impact"],
+      "sides": ["right", "left"],
+      "instructions": {
+        "steps": [
+          "Get on your hands and knees, hands under your shoulders, knees under your hips, back flat.",
+          "Slowly reach one arm forward and the opposite leg straight back.",
+          "Keep your hips level. Do not let your back sag or twist.",
+          "Hold, then return and swap sides."
+        ],
+        "breathing": "Breathe steadily. Do not hold your breath.",
+        "cue": "Reach long, do not let the hips twist or the back sag.",
+        "commonMistake": "Do not let your hips tilt or your lower back sag.",
+        "easier": "Lift only the arm, or only the leg."
+      }
+    },
+    {
+      "id": "knee_rolls",
+      "name": "Lying knee rolls",
+      "description": "Lying on your back, let bent knees roll slowly from side to side.",
+      "type": "reps",
+      "primaryMuscles": ["core", "back"],
+      "secondaryMuscles": ["glutes"],
+      "difficulty": "beginner",
+      "category": "mobility",
+      "bodyRegion": "core",
+      "tags": ["cooldown", "spine", "low_impact"],
+      "tempoSeconds": 5,
+      "instructions": {
+        "steps": [
+          "Lie on your back with your knees bent and together, feet flat on the floor.",
+          "Let both knees slowly roll to one side, only as far as is comfortable.",
+          "Bring them back to the middle, then roll to the other side.",
+          "Keep your shoulders flat and move slowly."
+        ],
+        "breathing": "Breathe slowly and let your body relax.",
+        "commonMistake": "Do not force your knees down to the floor.",
+        "easier": "Use a smaller range."
+      }
+    },
+    {
+      "id": "hip_flexor_stretch",
+      "name": "Half-kneeling hip-flexor stretch",
+      "description": "Half-kneeling stretch for the front of the hip.",
+      "type": "hold",
+      "primaryMuscles": ["hip_flexors"],
+      "secondaryMuscles": ["quadriceps", "glutes"],
+      "difficulty": "beginner",
+      "category": "stretching",
+      "bodyRegion": "lower_body",
+      "equipment": ["towel"],
+      "tags": ["cooldown", "hips", "low_impact"],
+      "sides": ["right", "left"],
+      "instructions": {
+        "steps": [
+          "Kneel on one knee on a folded towel, with your other foot flat on the floor in front.",
+          "Tuck your pelvis slightly, like tilting your belt buckle up toward your chin.",
+          "Gently shift your weight forward until you feel a stretch at the front of the back hip.",
+          "Hold and breathe slowly. Do not arch your back."
+        ],
+        "breathing": "Breathe slowly and deeply while you hold.",
+        "commonMistake": "Do not arch your lower back to get more stretch.",
+        "easier": "Hold on to a chair for balance and shift forward only a little."
+      }
+    },
+    {
+      "id": "chest_stretch",
+      "name": "Doorway chest stretch",
+      "description": "Stretch the chest and front of the shoulder against a door frame.",
+      "type": "hold",
+      "primaryMuscles": ["chest"],
+      "secondaryMuscles": ["shoulders"],
+      "difficulty": "beginner",
+      "category": "stretching",
+      "bodyRegion": "upper_body",
+      "equipment": ["doorway"],
+      "tags": ["cooldown", "posture", "low_impact"],
+      "instructions": {
+        "steps": [
+          "Stand in a doorway. Rest your forearm on the door frame, elbow at shoulder height.",
+          "Step one foot forward and gently lean through the doorway.",
+          "You should feel a mild stretch across your chest. Keep your ribs down.",
+          "Hold and breathe. It should never hurt."
+        ],
+        "breathing": "Breathe slowly and deeply while you hold.",
+        "commonMistake": "Do not push into pain or arch your back.",
+        "easier": "Lean in only a little."
+      }
+    },
+    {
+      "id": "calf_stretch",
+      "name": "Wall calf stretch",
+      "description": "Stretch the calf with your hands on a wall and one foot back.",
+      "type": "hold",
+      "primaryMuscles": ["calves"],
+      "secondaryMuscles": ["hamstrings"],
+      "difficulty": "beginner",
+      "category": "stretching",
+      "bodyRegion": "lower_body",
+      "equipment": ["wall"],
+      "tags": ["cooldown", "low_impact"],
+      "sides": ["right", "left"],
+      "instructions": {
+        "steps": [
+          "Stand facing a wall with your hands on it at chest height.",
+          "Step one foot back, keeping the leg straight and the heel on the floor.",
+          "Bend your front knee and lean toward the wall until you feel your calf stretch.",
+          "Hold and breathe slowly."
+        ],
+        "breathing": "Breathe slowly and deeply while you hold.",
+        "commonMistake": "Keep the back heel down.",
+        "easier": "Step the back foot in a little."
+      }
+    },
+    {
+      "id": "childs_pose",
+      "name": "Child's pose",
+      "description": "Sit your hips back toward your heels and rest your arms forward.",
+      "type": "hold",
+      "primaryMuscles": ["back"],
+      "secondaryMuscles": ["glutes", "shoulders"],
+      "difficulty": "beginner",
+      "category": "stretching",
+      "bodyRegion": "full_body",
+      "tags": ["cooldown", "relaxation", "low_impact"],
+      "instructions": {
+        "steps": [
+          "Start on your hands and knees. Knees about hip-width apart, or wider if that is more comfortable.",
+          "Slowly sit your hips back toward your heels.",
+          "Rest your arms forward on the floor and let your head relax down.",
+          "Breathe slowly into your back. Come up slowly when you finish."
+        ],
+        "breathing": "Breathe slowly into your lower back.",
+        "cue": "Sit back slowly and relax.",
+        "commonMistake": "Do not force your hips down. Stop if it pinches your knees.",
+        "easier": "Place a pillow between your hips and heels, or under your chest. Skip it if bending forward makes your back or knees hurt."
+      }
+    },
+    {
+      "id": "squat",
+      "name": "Squat",
+      "description": "Bodyweight squat: sit your hips back and down, then stand tall.",
+      "type": "reps",
+      "primaryMuscles": ["quadriceps", "glutes"],
+      "secondaryMuscles": ["hamstrings", "core", "calves"],
+      "difficulty": "beginner",
+      "category": "strength",
+      "bodyRegion": "lower_body",
+      "tags": ["legs", "compound"],
+      "tempoSeconds": 4,
+      "instructions": {
+        "steps": [
+          "Stand with feet shoulder-width apart, toes slightly out.",
+          "Push your hips back and bend your knees, keeping your chest up.",
+          "Lower until your thighs are about parallel to the floor.",
+          "Drive through your heels to stand tall."
+        ],
+        "commonMistake": "Knees track over your toes; do not let them cave inward.",
+        "easier": "Squat to a chair or do a shallower range."
+      }
+    },
+    {
+      "id": "push_up",
+      "name": "Push-up",
+      "description": "Classic push-up from your toes (or knees) with a straight body line.",
+      "type": "reps",
+      "primaryMuscles": ["chest", "triceps", "shoulders"],
+      "secondaryMuscles": ["core"],
+      "difficulty": "beginner",
+      "category": "strength",
+      "bodyRegion": "upper_body",
+      "tags": ["push", "compound"],
+      "tempoSeconds": 4,
+      "instructions": {
+        "steps": [
+          "Start in a high plank, hands just wider than your shoulders.",
+          "Keep your body in one straight line from head to heels.",
+          "Bend your elbows and lower your chest toward the floor.",
+          "Press back up to straight arms."
+        ],
+        "commonMistake": "Do not let your hips sag or your head drop.",
+        "easier": "Do the push-up from your knees, or against a table or wall."
+      }
+    },
+    {
+      "id": "lunge",
+      "name": "Lunge",
+      "description": "Forward lunge: step ahead and lower both knees to about 90 degrees.",
+      "type": "reps",
+      "primaryMuscles": ["quadriceps", "glutes"],
+      "secondaryMuscles": ["hamstrings", "calves", "core"],
+      "difficulty": "intermediate",
+      "category": "strength",
+      "bodyRegion": "lower_body",
+      "tags": ["legs", "balance", "compound"],
+      "tempoSeconds": 4,
+      "instructions": {
+        "steps": [
+          "Stand tall with your feet together.",
+          "Step one foot forward and lower until both knees are bent about 90 degrees.",
+          "Keep your torso upright and your front knee over your ankle.",
+          "Push through your front heel to return, then switch legs."
+        ],
+        "commonMistake": "Do not let your front knee drift past your toes or your body lean forward.",
+        "easier": "Take a shorter step or hold a wall for balance."
+      }
+    },
+    {
+      "id": "plank",
+      "name": "Plank",
+      "description": "Hold a straight line from head to heels on your forearms.",
+      "type": "hold",
+      "primaryMuscles": ["core"],
+      "secondaryMuscles": ["shoulders", "glutes", "quadriceps"],
+      "difficulty": "beginner",
+      "category": "core",
+      "bodyRegion": "core",
+      "tags": ["isometric", "core"],
+      "instructions": {
+        "steps": [
+          "Rest on your forearms with elbows under your shoulders.",
+          "Lift your hips so your body forms one straight line.",
+          "Tighten your tummy and glutes and keep breathing.",
+          "Hold for the time, then lower with control."
+        ],
+        "commonMistake": "Do not let your hips sag or pike up.",
+        "easier": "Drop to your knees, or plank with your hands on a table."
+      }
+    },
+    {
+      "id": "mountain_climber",
+      "name": "Mountain climber",
+      "description": "From a high plank, drive your knees toward your chest in turn.",
+      "type": "time",
+      "primaryMuscles": ["core", "shoulders"],
+      "secondaryMuscles": ["chest", "triceps", "quadriceps"],
+      "difficulty": "intermediate",
+      "category": "cardio",
+      "bodyRegion": "full_body",
+      "tags": ["hiit", "core", "cardio"],
+      "tempoSeconds": 1.4,
+      "instructions": {
+        "steps": [
+          "Start in a high plank with hands under your shoulders.",
+          "Drive one knee toward your chest.",
+          "Switch legs quickly, keeping your hips low and level.",
+          "Keep a steady rhythm and breathe."
+        ],
+        "commonMistake": "Do not bounce your hips up or let your shoulders drift back.",
+        "easier": "Slow it down and step each foot in rather than driving."
+      }
+    },
+    {
+      "id": "burpee",
+      "name": "Burpee",
+      "description": "Full-body move: squat, plank, push-up, then jump up.",
+      "type": "reps",
+      "primaryMuscles": ["quadriceps", "glutes", "chest"],
+      "secondaryMuscles": ["shoulders", "triceps", "core", "calves"],
+      "difficulty": "advanced",
+      "category": "cardio",
+      "bodyRegion": "full_body",
+      "tags": ["hiit", "compound", "cardio"],
+      "tempoSeconds": 5,
+      "instructions": {
+        "steps": [
+          "Stand tall, then squat down and place your hands on the floor.",
+          "Jump or step your feet back into a plank.",
+          "Lower your chest to the floor, then press back up.",
+          "Hop your feet in and jump up with your arms overhead."
+        ],
+        "commonMistake": "Do not let your lower back sag in the plank.",
+        "easier": "Step back and forward instead of jumping, and skip the push-up."
+      }
+    },
+    {
+      "id": "deadlift",
+      "name": "Deadlift",
+      "description": "Hip-hinge lift: push your hips back and stand tall with a flat back.",
+      "type": "reps",
+      "primaryMuscles": ["hamstrings", "glutes", "back"],
+      "secondaryMuscles": ["quadriceps", "core", "calves"],
+      "difficulty": "intermediate",
+      "category": "strength",
+      "bodyRegion": "lower_body",
+      "equipment": ["barbell"],
+      "tags": ["posterior_chain", "compound"],
+      "tempoSeconds": 5,
+      "instructions": {
+        "steps": [
+          "Stand with feet hip-width apart, the bar close to your shins.",
+          "Hinge at your hips and grip the bar with a flat back.",
+          "Drive through your feet and stand tall, bar close to your legs.",
+          "Lower the bar with control by pushing your hips back."
+        ],
+        "commonMistake": "Do not round your back or let the bar drift away from your legs.",
+        "easier": "Practise the hip hinge with no weight first, or use light dumbbells."
+      }
+    },
+    {
+      "id": "bicep_curl",
+      "name": "Bicep curl",
+      "description": "Curl a dumbbell up toward your shoulder, keeping your elbow still.",
+      "type": "reps",
+      "primaryMuscles": ["biceps"],
+      "secondaryMuscles": ["shoulders", "core"],
+      "difficulty": "beginner",
+      "category": "strength",
+      "bodyRegion": "upper_body",
+      "equipment": ["dumbbell"],
+      "tags": ["pull", "isolation"],
+      "tempoSeconds": 4,
+      "instructions": {
+        "steps": [
+          "Stand tall holding a dumbbell in each hand, palms forward.",
+          "Keep your elbows close to your sides.",
+          "Curl the weights up toward your shoulders.",
+          "Lower slowly back down."
+        ],
+        "commonMistake": "Do not swing your body or let your elbows drift forward.",
+        "easier": "Use lighter weights or a water bottle."
+      }
+    },
+    {
+      "id": "shoulder_press",
+      "name": "Shoulder press",
+      "description": "Press dumbbells from shoulder height to overhead.",
+      "type": "reps",
+      "primaryMuscles": ["shoulders", "triceps"],
+      "secondaryMuscles": ["chest", "core", "back"],
+      "difficulty": "beginner",
+      "category": "strength",
+      "bodyRegion": "upper_body",
+      "equipment": ["dumbbell"],
+      "tags": ["push", "compound"],
+      "tempoSeconds": 4,
+      "instructions": {
+        "steps": [
+          "Stand tall with a dumbbell at each shoulder, palms forward.",
+          "Brace your tummy and keep your ribs down.",
+          "Press the weights straight overhead.",
+          "Lower slowly back to shoulder height."
+        ],
+        "commonMistake": "Do not arch your lower back as you press.",
+        "easier": "Press one arm at a time, or use lighter weights."
+      }
+    },
+    {
+      "id": "jumping_jack",
+      "name": "Jumping jacks",
+      "description": "Jump your feet apart while raising your arms overhead, then back.",
+      "type": "time",
+      "primaryMuscles": ["shoulders", "calves"],
+      "secondaryMuscles": ["quadriceps", "glutes", "core"],
+      "difficulty": "beginner",
+      "category": "cardio",
+      "bodyRegion": "full_body",
+      "tags": ["warmup", "cardio"],
+      "tempoSeconds": 1.6,
+      "instructions": {
+        "steps": [
+          "Stand with your feet together and arms by your sides.",
+          "Jump your feet out wide as you raise your arms overhead.",
+          "Jump back to the start.",
+          "Keep a steady, relaxed rhythm."
+        ],
+        "commonMistake": "Land softly on the balls of your feet; do not lock your knees.",
+        "easier": "Step side to side instead of jumping."
+      }
+    },
+    {
+      "id": "crunch",
+      "name": "Crunch",
+      "description": "Lift your shoulders off the floor by tightening your abdominal muscles.",
+      "type": "reps",
+      "primaryMuscles": ["core"],
+      "difficulty": "beginner",
+      "category": "core",
+      "bodyRegion": "core",
+      "tags": ["abs"],
+      "instructions": {
+        "steps": [
+          "Lie on your back with your knees bent and feet flat.",
+          "Place your hands lightly behind your head or across your chest.",
+          "Tighten your tummy and lift your head and shoulders off the floor.",
+          "Lower back down slowly."
+        ],
+        "commonMistake": "Do not pull on your neck.",
+        "easier": "Keep your hands across your chest and lift only a little."
+      },
+      "tempoSeconds": 3
+    },
+    {
+      "id": "bicycle_crunch",
+      "name": "Bicycle crunch",
+      "description": "Alternate elbow-to-opposite-knee while pedalling your legs.",
+      "type": "reps",
+      "primaryMuscles": ["core"],
+      "secondaryMuscles": ["shoulders"],
+      "difficulty": "intermediate",
+      "category": "core",
+      "bodyRegion": "core",
+      "tags": ["abs", "obliques"],
+      "instructions": {
+        "steps": [
+          "Lie on your back with your hands lightly behind your head.",
+          "Lift your shoulders and bring your knees up.",
+          "Twist to bring one elbow toward the opposite knee while the other leg straightens.",
+          "Switch sides in a smooth pedalling motion."
+        ],
+        "commonMistake": "Do not yank your head with your hands; turn from your trunk.",
+        "easier": "Keep your feet on the floor and just twist."
+      },
+      "tempoSeconds": 2
+    },
+    {
+      "id": "russian_twist",
+      "name": "Russian twist",
+      "description": "Seated trunk rotation with your feet lifted or on the floor.",
+      "type": "reps",
+      "primaryMuscles": ["core"],
+      "secondaryMuscles": ["shoulders"],
+      "difficulty": "intermediate",
+      "category": "core",
+      "bodyRegion": "core",
+      "tags": ["abs", "obliques"],
+      "instructions": {
+        "steps": [
+          "Sit with your knees bent and lean back slightly, back straight.",
+          "Clasp your hands in front of your chest.",
+          "Rotate your torso to one side, then to the other.",
+          "Keep your chest lifted throughout."
+        ],
+        "commonMistake": "Do not round your back or move only your arms.",
+        "easier": "Keep your heels on the floor."
+      },
+      "tempoSeconds": 2,
+      "sides": ["right", "left"]
+    },
+    {
+      "id": "high_knees",
+      "name": "High knees",
+      "description": "Run on the spot driving your knees up to hip height.",
+      "type": "time",
+      "primaryMuscles": ["quadriceps", "core"],
+      "secondaryMuscles": ["calves", "glutes"],
+      "difficulty": "beginner",
+      "category": "cardio",
+      "bodyRegion": "full_body",
+      "tags": ["cardio", "hiit", "warmup"],
+      "instructions": {
+        "steps": [
+          "Stand tall with your feet hip-width apart.",
+          "Run on the spot, driving each knee up toward hip height.",
+          "Swing your arms opposite to your legs.",
+          "Stay light on the balls of your feet."
+        ],
+        "commonMistake": "Do not lean back as your knees come up.",
+        "easier": "March instead of run."
+      },
+      "tempoSeconds": 1
+    },
+    {
+      "id": "superman",
+      "name": "Superman",
+      "description": "Lying face down, lift your arms and legs to strengthen the back.",
+      "type": "hold",
+      "primaryMuscles": ["back", "glutes"],
+      "secondaryMuscles": ["hamstrings", "shoulders"],
+      "difficulty": "beginner",
+      "category": "strength",
+      "bodyRegion": "core",
+      "tags": ["back_friendly", "isometric"],
+      "instructions": {
+        "steps": [
+          "Lie face down with your arms stretched forward.",
+          "Gently lift your arms, chest and legs a few centimetres off the floor.",
+          "Hold, keeping your neck long and looking at the floor.",
+          "Lower slowly."
+        ],
+        "commonMistake": "Do not crane your neck or lift too high.",
+        "easier": "Lift only your arms or only your legs."
+      }
+    },
+    {
+      "id": "dead_bug",
+      "name": "Dead bug",
+      "description": "Lying on your back, lower opposite arm and leg while keeping your back flat.",
+      "type": "reps",
+      "primaryMuscles": ["core"],
+      "secondaryMuscles": ["hip_flexors"],
+      "difficulty": "beginner",
+      "category": "core",
+      "bodyRegion": "core",
+      "tags": ["mcgill_big_3", "back_friendly", "low_impact"],
+      "instructions": {
+        "steps": [
+          "Lie on your back with arms straight up and knees bent over your hips.",
+          "Press your lower back gently into the floor.",
+          "Slowly lower one arm overhead and the opposite leg toward the floor.",
+          "Return and switch sides."
+        ],
+        "commonMistake": "Do not let your lower back arch off the floor.",
+        "easier": "Move only your legs, keeping your arms still."
+      },
+      "tempoSeconds": 4
+    },
+    {
+      "id": "shoulder_tap",
+      "name": "Shoulder tap",
+      "description": "From a high plank, tap each shoulder with the opposite hand.",
+      "type": "reps",
+      "primaryMuscles": ["core", "shoulders"],
+      "secondaryMuscles": ["chest", "triceps"],
+      "difficulty": "intermediate",
+      "category": "core",
+      "bodyRegion": "upper_body",
+      "tags": ["plank", "stability"],
+      "instructions": {
+        "steps": [
+          "Start in a high plank with feet a little wider than hip-width.",
+          "Keep your hips as still as you can.",
+          "Lift one hand and tap the opposite shoulder.",
+          "Return it to the floor and tap with the other hand."
+        ],
+        "commonMistake": "Do not let your hips rock from side to side.",
+        "easier": "Widen your feet or do it from your knees."
+      },
+      "tempoSeconds": 2
+    },
+    {
+      "id": "jump_squat",
+      "name": "Jump squat",
+      "description": "A squat finished with an explosive jump.",
+      "type": "reps",
+      "primaryMuscles": ["quadriceps", "glutes"],
+      "secondaryMuscles": ["hamstrings", "calves", "core"],
+      "difficulty": "intermediate",
+      "category": "cardio",
+      "bodyRegion": "lower_body",
+      "tags": ["plyometric", "hiit"],
+      "instructions": {
+        "steps": [
+          "Lower into a squat with your chest up.",
+          "Drive up explosively and jump off the floor.",
+          "Land softly with bent knees.",
+          "Go straight into the next squat."
+        ],
+        "commonMistake": "Do not land with locked knees or let them cave inward.",
+        "easier": "Do regular squats or rise onto your toes."
+      },
+      "tempoSeconds": 2
+    },
+    {
+      "id": "tricep_dip",
+      "name": "Chair tricep dip",
+      "description": "Lower and raise your body with your hands on the edge of a chair.",
+      "type": "reps",
+      "primaryMuscles": ["triceps"],
+      "secondaryMuscles": ["shoulders", "chest"],
+      "difficulty": "intermediate",
+      "category": "strength",
+      "bodyRegion": "upper_body",
+      "equipment": ["chair"],
+      "tags": ["push"],
+      "instructions": {
+        "steps": [
+          "Sit on the edge of a sturdy chair and place your hands beside your hips.",
+          "Slide your hips off the seat with your legs bent.",
+          "Bend your elbows to lower your body, keeping your back close to the chair.",
+          "Press back up until your arms are straight."
+        ],
+        "commonMistake": "Do not let your shoulders shrug up to your ears.",
+        "easier": "Keep your knees bent and feet close to the chair."
+      },
+      "tempoSeconds": 3
+    },
+    {
+      "id": "flutter_kick",
+      "name": "Flutter kick",
+      "description": "Lying on your back, kick your straight legs up and down in small movements.",
+      "type": "time",
+      "primaryMuscles": ["core", "hip_flexors"],
+      "secondaryMuscles": ["quadriceps"],
+      "difficulty": "intermediate",
+      "category": "core",
+      "bodyRegion": "core",
+      "tags": ["abs", "low_impact"],
+      "instructions": {
+        "steps": [
+          "Lie on your back with your hands under your hips.",
+          "Lift your legs a little off the floor.",
+          "Kick them up and down in small, quick alternating movements.",
+          "Keep your lower back pressed down."
+        ],
+        "commonMistake": "Do not let your lower back arch.",
+        "easier": "Raise your legs higher or bend your knees."
+      },
+      "tempoSeconds": 1
+    },
+    {
+      "id": "leg_raise",
+      "name": "Lying leg raise",
+      "description": "Raise straight legs toward the ceiling and lower with control.",
+      "type": "reps",
+      "primaryMuscles": ["core", "hip_flexors"],
+      "secondaryMuscles": ["quadriceps"],
+      "difficulty": "intermediate",
+      "category": "core",
+      "bodyRegion": "core",
+      "tags": ["abs"],
+      "instructions": {
+        "steps": [
+          "Lie on your back with your legs straight and hands under your hips.",
+          "Press your lower back into the floor.",
+          "Raise both legs toward the ceiling.",
+          "Lower slowly without touching the floor."
+        ],
+        "commonMistake": "Do not let your back arch as your legs lower.",
+        "easier": "Bend your knees slightly or raise one leg at a time."
+      },
+      "tempoSeconds": 4
+    },
+    {
+      "id": "lateral_raise",
+      "name": "Lateral raise",
+      "description": "Raise dumbbells out to the sides to shoulder height.",
+      "type": "reps",
+      "primaryMuscles": ["shoulders"],
+      "difficulty": "beginner",
+      "category": "strength",
+      "bodyRegion": "upper_body",
+      "equipment": ["dumbbell"],
+      "tags": ["isolation"],
+      "instructions": {
+        "steps": [
+          "Stand tall holding a light dumbbell in each hand.",
+          "With soft elbows, raise your arms out to the sides to shoulder height.",
+          "Pause briefly at the top.",
+          "Lower slowly."
+        ],
+        "commonMistake": "Do not shrug or swing the weights up.",
+        "easier": "Use lighter weights, such as water bottles."
+      },
+      "tempoSeconds": 4
+    },
+    {
+      "id": "bent_over_row",
+      "name": "Bent-over row",
+      "description": "Hinge forward and row two dumbbells toward your hips.",
+      "type": "reps",
+      "primaryMuscles": ["back"],
+      "secondaryMuscles": ["biceps", "shoulders", "hamstrings"],
+      "difficulty": "intermediate",
+      "category": "strength",
+      "bodyRegion": "upper_body",
+      "equipment": ["dumbbell"],
+      "tags": ["pull", "compound"],
+      "instructions": {
+        "steps": [
+          "Hold a dumbbell in each hand and hinge forward from your hips, back flat.",
+          "Let the weights hang below your shoulders.",
+          "Pull your elbows back toward your hips, squeezing your shoulder blades.",
+          "Lower slowly."
+        ],
+        "commonMistake": "Do not round your back or jerk the weights.",
+        "easier": "Use lighter weights or row one arm at a time."
+      },
+      "tempoSeconds": 4
+    },
+    {
+      "id": "side_lunge",
+      "name": "Side lunge",
+      "description": "Step wide to the side and sit back into one hip.",
+      "type": "reps",
+      "primaryMuscles": ["quadriceps", "glutes"],
+      "secondaryMuscles": ["hamstrings", "core"],
+      "difficulty": "intermediate",
+      "category": "strength",
+      "bodyRegion": "lower_body",
+      "tags": ["legs", "balance"],
+      "instructions": {
+        "steps": [
+          "Stand tall with your feet together.",
+          "Step wide to one side and sit your hips back, keeping the other leg straight.",
+          "Keep your chest up and the bent knee over your toes.",
+          "Push off to return, then switch sides."
+        ],
+        "commonMistake": "Do not let your bent knee cave inward.",
+        "easier": "Take a smaller step."
+      },
+      "tempoSeconds": 4,
+      "sides": ["right", "left"]
+    },
+    {
+      "id": "bear_crawl",
+      "name": "Bear crawl",
+      "description": "Crawl forward on hands and feet with your knees just off the floor.",
+      "type": "time",
+      "primaryMuscles": ["core", "shoulders"],
+      "secondaryMuscles": ["quadriceps", "chest", "triceps"],
+      "difficulty": "advanced",
+      "category": "strength",
+      "bodyRegion": "full_body",
+      "tags": ["compound", "core"],
+      "instructions": {
+        "steps": [
+          "Start on hands and knees, then lift your knees a few centimetres.",
+          "Keep your back flat and hips low.",
+          "Move opposite hand and foot forward together.",
+          "Crawl for the time, then reverse back if space is limited."
+        ],
+        "commonMistake": "Do not let your hips rise or your back sag.",
+        "easier": "Hold the lifted-knee position, or crawl on your knees."
+      },
+      "tempoSeconds": 2
+    },
+    {
+      "id": "hamstring_stretch",
+      "name": "Seated hamstring stretch",
+      "description": "Stretch the back of the thigh by reaching toward a straight leg.",
+      "type": "hold",
+      "primaryMuscles": ["hamstrings"],
+      "secondaryMuscles": ["calves"],
+      "difficulty": "beginner",
+      "category": "stretching",
+      "bodyRegion": "lower_body",
+      "tags": ["cooldown", "low_impact"],
+      "instructions": {
+        "steps": [
+          "Sit on the floor with one leg straight and the other foot against your inner thigh.",
+          "Sit tall and hinge forward from your hips.",
+          "Reach toward your shin until you feel a gentle stretch.",
+          "Hold and breathe slowly, then switch legs."
+        ],
+        "commonMistake": "Do not round your back or bounce.",
+        "easier": "Bend the straight knee slightly or sit on a cushion."
+      },
+      "sides": ["right", "left"]
+    },
+    {
+      "id": "cobra_stretch",
+      "name": "Cobra stretch",
+      "description": "Lying face down, press up gently to stretch the front of the body.",
+      "type": "hold",
+      "primaryMuscles": ["core"],
+      "secondaryMuscles": ["back", "chest"],
+      "difficulty": "beginner",
+      "category": "stretching",
+      "bodyRegion": "core",
+      "tags": ["cooldown", "spine", "low_impact"],
+      "instructions": {
+        "steps": [
+          "Lie face down with your hands under your shoulders.",
+          "Gently press up, lifting your chest while your hips stay down.",
+          "Keep your shoulders away from your ears.",
+          "Hold and breathe, then lower slowly."
+        ],
+        "commonMistake": "Do not push into pain or force your back to arch.",
+        "easier": "Prop up on your forearms instead."
+      }
+    },
+    {
+      "id": "quad_stretch",
+      "name": "Standing quad stretch",
+      "description": "Pull your heel toward your glute to stretch the front of the thigh.",
+      "type": "hold",
+      "primaryMuscles": ["quadriceps"],
+      "secondaryMuscles": ["hip_flexors"],
+      "difficulty": "beginner",
+      "category": "stretching",
+      "bodyRegion": "lower_body",
+      "equipment": ["wall"],
+      "tags": ["cooldown", "balance", "low_impact"],
+      "instructions": {
+        "steps": [
+          "Stand tall, holding a wall for balance.",
+          "Bend one knee and hold your ankle behind you.",
+          "Keep your knees together and your hips tucked slightly.",
+          "Hold, then switch legs."
+        ],
+        "commonMistake": "Do not arch your lower back.",
+        "easier": "Hold a towel around your ankle."
+      },
+      "sides": ["right", "left"]
+    },
+    {
+      "id": "butt_kicks",
+      "name": "Butt kicks",
+      "description": "Jog on the spot, kicking your heels up toward your glutes.",
+      "type": "time",
+      "primaryMuscles": ["hamstrings"],
+      "secondaryMuscles": ["calves", "quadriceps"],
+      "difficulty": "beginner",
+      "category": "cardio",
+      "bodyRegion": "lower_body",
+      "tags": ["warmup", "cardio"],
+      "instructions": {
+        "steps": [
+          "Stand tall and start jogging on the spot.",
+          "Kick each heel up toward your glute.",
+          "Swing your arms naturally.",
+          "Stay light on the balls of your feet."
+        ],
+        "commonMistake": "Do not lean forward or let your knees drift forward.",
+        "easier": "Walk the movement more slowly."
+      },
+      "tempoSeconds": 1
+    },
+    {
+      "id": "skater_hop",
+      "name": "Skater hop",
+      "description": "Bound side to side, landing on one leg like a speed skater.",
+      "type": "time",
+      "primaryMuscles": ["quadriceps", "glutes"],
+      "secondaryMuscles": ["calves", "core", "hamstrings"],
+      "difficulty": "intermediate",
+      "category": "cardio",
+      "bodyRegion": "lower_body",
+      "tags": ["plyometric", "balance", "cardio"],
+      "instructions": {
+        "steps": [
+          "Stand on one leg with a slight bend in the knee.",
+          "Hop sideways to land on the other foot.",
+          "Swing your arms across your body for balance.",
+          "Keep the rhythm smooth and controlled."
+        ],
+        "commonMistake": "Do not let your landing knee collapse inward.",
+        "easier": "Step side to side instead of hopping."
+      },
+      "tempoSeconds": 1.5
+    }
+  ]
+}

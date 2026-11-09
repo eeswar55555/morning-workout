@@ -1,0 +1,120 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "fitness.schema.json",
+  "title": "Morning Workout content pack",
+  "description": "One JSON document holding any mix of exercises, workouts and training plans. Mirrors types.ts. Workouts reference exercises by exerciseId; plans reference workouts by workoutId.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "exercises": { "type": "array", "items": { "$ref": "#/$defs/Exercise" } },
+    "workouts": { "type": "array", "items": { "$ref": "#/$defs/Workout" } },
+    "plans": { "type": "array", "items": { "$ref": "#/$defs/TrainingPlan" } }
+  },
+  "$defs": {
+    "Id": { "type": "string", "pattern": "^[a-z0-9]+(_[a-z0-9]+)*$", "description": "snake_case, unique across all packs" },
+    "Difficulty": { "enum": ["beginner", "intermediate", "advanced"] },
+    "Muscle": { "enum": ["chest", "shoulders", "biceps", "triceps", "forearms", "back", "core", "glutes", "quadriceps", "hamstrings", "calves", "hip_flexors", "lower_back", "neck", "jaw", "cheeks", "lips", "forehead", "eyes"] },
+    "BodyRegion": { "enum": ["upper_body", "lower_body", "core", "full_body", "neck", "face"] },
+    "StringList": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+
+    "ExerciseInstructions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["steps"],
+      "properties": {
+        "steps": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 }, "description": "Short sentences, spoken aloud" },
+        "breathing": { "type": "string" },
+        "breathCues": { "type": "array", "minItems": 2, "maxItems": 2, "items": { "type": "string", "minLength": 1 }, "description": "[cue on the effort, cue on the return]" },
+        "cue": { "type": "string" },
+        "commonMistake": { "type": "string" },
+        "easier": { "type": "string" },
+        "harder": { "type": "string" }
+      }
+    },
+
+    "Exercise": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "description", "type", "primaryMuscles", "difficulty"],
+      "properties": {
+        "id": { "$ref": "#/$defs/Id" },
+        "name": { "type": "string", "minLength": 1 },
+        "description": { "type": "string", "minLength": 1 },
+        "type": { "enum": ["reps", "time", "hold"], "description": "reps = counted; time = keep moving for N seconds; hold = stay still for N seconds" },
+        "primaryMuscles": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/Muscle" } },
+        "secondaryMuscles": { "type": "array", "items": { "$ref": "#/$defs/Muscle" } },
+        "difficulty": { "$ref": "#/$defs/Difficulty" },
+        "category": { "type": "string", "minLength": 1 },
+        "bodyRegion": { "$ref": "#/$defs/BodyRegion" },
+        "equipment": { "$ref": "#/$defs/StringList" },
+        "tags": { "$ref": "#/$defs/StringList" },
+        "caloriesPerMinute": { "type": "number", "minimum": 0 },
+        "sides": { "type": "array", "minItems": 2, "maxItems": 2, "items": { "type": "string", "minLength": 1 }, "description": "[\"right\", \"left\"] or [\"forward\", \"backward\"]" },
+        "tempoSeconds": { "type": "number", "minimum": 0.5, "description": "Seconds per repetition or animation loop" },
+        "instructions": { "$ref": "#/$defs/ExerciseInstructions" }
+      }
+    },
+
+    "WorkoutEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["exerciseId"],
+      "properties": {
+        "exerciseId": { "$ref": "#/$defs/Id" },
+        "repetitions": { "type": "integer", "minimum": 1, "description": "Only for exercises of type reps" },
+        "durationSeconds": { "type": "integer", "minimum": 1, "description": "Only for exercises of type time or hold" },
+        "sets": { "type": "integer", "minimum": 1 },
+        "restSeconds": { "type": "integer", "minimum": 0 },
+        "note": { "type": "string" }
+      }
+    },
+
+    "Workout": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "exercises"],
+      "properties": {
+        "id": { "$ref": "#/$defs/Id" },
+        "name": { "type": "string", "minLength": 1 },
+        "description": { "type": "string" },
+        "exercises": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/WorkoutEntry" } },
+        "rounds": { "type": "integer", "minimum": 1 },
+        "restSeconds": { "type": "integer", "minimum": 0 },
+        "difficulty": { "$ref": "#/$defs/Difficulty" },
+        "category": { "type": "string", "minLength": 1 },
+        "tags": { "$ref": "#/$defs/StringList" },
+        "estimatedMinutes": { "type": "number", "minimum": 1 }
+      }
+    },
+
+    "PlanDay": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["day"],
+      "properties": {
+        "day": { "type": "integer", "minimum": 1 },
+        "type": { "enum": ["workout", "rest"], "description": "Default workout. rest = a day off (no workout fields)" },
+        "workoutId": { "$ref": "#/$defs/Id" },
+        "workoutIds": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/Id" }, "description": "Several workouts done in order, e.g. warm-up, main, cool-down" },
+        "note": { "type": "string" }
+      }
+    },
+
+    "TrainingPlan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name", "days"],
+      "properties": {
+        "id": { "$ref": "#/$defs/Id" },
+        "name": { "type": "string", "minLength": 1 },
+        "description": { "type": "string" },
+        "days": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/PlanDay" }, "description": "Day numbers run 1..N with no gaps. A workout day has workoutId or workoutIds; a rest day has type rest." },
+        "difficulty": { "$ref": "#/$defs/Difficulty" },
+        "goal": { "type": "string" },
+        "tags": { "$ref": "#/$defs/StringList" }
+      }
+    }
+  }
+}

@@ -2,9 +2,9 @@
  *
  * It replaces the old stick figure: Figure.create(svg) now draws a clean flat-vector athlete with smooth tapered
  * limbs, clothes, shoes, hair and soft shading. Poses still come from figure.js (side view) or from the "front"
- * format below, so every exercise in exercises.js keeps working and new ones are only data.
+ * format below, so every exercise in animations.js keeps working and new ones are only data.
  *
- * What is drawn, per exercise (configured in illus-config.js):
+ * What is drawn, per exercise (options in animations.js; the muscles come from the exercise library in data/):
  *   - the character, looping continuously, from a SIDE or FRONT viewpoint
  *   - the working muscles tinted in an accent colour (primary strong, secondary soft); the tint swells towards the
  *     end position of the movement
@@ -495,8 +495,10 @@
     function setAnim(anim, mirror) {
       cur.anim = anim; cur.mirror = !!mirror;
       back.innerHTML = ''; gGhost.innerHTML = ''; gTrail.innerHTML = ''; gBody.innerHTML = ''; gCustom.innerHTML = '';
-      el('rect', { x: -600, y: FLOOR, width: VW + 1200, height: 200, class: 'floor' }, back);
-      el('rect', { x: -600, y: FLOOR, width: VW + 1200, height: 2.4, class: 'floorEdge' }, back);
+      if (!(anim && anim.noFloor)) {
+        el('rect', { x: -600, y: FLOOR, width: VW + 1200, height: 200, class: 'floor' }, back);
+        el('rect', { x: -600, y: FLOOR, width: VW + 1200, height: 2.4, class: 'floorEdge' }, back);
+      }
       drawProps(back, anim, mirror);
       var c = cfgFor(anim), ex = exFor(anim);
       if (anim && anim.custom) { cur.rig = null; return; }
@@ -553,8 +555,8 @@
     /* opts = { u: cycle fraction } or { pos: position along the poses } */
     function show(opts) {
       var anim = cur.anim; if (!anim) return;
-      if (anim.custom) { anim.custom(gCustom, opts.u != null ? opts.u : 0.25, el); return; }
       var pos = opts.pos != null ? opts.pos : F.cyclePos(anim, opts.u || 0);
+      if (anim.custom) { anim.custom(gCustom, opts.u != null ? opts.u : 0.25, el, pos, cur.mirror); return; }   // pos 0..1 = effort, mirror = second side
       var j = jointsAt(anim, pos, cur.front);
       cur.rig.draw(j, cur.o);
       if (!lite) cur.rig.setMuscleOpacity(cur.n > 1 ? Math.min(1, Math.max(0, pos / (cur.n - 1))) : 1);
@@ -570,14 +572,4 @@
   root.Illus = Illus;
   F.create = create;
 
-  /* attach per-exercise config (illus-config.js) to the animation objects of exercises.js */
-  Illus.attach = function () {
-    var cfg = (root.ILLUS && root.ILLUS.exercises) || {};
-    (root.EXERCISES || []).forEach(function (ex) {
-      if (ex.anim && typeof ex.anim === 'object') { ex.anim._cfg = cfg[ex.id] || {}; ex.anim._ex = ex; }
-    });
-    ((root.ILLUS && root.ILLUS.extra) || []).forEach(function (ex) { ex.anim._cfg = ex; ex.anim._ex = ex; });
-    return cfg;
-  };
-  Illus.attach();
 })(window);

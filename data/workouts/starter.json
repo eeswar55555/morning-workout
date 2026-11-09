@@ -1,0 +1,117 @@
+{
+  "schemaVersion": 1,
+  "workouts": [
+    {
+      "id": "beginner_full_body_01",
+      "name": "Beginner Full Body 01",
+      "description": "Easy full-body circuit: jumping jacks, squats, push-ups and a plank.",
+      "category": "full_body",
+      "difficulty": "beginner",
+      "rounds": 2,
+      "restSeconds": 20,
+      "exercises": [
+        { "exerciseId": "jumping_jack", "durationSeconds": 30 },
+        { "exerciseId": "squat", "repetitions": 10 },
+        { "exerciseId": "push_up", "repetitions": 8 },
+        { "exerciseId": "plank", "durationSeconds": 20 },
+        { "exerciseId": "glute_bridge", "repetitions": 12 }
+      ]
+    },
+    {
+      "id": "beginner_full_body_02",
+      "name": "Beginner Full Body 02",
+      "description": "Marching, lunges, incline push-ups and a side plank.",
+      "category": "full_body",
+      "difficulty": "beginner",
+      "rounds": 2,
+      "restSeconds": 20,
+      "exercises": [
+        { "exerciseId": "march_in_place", "durationSeconds": 45 },
+        { "exerciseId": "lunge", "repetitions": 8 },
+        { "exerciseId": "incline_push_up", "repetitions": 10 },
+        { "exerciseId": "side_plank", "durationSeconds": 15, "sets": 2 },
+        { "exerciseId": "calf_raise", "repetitions": 12 }
+      ]
+    },
+    {
+      "id": "beginner_full_body_03",
+      "name": "Beginner Full Body 03",
+      "description": "A touch harder: step-ups, push-ups, mountain climbers and a bird dog.",
+      "category": "full_body",
+      "difficulty": "beginner",
+      "rounds": 3,
+      "restSeconds": 20,
+      "exercises": [
+        { "exerciseId": "step_up", "repetitions": 8 },
+        { "exerciseId": "push_up", "repetitions": 10 },
+        { "exerciseId": "mountain_climber", "durationSeconds": 20 },
+        { "exerciseId": "bird_dog", "durationSeconds": 10, "sets": 2 },
+        { "exerciseId": "squat", "repetitions": 12 }
+      ]
+    },
+    {
+      "id": "recovery_day_01",
+      "name": "Recovery Day 01",
+      "description": "Gentle mobility and stretching for an active recovery day.",
+      "category": "recovery",
+      "difficulty": "beginner",
+      "restSeconds": 5,
+      "exercises": [
+        { "exerciseId": "cat_cow", "repetitions": 8 },
+        { "exerciseId": "knee_rolls", "repetitions": 10 },
+        { "exerciseId": "hip_flexor_stretch", "durationSeconds": 30 },
+        { "exerciseId": "hamstring_stretch", "durationSeconds": 30 },
+        { "exerciseId": "cobra_stretch", "durationSeconds": 20 },
+        { "exerciseId": "childs_pose", "durationSeconds": 40 }
+      ]
+    },
+    {
+      "id": "core_basics_01",
+      "name": "Core Basics 01",
+      "description": "Core strength with a back-friendly choice of moves.",
+      "category": "core",
+      "difficulty": "beginner",
+      "rounds": 2,
+      "restSeconds": 20,
+      "exercises": [
+        { "exerciseId": "crunch", "repetitions": 12 },
+        { "exerciseId": "plank", "durationSeconds": 25 },
+        { "exerciseId": "dead_bug", "repetitions": 10 },
+        { "exerciseId": "side_plank", "durationSeconds": 15, "sets": 2 },
+        { "exerciseId": "superman", "durationSeconds": 15 }
+      ]
+    },
+    {
+      "id": "hiit_cardio_01",
+      "name": "HIIT Cardio 01",
+      "description": "Short, sharp cardio intervals. Not for the first weeks.",
+      "category": "cardio",
+      "difficulty": "intermediate",
+      "rounds": 3,
+      "restSeconds": 15,
+      "exercises": [
+        { "exerciseId": "jumping_jack", "durationSeconds": 40 },
+        { "exerciseId": "high_knees", "durationSeconds": 30 },
+        { "exerciseId": "mountain_climber", "durationSeconds": 30 },
+        { "exerciseId": "burpee", "repetitions": 8 },
+        { "exerciseId": "jump_squat", "repetitions": 12 }
+      ]
+    },
+    {
+      "id": "dumbbell_upper_01",
+      "name": "Dumbbell Upper Body 01",
+      "description": "Shoulders, arms and back with a pair of light dumbbells.",
+      "category": "strength",
+      "difficulty": "beginner",
+      "rounds": 2,
+      "restSeconds": 30,
+      "exercises": [
+        { "exerciseId": "bicep_curl", "repetitions": 12 },
+        { "exerciseId": "shoulder_press", "repetitions": 10 },
+        { "exerciseId": "lateral_raise", "repetitions": 12 },
+        { "exerciseId": "bent_over_row", "repetitions": 10 },
+        { "exerciseId": "tricep_dip", "repetitions": 10 }
+      ]
+    }
+  ]
+}
