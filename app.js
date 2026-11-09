@@ -30,7 +30,16 @@
     plus: '<path d="M12 5v14M5 12h14"/>',
     info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v5.5M12 7.8h.01"/>',
     prev: '<path d="M19 5L9 12l10 7z" fill="currentColor"/><path d="M5 5v14"/>',
-    chev: '<path d="M6 9l6 6 6-6"/>'
+    chev: '<path d="M6 9l6 6 6-6"/>',
+    dots: '<path d="M5 12h.01M12 12h.01M19 12h.01" stroke-width="3.4"/>',
+    grip: '<path d="M9 6h.01M15 6h.01M9 12h.01M15 12h.01M9 18h.01M15 18h.01" stroke-width="3.4"/>',
+    trash: '<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>',
+    copy: '<rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h8"/>',
+    minus: '<path d="M5 12h14"/>',
+    moon: '<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/>',
+    eye: '<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+    wand: '<path d="M4 20L15 9M15 4l1 2.2 2.2 1-2.2 1L15 10.4l-1-2.2-2.2-1 2.2-1zM19.5 12.5l.6 1.4 1.4.6-1.4.6-.6 1.4-.6-1.4-1.4-.6 1.4-.6z"/>',
+    calendar: '<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/>'
   };
   function ico(n, cls) {
     return '<svg class="i ' + (cls || '') + '" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + ICONS[n] + '</svg>';
@@ -113,10 +122,11 @@
   function go(name) {
     screen = name; var v = $('#view');
     $$('#nav button').forEach(function (b) { var on = b.getAttribute('data-go') === name; b.classList.toggle('on', on); b.setAttribute('aria-current', on ? 'page' : 'false'); });
-    ({ today: renderToday, library: renderLibrary, progress: renderProgress, settings: renderSettings })[name](v);
+    SCREENS[name](v);
     v.scrollTop = 0; thumbs(v);
   }
-  function refresh() { var v = $('#view'), st = v.scrollTop; ({ today: renderToday, library: renderLibrary, progress: renderProgress, settings: renderSettings })[screen](v); v.scrollTop = st; thumbs(v); }
+  function refresh() { var v = $('#view'), st = v.scrollTop; SCREENS[screen](v); v.scrollTop = st; thumbs(v); }
+  var SCREENS = { today: function (v) { renderToday(v); }, studio: function (v) { Studio.render(v); }, progress: function (v) { renderProgress(v); }, settings: function (v) { renderSettings(v); } };
 
   /* ====================== TODAY ====================== */
   function greeting() { var h = new Date().getHours(); return h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening'; }
@@ -137,7 +147,7 @@
     if (plan.rest) {
       h += '<section class="hero empty"><span class="eyebrow">Rest day</span><h2>Take it easy today</h2><p class="muted">' + esc(plan.note || 'Rest is part of the plan. Walk, stretch, drink water and sleep well.') + '</p></section>';
     } else if (!nEx) {
-      h += '<section class="hero empty"><h2>Nothing to do today</h2><p class="muted">Every exercise in today\'s workouts is switched off. Turn some back on in the Exercises tab.</p></section>';
+      h += '<section class="hero empty"><h2>Nothing to do today</h2><p class="muted">Every exercise in today\'s workouts is switched off. Turn some back on in Workout Studio > Exercises.</p></section>';
     } else {
       h += '<section class="hero"><span class="eyebrow">' + (done ? 'Done today · go again?' : 'Today\'s workout') + '</span>' +
         '<div class="hero-stats"><div><b>' + mins + '</b><span>minutes</span></div><div><b>' + nEx + '</b><span>exercises</span></div><div><b>' + nRounds + '</b><span>' + (nRounds === 1 ? 'round' : 'rounds') + '</span></div></div>' +
@@ -198,8 +208,10 @@
       var o = S.dose[ex.id] && S.dose[ex.id].n != null ? S.dose[ex.id].n : '';
       h += '<label class="field">Your ' + (ex.type === 'reps' ? 'reps' : 'seconds') + ' (leave empty to follow the plan: ' + C.planAmount(ex, entry) + ')<input type="number" inputmode="numeric" min="1" max="300" id="amt" placeholder="' + C.planAmount(ex, entry) + '" value="' + o + '"></label>';
     }
-    h += '<div class="rowbtns"><button class="btn small" data-close>Done</button></div>';
+    h += '<div class="rowbtns">' + (ex.custom ? '<button class="ghost" id="exEdit">' + ico('edit') + 'Edit</button><button class="ghost danger" id="exDel">' + ico('trash') + 'Delete</button>' : '') + '<button class="btn small" data-close>Done</button></div>';
     var sh = sheet(h, { tall: true, onClose: function () { demo && demo.stop(); V.cancel(); } });
+    var eb = $('#exEdit', sh.root); if (eb) eb.onclick = function () { sh.close(); Studio.editExercise(ex.id); };
+    var db = $('#exDel', sh.root); if (db) db.onclick = function () { sh.close(); Studio.deleteExercise(ex.id); };
     demo = mountDemo($('#demoBox', sh.root), ex);
     $('#hear', sh.root).onclick = function () {
       if (!V.enabled()) { toast('Voice is off. Turn it on in Settings.'); return; }
@@ -211,36 +223,6 @@
       if (!n || n === C.planAmount(ex, entry)) delete S.dose[ex.id]; else S.dose[ex.id] = { n: Math.max(1, Math.min(300, n)) };
       C.save(); refresh();
     };
-  }
-
-  /* ====================== LIBRARY ====================== */
-  var libFilter = 'all';
-  function renderLibrary(v) {
-    var all = C.lib();
-    var h = '<header class="top"><div><h1>Exercises</h1><div class="muted">Tap one to watch it. Switch off any you do not want in your workouts.</div></div></header>' +
-      '<div class="searchbar">' + ico('search') + '<input id="lq" type="search" placeholder="Search exercises" aria-label="Search exercises" autocomplete="off"></div>' +
-      '<div class="filters" role="group" aria-label="Filter">' + [['all', 'All'], ['on', 'In my plan'], ['off', 'Switched off']].map(function (f) { return '<button class="fchip' + (libFilter === f[0] ? ' on' : '') + '" data-f="' + f[0] + '" aria-pressed="' + (libFilter === f[0]) + '">' + f[1] + '</button>'; }).join('') + '</div>' +
-      '<div class="liblist" id="liblist">';
-    all.forEach(function (ex) {
-      var find = [ex.name, ex.area, ex.category, (ex.tags || []).join(' '), (ex.equipment || []).join(' ')].join(' ').replace(/_/g, ' ').toLowerCase();
-      h += '<div class="item lib" data-name="' + esc(find) + '" data-off="' + (S.disabled[ex.id] ? 1 : 0) + '">' + thumbHtml(ex.id) + '<div class="meta" data-open="' + esc(ex.id) + '" role="button" tabindex="0"><div class="nm">' + esc(ex.name) + '</div><div class="muted small">' + esc(ex.area || '') + ' · ' + esc(ex.difficulty) + '</div></div>' +
-        '<label class="switch" title="Use in my workouts"><input type="checkbox" data-en="' + esc(ex.id) + '" aria-label="Use ' + esc(ex.name) + ' in my workouts"' + (S.disabled[ex.id] ? '' : ' checked') + '><span></span></label></div>';
-    });
-    h += '</div><p class="empty muted" id="libEmpty" hidden>No exercises match.</p><p class="muted small">New exercises, workouts and plans are added as JSON in <code>data/</code> — see <code>data/README.md</code>.</p>';
-    v.innerHTML = h;
-    function applyFilter() {
-      var q = ($('#lq').value || '').trim().toLowerCase(), shown = 0;
-      $$('#liblist .item').forEach(function (r) {
-        var ok = (!q || r.getAttribute('data-name').indexOf(q) >= 0) && (libFilter === 'all' || (libFilter === 'off') === (r.getAttribute('data-off') === '1'));
-        r.hidden = !ok; if (ok) shown++;
-      });
-      $('#libEmpty').hidden = shown > 0;
-    }
-    $('#lq').oninput = applyFilter;
-    $$('.fchip', v).forEach(function (b) { b.onclick = function () { libFilter = b.getAttribute('data-f'); $$('.fchip', v).forEach(function (x) { var on = x === b; x.classList.toggle('on', on); x.setAttribute('aria-pressed', on); }); applyFilter(); }; });
-    applyFilter();
-    $$('[data-open]', v).forEach(function (m) { m.onclick = function () { openDetail(m.getAttribute('data-open')); }; m.onkeydown = function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openDetail(m.getAttribute('data-open')); } }; });
-    $$('[data-en]', v).forEach(function (c) { c.onchange = function () { var id = c.getAttribute('data-en'); if (c.checked) delete S.disabled[id]; else S.disabled[id] = 1; c.closest('.item').setAttribute('data-off', c.checked ? 0 : 1); C.save(); applyFilter(); }; });
   }
 
   /* ====================== PROGRESS ====================== */
@@ -304,7 +286,11 @@
     var st = S.settings, pos = C.planPosition(C.dateKey());
     var h = '<header class="top"><div><h1>Settings</h1></div></header>';
     h += '<section class="card"><b>Training plan</b>' +
-      '<label class="field">Plan<select id="sPlan">' + Catalog.plans.map(function (p) { return '<option value="' + esc(p.id) + '"' + (p.id === pos.plan.id ? ' selected' : '') + '>' + esc(p.name) + ' (' + p.days.length + ' days)</option>'; }).join('') + '</select></label>' +
+      '<label class="field">Plan<select id="sPlan">' + [[false, 'Built-in plans'], [true, 'My plans']].map(function (g) {
+        var l = Catalog.plans.filter(function (p) { return !!p.custom === g[0]; });
+        return l.length ? '<optgroup label="' + g[1] + '">' + l.map(function (p) { return '<option value="' + esc(p.id) + '"' + (p.id === pos.plan.id ? ' selected' : '') + '>' + esc(p.name) + ' (' + p.days.length + ' days)</option>'; }).join('') + '</optgroup>' : '';
+      }).join('') + '</select></label>' +
+      '<button class="link" id="sStudio">Create or edit plans in Workout Studio</button>' +
       (pos.plan.description ? '<p class="muted small">' + esc(pos.plan.description) + '</p>' : '') +
       '<label class="field">Today is day<input type="number" id="sDay" min="1" max="' + pos.total + '" inputmode="numeric" value="' + pos.day.day + '"></label>' +
       '<p class="muted small">The plan moves on one day at a time. Change the day to repeat a week or to line up with your calendar.</p></section>';
@@ -336,6 +322,7 @@
     $('#sTest').onclick = function () { SND.unlock(); V.warm(); if (!V.enabled()) toast('Voice is off'); else V.now('Next: chair sit to stand. 3, 2, 1, begin.'); };
     $('#sPace').onchange = function () { st.pace = +this.value; save(); };
     $('#sRest').oninput = function () { st.restStrength = +this.value; $('#rr').textContent = st.restStrength + ' s'; save(); };
+    $('#sStudio').onclick = function () { go('studio'); };
     $('#sPlan').onchange = function () { C.setPlan(this.value); toast('Plan changed. Today is day 1.'); refresh(); };
     $('#sDay').onchange = function () { var n = Math.max(1, Math.min(pos.total, parseInt(this.value, 10) || 1)); C.setPlanDay(n); toast('Today is day ' + n); refresh(); };
     $('#sBase').onchange = function () { st.basePain = this.value === '' ? null : Math.max(0, Math.min(10, +this.value)); save(); };
@@ -662,6 +649,7 @@
       navigator.serviceWorker.addEventListener('controllerchange', function () { if (hadController && !reloaded && !RUN) { reloaded = true; location.reload(); } });
       navigator.serviceWorker.register('sw.js').catch(function () {});
     }
+    window.AppUI = { sheet: sheet, toast: toast, esc: esc, ico: ico, thumbHtml: thumbHtml, thumbs: thumbs, openDetail: openDetail, startWorkout: startWorkout, refresh: refresh, go: go, instrHtml: instrHtml };
     window.__app = { go: go, startWorkout: startWorkout, get RUN() { return RUN; }, skip: skip, previous: previous, pause: pause, resume: resume };
   }
   function fail(e) {

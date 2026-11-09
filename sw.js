@@ -1,8 +1,8 @@
 /* Service worker: offline support without ever serving a mix of old and new files.
  * Online  -> always fetch the latest file (bypassing the browser's HTTP cache) and refresh the offline copy.
  * Offline / slow network (> 4 s) -> use the saved copy. */
-const CACHE = 'morning-workout-v6';
-const FILES = ['./', 'index.html', 'app.css', 'figure.css', 'figure.js', 'animations.js', 'illus.js', 'face.js', 'catalog.js', 'core.js', 'app.js', 'data/index.json',
+const CACHE = 'morning-workout-v7';
+const FILES = ['./', 'index.html', 'app.css', 'figure.css', 'figure.js', 'animations.js', 'illus.js', 'face.js', 'catalog.js', 'core.js', 'studio.js', 'app.js', 'data/index.json',
   'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/icon-maskable-512.png'];
 
 // The content packs listed in data/index.json are cached too, so adding a pack to the index is all it takes to work offline.

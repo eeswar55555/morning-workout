@@ -18,7 +18,10 @@
   /* body zones for the muscle overlay in the workout player */
   var ZONE = { legs: ['glutes', 'quadriceps', 'hamstrings', 'calves', 'hip_flexors'], torso: ['chest', 'back', 'core'], arms: ['shoulders', 'biceps', 'triceps', 'forearms'] };
 
-  var C = { exercises: [], workouts: [], plans: [], defaultPlanId: null }, byEx = {}, byWo = {}, byPl = {};
+  /* Two sources, kept apart: built-in packs (data/*.json, read-only) and the user's own items (saved in the app state
+   * and handed over with setCustom). Runtime objects carry `custom: true` for the user's items. */
+  var C = { exercises: [], workouts: [], plans: [], defaultPlanId: null, NAME: NAME }, byEx = {}, byWo = {}, byPl = {};
+  var sys = { ex: [], wo: [], pl: [] }, cust = { exercises: [], workouts: [], plans: [] };
 
   function fetchJson(url) {
     return fetch(url, { cache: 'no-cache' }).then(function (r) {
@@ -53,7 +56,7 @@
   }
 
   function animFor(ex) {
-    var A = root.ANIMATIONS || {}, src = A[ex.id], guard = 0;
+    var A = root.ANIMATIONS || {}, src = A[ex.looks || ex.id], guard = 0;      // a custom exercise borrows the picture of `looks`
     while (src && src.like && guard++ < 5) src = A[src.like];          // { like: 'other_id' } reuses another picture
     if (src && src.face && root.Face) return root.Face.build(src.face, ex);   // face-only drawing (face.js)
     if (!src || !src.poses) return placeholder(ex);
@@ -88,22 +91,42 @@
     });
   }
 
+  function flag(o, custom) { var r = {}; for (var k in o) r[k] = o[k]; r.custom = !!custom; return r; }
+
+  /* (re)build every lookup from the built-in packs plus the user's own items; built-in ids always win */
+  function rebuild() {
+    var ex = [], wo = [], pl = [];
+    byEx = {}; byWo = {}; byPl = {};
+    sys.ex.forEach(function (e) { merge(ex, byEx, [flag(e, false)], 'exercise'); });
+    (cust.exercises || []).forEach(function (e) { if (e && e.id && e.name && e.type) merge(ex, byEx, [flag(e, true)], 'exercise'); });
+    sys.wo.forEach(function (w) { merge(wo, byWo, [flag(w, false)], 'workout'); });
+    (cust.workouts || []).forEach(function (w) { if (w && w.id && Array.isArray(w.exercises)) merge(wo, byWo, [flag(w, true)], 'workout'); });
+    sys.pl.forEach(function (p) { merge(pl, byPl, [flag(p, false)], 'plan'); });
+    (cust.plans || []).forEach(function (p) { if (p && p.id && Array.isArray(p.days)) merge(pl, byPl, [flag(p, true)], 'plan'); });
+    C.exercises = ex.map(function (e) { var r = runtimeExercise(e); byEx[e.id] = r; return r; });
+    C.workouts = wo;
+    C.plans = pl.map(function (p) {
+      var days = (p.days || []).slice().sort(function (a, b) { return a.day - b.day; }).map(normalizeDay);
+      var r = {}; for (var k in p) r[k] = p[k]; r.days = days; byPl[p.id] = r; return r;
+    }).filter(function (p) { return p.days.length; });
+  }
+
   C.load = function () {
     return fetchJson('data/index.json').then(function (idx) {
       return Promise.all((idx.files || []).map(function (f) { return fetchJson('data/' + f); })).then(function (packs) {
-        var ex = [], wo = [], pl = [];
-        byEx = {}; byWo = {}; byPl = {};
-        packs.forEach(function (p) { merge(ex, byEx, p.exercises, 'exercise'); merge(wo, byWo, p.workouts, 'workout'); merge(pl, byPl, p.plans, 'plan'); });
-        C.exercises = ex.map(function (e) { var r = runtimeExercise(e); byEx[e.id] = r; return r; });
-        C.workouts = wo;
-        C.plans = pl.map(function (p) {
-          var days = (p.days || []).slice().sort(function (a, b) { return a.day - b.day; }).map(normalizeDay);
-          var r = {}; for (var k in p) r[k] = p[k]; r.days = days; byPl[p.id] = r; return r;
-        }).filter(function (p) { return p.days.length; });
-        C.defaultPlanId = byPl[idx.defaultPlanId] ? idx.defaultPlanId : (C.plans[0] && C.plans[0].id);
-        if (!C.plans.length) throw new Error('no training plans found in data/');
+        sys = { ex: [], wo: [], pl: [] };
+        packs.forEach(function (p) { sys.ex = sys.ex.concat(p.exercises || []); sys.wo = sys.wo.concat(p.workouts || []); sys.pl = sys.pl.concat(p.plans || []); });
+        rebuild();
+        C.defaultPlanId = (byPl[idx.defaultPlanId] && !byPl[idx.defaultPlanId].custom) ? idx.defaultPlanId : (C.plans.filter(function (p) { return !p.custom; })[0] || {}).id;
+        if (!C.defaultPlanId) throw new Error('no training plans found in data/');
       });
     });
+  };
+  /* the user's own exercises / workouts / plans (from the saved app state) */
+  C.setCustom = function (c) {
+    c = c || {};
+    cust = { exercises: c.exercises || [], workouts: c.workouts || [], plans: c.plans || [] };
+    if (sys.pl.length) rebuild();
   };
 
   C.exercise = function (id) { return byEx[id]; };

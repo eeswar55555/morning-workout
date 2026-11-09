@@ -7,13 +7,14 @@
 (function (root) {
   'use strict';
   var KEY = 'morningfit.v1';          // the storage key stays; the data inside is versioned by `v`
-  var VERSION = 2;
+  var VERSION = 3;
   var WEEK = 7;                        // the review window for "ready for the next week?" (calendar days, not plan content)
 
   var DEFAULTS = {
     v: VERSION, start: null, planId: null, ack: false, reviewed: '',
     settings: { voice: true, rate: 1, voiceName: '', beep: true, vibrate: true, detail: 'auto', pace: 1, restStrength: 0, theme: 'auto', basePain: null },
-    disabled: {}, dose: {}, history: [], pain: {}, counts: {}
+    disabled: {}, dose: {}, history: [], pain: {}, counts: {},
+    custom: { exercises: [], workouts: [], plans: [] }        // the user's own content; built-in content stays in data/*.json
   };
   var clone = function (o) { return JSON.parse(JSON.stringify(o)); };
   var S;
@@ -39,6 +40,9 @@
     }
     if (!S.start) S.start = dateKey();
     migrate(S);
+    S.custom = S.custom || {};
+    ['exercises', 'workouts', 'plans'].forEach(function (k) { if (!Array.isArray(S.custom[k])) S.custom[k] = []; });
+    if (root.Catalog) root.Catalog.setCustom(S.custom);
     return S;
   }
   /* v1 -> v2: exercise ids became snake_case, the six "levels" became days of a plan, and the in-app plan editor,
@@ -46,16 +50,22 @@
   var OLD_ID = { 'incline-pushup': 'incline_push_up', 'wall-pushup': 'wall_push_up', 'march': 'march_in_place' };
   function newId(id) { return OLD_ID[id] || String(id).replace(/-/g, '_'); }
   function renameKeys(o) { var r = {}; Object.keys(o || {}).forEach(function (k) { r[newId(k)] = o[k]; }); return r; }
+  /* v2 -> v3: the user's own exercises, workouts and plans (Workout Studio) get their own place in the state. */
   function migrate(s) {
-    if ((s.v || 1) >= VERSION) return s;
+    var v = s.v || 1;
+    if (v >= VERSION) return s;
+    if (v < 2) migrateV1(s);
+    s.custom = { exercises: [], workouts: [], plans: [] };
+    s.v = VERSION;
+    return s;
+  }
+  function migrateV1(s) {
     s.disabled = renameKeys(s.disabled); s.counts = renameKeys(s.counts); s.dose = renameKeys(s.dose);
     (s.history || []).forEach(function (h) { h.done = (h.done || []).map(newId); h.skipped = (h.skipped || []).map(newId); });
     if (s.level > 1) s.start = addDays(dateKey(), -(s.level - 1) * 14);       // old level N = day 1 of the matching two weeks
     ['level', 'routine', 'custom', 'plans'].forEach(function (k) { delete s[k]; });
     if (s.settings) delete s.settings.lightDay;
     s.reviewed = s.reviewed || ''; s.planId = s.planId || null;
-    s.v = VERSION;
-    return s;
   }
   var saveFailed = false;
   function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); saveFailed = false; } catch (e) { saveFailed = true; } }
@@ -108,20 +118,77 @@
   function setPlanDay(n) { S.start = addDays(dateKey(), -(Math.max(1, n) - 1)); save(); }
   function setPlan(id) { S.planId = id; S.start = dateKey(); S.reviewed = ''; save(); }
 
-  /* today's session: the workouts of the plan day, minus exercises the user switched off */
+  /* one workout as a block of the session; exercises the user switched off are skipped (unless ignoreDisabled) */
+  function blockOf(w, wi, ignoreDisabled) {
+    var items = [];
+    (w.exercises || []).forEach(function (en, i) {
+      var ex = getEx(en.exerciseId);
+      if (ex && (ignoreDisabled || !S.disabled[ex.id])) items.push({ key: wi + ':' + i, id: ex.id, entry: en });
+    });
+    return items.length ? { id: w.id, title: w.name, workout: w, rounds: Math.max(1, w.rounds || 1), items: items } : null;
+  }
+  /* today's session: the workouts of the plan day */
   function buildPlan(key) {
     var pos = planPosition(key), day = pos.day, blocks = [];
     if (!day.rest) day.workoutIds.forEach(function (wid, wi) {
-      var w = root.Catalog.workout(wid), items = [];
-      if (!w) return;
-      w.exercises.forEach(function (en, i) {
-        var ex = getEx(en.exerciseId);
-        if (ex && !S.disabled[ex.id]) items.push({ key: wi + ':' + i, id: ex.id, entry: en });
-      });
-      if (items.length) blocks.push({ id: wid, title: w.name, workout: w, rounds: Math.max(1, w.rounds || 1), items: items });
+      var w = root.Catalog.workout(wid), b = w && blockOf(w, wi);
+      if (b) blocks.push(b);
     });
     return { date: key, planId: pos.plan.id, planName: pos.plan.name, day: day.day, total: pos.total, looped: pos.looped,
       rest: day.rest, note: day.note, blocks: blocks };
+  }
+  /* a session that is not part of the plan: "start this workout now" from the Workout Studio */
+  function sessionFor(workoutIds) {
+    var blocks = [];
+    workoutIds.forEach(function (wid, wi) { var w = root.Catalog.workout(wid), b = w && blockOf(w, wi); if (b) blocks.push(b); });
+    return { date: dateKey(), planId: null, planName: '', day: null, total: 0, looped: false, rest: false, note: '', blocks: blocks };
+  }
+  /* how long a workout takes, in minutes (also works for a draft that is not saved yet) */
+  function estimateMinutes(w) {
+    var b = blockOf(w, 0, true);
+    return b ? estimate(buildSteps({ blocks: [b] })) / 60 : 0;
+  }
+
+  /* ---------- the user's own exercises, workouts and plans ----------
+   * Kept in S.custom, apart from the built-in packs, so built-in content can never be changed by accident.
+   * Items have exactly the shape of the JSON schema (data/schema/types.ts); an exercise may also carry `looks`
+   * (the id of a built-in exercise whose picture it borrows). */
+  function slug(s) { return String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '').slice(0, 32) || 'item'; }
+  function makeId(kind, name) {
+    var K = root.Catalog, has = { exercises: K.exercise, workouts: K.workout, plans: K.plan }[kind];
+    var base = 'my_' + slug(name), id = base;
+    for (var i = 2; has(id); i++) id = base + '_' + i;
+    return id;
+  }
+  function saveCustom(kind, item) {
+    if (!item.id) item.id = makeId(kind, item.name);
+    var list = S.custom[kind], at = -1;
+    list.forEach(function (x, i) { if (x.id === item.id) at = i; });
+    if (at >= 0) list[at] = item; else list.push(item);
+    save(); root.Catalog.setCustom(S.custom);
+    return item;
+  }
+  function isCustom(kind, id) {
+    var K = root.Catalog, o = { exercises: K.exercise, workouts: K.workout, plans: K.plan }[kind](id);
+    return !!(o && o.custom);
+  }
+  function workoutsUsing(exerciseId) { return root.Catalog.workouts.filter(function (w) { return w.exercises.some(function (e) { return e.exerciseId === exerciseId; }); }); }
+  function plansUsing(workoutId) { return root.Catalog.plans.filter(function (p) { return p.days.some(function (d) { return d.workoutIds.indexOf(workoutId) >= 0; }); }); }
+  function deleteCustom(kind, id) {
+    S.custom[kind] = S.custom[kind].filter(function (x) { return x.id !== id; });
+    if (kind === 'workouts') {                       // days that used it fall back to rest days
+      S.custom.plans.forEach(function (p) {
+        p.days = p.days.map(function (d) {
+          if (d.type === 'rest') return d;
+          var ids = (d.workoutIds || [d.workoutId]).filter(function (x) { return x && x !== id; }), o = { day: d.day };
+          if (!ids.length) o.type = 'rest'; else if (ids.length === 1) o.workoutId = ids[0]; else o.workoutIds = ids;
+          if (d.note) o.note = d.note;
+          return o;
+        });
+      });
+    }
+    save(); root.Catalog.setCustom(S.custom);
+    if (kind === 'plans' && S.planId === id) setPlan(root.Catalog.defaultPlanId);
   }
 
   /* ---------- turn a session into the ordered list of steps the player runs ---------- */
@@ -318,7 +385,8 @@
     dateKey: dateKey, parseKey: parseKey, daysBetween: daysBetween, addDays: addDays,
     lib: lib, getEx: getEx, plan: plan, planPosition: planPosition, setPlan: setPlan, setPlanDay: setPlanDay, shiftPlan: shiftPlan,
     sidesOf: sidesOf, dose: dose, planAmount: planAmount, doseText: doseText, spokenDose: spokenDose, period: period,
-    buildPlan: buildPlan, buildSteps: buildSteps, estimate: estimate,
+    buildPlan: buildPlan, sessionFor: sessionFor, buildSteps: buildSteps, estimate: estimate, estimateMinutes: estimateMinutes,
+    saveCustom: saveCustom, deleteCustom: deleteCustom, isCustom: isCustom, makeId: makeId, workoutsUsing: workoutsUsing, plansUsing: plansUsing,
     sessions: sessions, streak: streak, basePain: basePain, advice: advice,
     Sound: Sound, Voice: Voice, WakeLock: WakeLock, saveFailed: function () { return saveFailed; }
   };

@@ -44,7 +44,7 @@ Today's session is **day N of your training plan** (Settings → *Training plan*
 The plan moves on one day at a time. It can hold workout days (one workout, or several done one after another, e.g. warm-up,
 strength, stability, cool-down), **rest days** and notes. After the last day it starts again. Variety comes from the plan pointing at
 different workouts on different days. The bundled *Morning full-body · 12 weeks* plan alternates three strength circuits and makes
-day 7 of each week a lighter day. The Exercises tab can switch exercises off; they are skipped in every workout.
+day 7 of each week a lighter day. Workout Studio > Exercises can switch exercises off; they are skipped in every workout.
 
 ## Progression
 Progression is data, not code: a plan's later days simply point at harder workouts. *Morning full-body · 12 weeks* follows the six
@@ -53,8 +53,21 @@ The plan advances daily by itself. At the start of each new week the app checks 
 form, 2+ reps in reserve and back pain no worse than usual it says "great week"; otherwise it offers **Repeat last week**, and after a
 pain flare **Go back one week**. You answer two quick questions after each workout, and (optionally) log your back pain 0–10 each morning.
 
-## Changing or adding content
-All content is JSON in `data/`: the **exercise library** (`exercises/`), **workouts** (`workouts/`) and **training plans** (`plans/`).
+## Workout Studio: make your own workouts and plans
+The **Studio** tab is where you build things, with forms and pickers (never JSON):
+- **Workouts:** *New workout* (from scratch, or from any existing workout as a template). Pick exercises from a searchable, filterable
+  list, set reps or seconds and sets with steppers, **drag the handle to reorder** (or use the arrow keys), duplicate or remove rows,
+  optionally add rounds and rest. Preview, start now, edit, duplicate or delete from the ⋯ menu.
+- **Plans:** *New plan*: choose the length (7–90 days or any number), then **Auto-fill** (training days per week + the workouts to rotate)
+  or tap any day to pick one or several workouts, or a rest day. The timeline is shown week by week; a week can be copied to all weeks.
+  *Use this plan* starts it today.
+- **Exercises:** the full library with search and filters, plus *New exercise* (name, reps / timed / hold, muscles, body area,
+  steps, and which existing picture it should borrow).
+Built-in workouts, plans and exercises are read-only; **Customize** or **Duplicate** gives you your own editable copy. Your own items are
+stored on the phone, separately from the built-in content (and are included in *Progress > Save a backup*).
+
+## Changing or adding built-in content
+Built-in content is JSON in `data/` (for developers and AIs; people use the Studio): the **exercise library** (`exercises/`), **workouts** (`workouts/`) and **training plans** (`plans/`).
 Each level only references the one below by id, so an exercise is defined once and reused everywhere. To add content, write a pack
 (or ask any AI to return one that matches `data/schema/fitness.schema.json`), list it in `data/index.json` and run
 `npm run validate`. **See `data/README.md`** for the three shapes, examples, patterns and an AI prompt.
@@ -66,7 +79,9 @@ After editing, re-upload the folder (Netlify Drop again / `git push`). The phone
 | `index.html`, `app.css`, `figure.css` | Page and look |
 | `app.js` | Screens + the workout player (voice, timers, controls) |
 | `core.js` | Today's session from the plan, progress rules, voice, sound |
-| `catalog.js` | Loads `data/` and joins exercises with their illustrations |
+| `catalog.js` | Loads `data/`, merges your own items, joins exercises with their illustrations |
+| `studio.js` | Workout Studio: builders for workouts, plans and exercises |
+| `face.js` | Front-view face drawings for facial exercises |
 | `data/` | **Content (edit me):** `index.json`, `exercises/`, `workouts/`, `plans/`, `schema/types.ts`, `schema/fitness.schema.json`, `README.md` |
 | `scripts/validate-data.js` | `npm run validate`: checks every content pack |
 | `animations.js` | Poses and options of each exercise's moving picture (optional per exercise) |
