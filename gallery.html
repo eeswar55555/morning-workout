@@ -16,11 +16,14 @@
   .demo svg { width: 100%; height: 100%; display: block; }
   .card h2 { font-size: 1rem; margin: 10px 12px 2px; } .card small { display: block; margin: 0 12px 12px; color: var(--muted); }
   .tag { display: inline-block; font-size: .68rem; font-weight: 700; padding: 1px 7px; border-radius: 99px; background: var(--line); margin-left: 6px; vertical-align: 1px; }
+  .rviews { display: flex; flex-wrap: wrap; gap: 4px; padding: 8px 12px 0; }
+  .rview { min-height: 32px; padding: 0 10px; border-radius: 99px; font-size: .75rem; font-weight: 700; background: var(--bg); border: 1.5px solid var(--line); color: var(--text); cursor: pointer; }
+  .rview.on { background: #0a7c72; color: #fff; border-color: #0a7c72; }
 </style>
 </head>
 <body>
 <h1>Exercise illustrations</h1>
-<p class="sub">Every exercise in the library (data/exercises). Pictures live in animations.js. Add <code>?t=0.5</code> to freeze at a loop position (0 = start, 0.5 = end), <code>&amp;f=1</code> for the female style.</p>
+<p class="sub">Every exercise in the library (data/exercises). Pictures live in animations.js. Add <code>?t=0.5</code> to freeze at a loop position (0 = start, 0.5 = end), <code>&amp;f=1</code> for the female style. Multi-view exercises show Side / Front (etc.) switchers.</p>
 <div class="grid" id="grid"></div>
 <script src="figure.js"></script>
 <script src="animations.js"></script>
@@ -30,16 +33,44 @@
 <script>
   var q = new URLSearchParams(location.search), freeze = q.has('t') ? parseFloat(q.get('t')) : null, figs = [];
   if (q.get('f') === '1') Illus.female = true;
+  function labelOf(ex, viewId) {
+    if (ex.anim.placeholder) return 'no picture yet';
+    if (ex.anim.face && !(ex.anim._views && ex.anim._views.length)) return 'face';
+    var ids = Catalog.viewIds(ex);
+    if (ids.length) return ids.map(Catalog.viewLabel).join(' · ');
+    return ((ex.anim._cfg || {}).view || 'side');
+  }
   Catalog.load().then(function () {
     Catalog.exercises.forEach(function (ex) {
       var c = document.createElement('div'); c.className = 'card';
       var d = document.createElement('div'); d.className = 'demo'; c.appendChild(d);
       var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); svg.setAttribute('class', 'fig'); d.appendChild(svg);
+      var ids = Catalog.viewIds(ex), viewId = ex.anim._defaultView || ids[0] || null;
+      var fig = Figure.create(svg); fig.setAnim(ex.anim, false);
+      var entry = { fig: fig, ex: ex, anim: ex.anim };
+      figs.push(entry);
+      if (ids.length >= 2) {
+        var bar = document.createElement('div'); bar.className = 'rviews'; bar.setAttribute('role', 'group');
+        function paintBar() {
+          bar.innerHTML = ids.map(function (id) {
+            return '<button type="button" class="rview' + (id === viewId ? ' on' : '') + '" data-view="' + id + '">' + Catalog.viewLabel(id) + '</button>';
+          }).join('');
+          Array.prototype.forEach.call(bar.querySelectorAll('[data-view]'), function (b) {
+            b.onclick = function () {
+              viewId = b.getAttribute('data-view');
+              entry.anim = Catalog.animForView(ex, viewId);
+              entry.fig.setAnim(entry.anim, false);
+              paintBar();
+            };
+          });
+        }
+        paintBar();
+        c.appendChild(bar);
+      }
       var h = document.createElement('h2'); h.textContent = ex.name;
-      var t = document.createElement('span'); t.className = 'tag'; t.textContent = ex.anim.placeholder ? 'no picture yet' : ex.anim.face ? 'face' : ((ex.anim._cfg || {}).view || 'side'); h.appendChild(t); c.appendChild(h);
+      var t = document.createElement('span'); t.className = 'tag'; t.textContent = labelOf(ex); h.appendChild(t); c.appendChild(h);
       var s = document.createElement('small'); s.textContent = ex.id + ' · ' + ex.area; c.appendChild(s);
       document.getElementById('grid').appendChild(c);
-      var fig = Figure.create(svg); fig.setAnim(ex.anim, false); figs.push({ fig: fig, ex: ex });
     });
     var t0 = performance.now();
     function frame(now) {

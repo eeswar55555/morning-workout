@@ -12,6 +12,17 @@
  * }
  * or { like: 'other_exercise_id' } to reuse another exercise's picture.
  *
+ * Multi-view (switchable teaching angles — see SPEC-anim-multi-view):
+ *   {
+ *     defaultView: 'side',
+ *     views: {
+ *       side:  { poses: [...], props: ..., cfg: {...} },
+ *       front: { cfg: { view: 'front' }, poses: [...] },
+ *       'close-up': { face: { ... } }   // optional; face pipeline
+ *     }
+ *   }
+ * Legacy single-view entries (poses / face at the top level) keep working unchanged.
+ *
  * The muscles that get tinted come from primaryMuscles / secondaryMuscles in the exercise library, not from here.
  * An exercise with no entry here still works: the app shows a neutral placeholder. To add a picture, add an entry whose
  * key is the exercise id (an existing entry to copy is the easiest start), then preview it in gallery.html.
@@ -48,36 +59,105 @@
 
   var LIST = {
     /* =================== WARM-UP =================== */
+    /* Form briefs: docs/anim-briefs/cat_cow.md — whole-spine flex/extend, mild cow, straight arms */
     cat_cow: {
-      props: P.mat(40, 190),
-      poses: [all4({ t: [130, 80], h: 70 }), all4({ t: [80, 125], h: 135 })]
+      defaultView: 'side',
+      views: {
+        side: {
+          props: P.mat(40, 190),
+          dynamic: true,
+          poses: [
+            all4({ t: 104, h: 100 }),
+            all4({ t: [128, 82], h: 72 }),
+            all4({ t: 104, h: 100 }),
+            all4({ t: [90, 118], h: 122 })
+          ]
+        }
+      }
     },
+    /* Form briefs: docs/anim-briefs/{standing_side_bend,arm_circles,march_in_place}.md */
     standing_side_bend: {
-      cfg: { view: 'front' }, view: 'front',
-      poses: [
-        { hip: [130, 74.5], t: 0, h: 0, aL: [168, 172], aR: [8, 8], lL: { to: [9, 136] } },
-        { hip: [138, 76], t: 16, h: 18, aL: [175, 178], aR: [8, 8], lL: { to: [16, 136] } }
-      ]
+      defaultView: 'front',
+      views: {
+        /* front: one arm overhead, opposite lean, square hips, no twist */
+        front: {
+          cfg: { view: 'front' },
+          poses: [
+            { hip: [130, 74.5], t: 0, h: 0, aL: [168, 172], aR: [8, 8], lL: { to: [9, 136] }, lR: { to: [9, 136] } },
+            { hip: [134, 75], t: 12, h: 6, aL: [172, 176], aR: [10, 14], lL: { to: [10, 136] }, lR: { to: [8, 136] } }
+          ]
+        },
+        /* side: pure lateral flexion plane; near arm up, far arm down (not double overhead) */
+        side: {
+          cfg: { track: 'sh' },
+          poses: [
+            stand(118, { aN: [170, 170], aF: [10, 10] }),
+            stand(120, { t: 194, h: 186, aN: [170, 170], aF: [10, 10] })
+          ]
+        }
+      }
     },
+    /* docs/anim-briefs/thread_the_needle.md — hips stay up; palm-up thread; mild thoracic rotation */
     thread_the_needle: {
-      props: P.mat(40, 190),
-      poses: [
-        all4(),
-        all4({ hip: [108, 118], t: 58, h: 18, aN: { to: [58, 136], b: -1 } })
-      ]
+      defaultView: 'side',
+      views: {
+        side: {
+          props: P.mat(40, 190),
+          poses: [
+            all4(),
+            all4({ hip: [102, 108], t: 52, h: 28, aN: { to: [62, 136], b: -1 }, aF: { to: [128, 136], b: -1 } })
+          ]
+        }
+      }
     },
     arm_circles: {
-      cfg: { arrow: true, track: 'haN' },
-      mode: 'cycle', reverseSide2: true,
-      poses: [0, 90, 180, 270, 360].map(function (a) { return stand(118, { aN: [a, a], aF: [a - 14, a - 14] }); })
+      defaultView: 'side',
+      reverseSide2: true,
+      views: {
+        /* side: full slow circles; spine stays vertical at overhead (no lean-back) */
+        side: {
+          cfg: { arrow: true, track: 'haN' },
+          mode: 'cycle',
+          poses: [0, 90, 180, 270, 360].map(function (a) { return stand(118, { aN: [a, a], aF: [a - 10, a - 10] }); })
+        },
+        /* front: bilateral symmetry + square pelvis; path through sides/overhead */
+        front: {
+          cfg: { view: 'front', track: 'haL', arrow: true },
+          mode: 'cycle',
+          poses: [
+            { hip: [130, 74.5], t: 0, h: 0, aL: [8, 8], lL: { to: [9, 136] } },
+            { hip: [130, 74.5], t: 0, h: 0, aL: [90, 90], lL: { to: [9, 136] } },
+            { hip: [130, 74.5], t: 0, h: 0, aL: [172, 172], lL: { to: [9, 136] } },
+            { hip: [130, 74.5], t: 0, h: 0, aL: [90, 90], lL: { to: [9, 136] } },
+            { hip: [130, 74.5], t: 0, h: 0, aL: [8, 8], lL: { to: [9, 136] } }
+          ]
+        }
+      }
     },
     overhead_reach: { poses: [stand(118, { aN: [3, 3], aF: [-8, -8] }), stand(118, { aN: [177, 177], aF: [168, 168] })] },
     march_in_place: {
+      defaultView: 'front',
       dynamic: true,
-      poses: [
-        { hip: [118, 74.5], t: 180, lN: [85, -5], lF: [0, 0], fN: 60, aN: [-35, -20], aF: [55, 80] },
-        { hip: [118, 74.5], t: 180, lN: [0, 0], lF: [85, -5], fF: 60, aN: [55, 80], aF: [-35, -20] }
-      ]
+      views: {
+        /* front: knee track, opposite arm–leg, feet under hips (not high-knees) */
+        front: {
+          cfg: { view: 'front' },
+          mode: 'cycle',
+          dynamic: true,
+          poses: [
+            { hip: [130, 74.5], t: 0, h: 0, aL: [40, 55], aR: [-20, -10], lL: [72, 35], lR: { to: [9, 136] } },
+            { hip: [130, 74.5], t: 0, h: 0, aL: [-20, -10], aR: [40, 55], lL: { to: [9, 136] }, lR: [72, 35] }
+          ]
+        },
+        /* side: vertical torso, mid-thigh knee, flat stance foot, contralateral arms */
+        side: {
+          dynamic: true,
+          poses: [
+            { hip: [118, 74.5], t: 180, lN: [68, -4], lF: { to: [118, 136], b: 1 }, fN: 35, fF: 0, aN: [-28, -12], aF: [48, 68] },
+            { hip: [118, 74.5], t: 180, lN: { to: [118, 136], b: 1 }, lF: [68, -4], fN: 0, fF: 35, aN: [48, 68], aF: [-28, -12] }
+          ]
+        }
+      }
     },
 
     /* =================== STRENGTH =================== */
@@ -192,58 +272,82 @@
       ]
     },
 
-    /* =================== COOL-DOWN =================== */
+    /* =================== COOL-DOWN / MOBILITY =================== */
+    /* docs/anim-briefs/knee_rolls.md — replace top-down with supine side; shoulders stay down; modest ROM */
     knee_rolls: {
-      mode: 'cycle', poses: [{}, {}],
-      custom: function (g, u, el) {
-        if (!g._b) {
-          g._b = {};
-          var b = g._b;
-          b.mat = el('rect', { x: 20, y: 18, width: 220, height: 118, rx: 10, class: 'pr-mat' }, g);
-          b.torso = el('line', { x1: 74, y1: 80, x2: 112, y2: 80, 'stroke-width': 26, class: 'limb shirt' }, g);
-          b.armT = el('line', { x1: 80, y1: 63, x2: 112, y2: 63, 'stroke-width': 7, class: 'limb shirt far' }, g);
-          b.armB = el('line', { x1: 80, y1: 97, x2: 112, y2: 97, 'stroke-width': 7, class: 'limb shirt far' }, g);
-          b.hips = el('ellipse', { cx: 112, cy: 80, rx: 11, ry: 14, class: 'fill-pants' }, g);
-          b.th1 = el('line', { 'stroke-width': 10, class: 'limb pants far' }, g);
-          b.th2 = el('line', { 'stroke-width': 10, class: 'limb pants' }, g);
-          b.sh1 = el('line', { 'stroke-width': 9, class: 'limb pants far' }, g);
-          b.sh2 = el('line', { 'stroke-width': 9, class: 'limb pants' }, g);
-          b.head = el('circle', { cx: 56, cy: 80, r: 10, class: 'fill-skin' }, g);
-          var t = el('text', { x: 130, y: 150, class: 'pr-label', 'text-anchor': 'middle' }, g); t.textContent = 'seen from above';
+      defaultView: 'side',
+      views: {
+        side: {
+          props: P.mat(30, 190),
+          mode: 'cycle',
+          dynamic: true,
+          poses: [
+            lying({ aN: [95, 95], aF: [90, 90], lN: [205, 88], lF: [200, 86], fN: 180, fF: 180 }),
+            lying({ hip: [102, 131], t: 276, h: 270, aN: [100, 95], aF: [95, 90], lN: [218, 108], lF: [212, 106], fN: 195, fF: 192 }),
+            lying({ aN: [95, 95], aF: [90, 90], lN: [205, 88], lF: [200, 86], fN: 180, fF: 180 }),
+            lying({ hip: [102, 131], t: 264, h: 270, aN: [85, 90], aF: [80, 85], lN: [192, 108], lF: [186, 106], fN: 165, fF: 162 })
+          ]
         }
-        var b = g._b, s = 24 * Math.sin(u * 2 * Math.PI);
-        function set(l, x1, y1, x2, y2) { l.setAttribute('x1', x1); l.setAttribute('y1', y1); l.setAttribute('x2', x2); l.setAttribute('y2', y2); }
-        set(b.th1, 112, 74, 142, 74 + s); set(b.th2, 112, 86, 142, 86 + s);
-        set(b.sh1, 142, 74 + s, 166, 74 + s * 0.15); set(b.sh2, 142, 86 + s, 166, 86 + s * 0.15);
       }
     },
+    /* docs/anim-briefs/hip_flexor_stretch.md — tall half-kneel, pelvic tuck, small forward shift, no lumbar arch */
     hip_flexor_stretch: {
-      props: P.towel(50, 120),
-      poses: [
-        { hip: [103, 102], t: 180, aN: [5, 5], lN: { to: [65, 132], b: 1 }, lF: { to: [140, 136], b: 1 }, fN: 270 },
-        { hip: [113, 106], t: 180, aN: [5, 5], lN: { to: [65, 132], b: 1 }, lF: { to: [140, 136], b: 1 }, fN: 270 }
-      ]
+      defaultView: 'side',
+      views: {
+        side: {
+          props: P.towel(50, 120),
+          poses: [
+            { hip: [100, 100], t: 178, aN: [8, 8], aF: [4, 4], lN: { to: [68, 132], b: 1 }, lF: { to: [138, 136], b: 1 }, fN: 270 },
+            { hip: [108, 101], t: 174, aN: [8, 8], aF: [4, 4], lN: { to: [68, 132], b: 1 }, lF: { to: [142, 136], b: 1 }, fN: 270 }
+          ]
+        }
+      }
     },
+    /* docs/anim-briefs/chest_stretch.md — upright trunk, elbow ~shoulder height, no swayback */
     chest_stretch: {
-      props: P.post(118),
-      poses: [
-        { hip: [96, 74.5], t: 180, aN: { to: [117, 40], b: -1 }, aF: { to: [119, 36], b: -1 }, lN: { to: [104, 136], b: 1 }, lF: { to: [112, 136], b: 1 } },
-        { hip: [126, 76], t: 170, aN: { to: [117, 40], b: -1 }, aF: { to: [119, 36], b: -1 }, lN: { to: [104, 136], b: 1 }, lF: { to: [116, 136], b: 1 } }
-      ]
+      defaultView: 'side',
+      views: {
+        side: {
+          props: P.post(118),
+          poses: [
+            { hip: [100, 74.5], t: 180, aN: { to: [117, 48], b: -1 }, aF: { to: [119, 44], b: -1 }, lN: { to: [104, 136], b: 1 }, lF: { to: [112, 136], b: 1 } },
+            { hip: [118, 74.5], t: 178, aN: { to: [117, 48], b: -1 }, aF: { to: [119, 44], b: -1 }, lN: { to: [104, 136], b: 1 }, lF: { to: [114, 136], b: 1 } }
+          ]
+        },
+        front: {
+          cfg: { view: 'front', track: 'haL' },
+          poses: [
+            { hip: [130, 74.5], t: 0, h: 0, aL: [90, 175], aR: [8, 8], lL: { to: [9, 136] } },
+            { hip: [130, 74.5], t: 0, h: 0, aL: [100, 178], aR: [8, 8], lL: { to: [9, 136] } }
+          ]
+        }
+      }
     },
+    /* docs/anim-briefs/calf_stretch.md — rear knee straight, heel glued down, front knee soft */
     calf_stretch: {
-      props: P.wallRight(160),
-      poses: [
-        { hip: [108, 78], t: 180, aN: { to: [156, 56], b: -1 }, aF: { to: [156, 54], b: -1 }, lN: { to: [82, 136], b: 1 }, lF: { to: [128, 136], b: 1 } },
-        { hip: [116, 84], t: 140, aN: { to: [156, 56], b: -1 }, aF: { to: [156, 54], b: -1 }, lN: { to: [82, 136], b: 1 }, lF: { to: [128, 136], b: 1 } }
-      ]
+      defaultView: 'side',
+      views: {
+        side: {
+          props: P.wallRight(160),
+          poses: [
+            { hip: [108, 76], t: 180, aN: { to: [156, 56], b: -1 }, aF: { to: [156, 54], b: -1 }, lN: { to: [78, 136], b: 1 }, lF: { to: [128, 136], b: 1 }, fN: 0 },
+            { hip: [114, 80], t: 155, aN: { to: [156, 56], b: -1 }, aF: { to: [156, 54], b: -1 }, lN: { to: [78, 136], b: 1 }, lF: { to: [132, 130], b: 1 }, fN: 0, fF: 25 }
+          ]
+        }
+      }
     },
+    /* docs/anim-briefs/childs_pose.md — sit hips to heels, arms forward, forehead down (not puppy/down-dog) */
     childs_pose: {
-      props: P.mat(30, 200),
-      poses: [
-        { hip: [100, 104], t: 104, h: 100, aN: { to: [146, 136], b: 1 }, aF: { to: [140, 136], b: 1 }, lN: { to: [66, 134], b: 1 }, lF: { to: [66, 134], b: 1 }, fN: 270, fF: 270 },
-        { hip: [72, 112], t: [85, 75], h: 85, aN: { to: [168, 136], b: 1 }, aF: { to: [160, 136], b: 1 }, lN: { to: [66, 134], b: 1 }, lF: { to: [66, 134], b: 1 }, fN: 270, fF: 270 }
-      ]
+      defaultView: 'side',
+      views: {
+        side: {
+          props: P.mat(30, 200),
+          poses: [
+            all4({ aN: { to: [146, 136], b: -1 }, aF: { to: [140, 136], b: -1 } }),
+            { hip: [68, 118], t: [78, 68], h: 78, aN: { to: [178, 136], b: -1 }, aF: { to: [170, 136], b: -1 }, lN: { to: [58, 134], b: 1 }, lF: { to: [58, 134], b: 1 }, fN: 270, fF: 270 }
+          ]
+        }
+      }
     },
 
     /* =================== MORE ILLUSTRATIONS (side + front views) =================== */
@@ -322,39 +426,74 @@
     jaw_jut: { face: { to: { fwd: 1, neck: 0.5 }, caption: 'Lower jaw forward' } },
     fish_face: { face: { to: { puff: -1, pucker: 0.5 }, caption: 'Suck cheeks in' } },
     cheek_puff: { face: { to: { puff: 1 }, caption: 'Puff cheeks out' } },
-    smile_cheek_lift: { face: { to: { smile: 1 }, caption: 'Smile, lift cheeks' } },
+    /* docs/anim-briefs/smile_cheek_lift.md — closed-lip smile, cheeks up, eyes/forehead quiet */
+    smile_cheek_lift: { face: { to: { smile: 0.85 }, caption: 'Closed smile, lift cheeks' } },
     jaw_drop: { face: { to: { jaw: 0.8 } } },
     jaw_side_slide: { face: { to: { slide: 1, jaw: 0.18 } } },
-    chin_lift_pucker: { face: { to: { pitch: 0.45, pucker: 0.85 }, caption: 'Gentle lip pucker' } },
+    /* docs/anim-briefs/chin_lift_pucker.md — tiny tilt only; soft pucker; stop if dizzy */
+    chin_lift_pucker: { face: { to: { pitch: 0.22, pucker: 0.7 }, caption: 'Tip up a little, soft pucker' } },
     platysma_pull: { face: { to: { down: 1, neck: 1, jaw: 0.12 }, caption: 'Pull corners down' } },
     vowel_shapes: { face: { dynamic: true, from: { pucker: 1, jaw: 0.4 }, to: { wide: 1, smile: 0.6, jaw: 0.15 } } },
     brow_raise: { face: { to: { brow: 1, eyeWide: 0.4 } } },
     eye_squeeze: { face: { from: { eyeWide: 0.25 }, to: { squeeze: 0.45 }, caption: 'Close gently' } },
     lion_face: { face: { to: { jaw: 0.85, tongue: 1, eyeWide: 0.8, brow: 0.4 } } },
-    tongue_posture: { face: { to: { neck: 0.22 }, caption: 'Tongue on the roof of the mouth' } },
+    /* docs/anim-briefs/tongue_posture.md — soft palate rest, jaw relaxed, no cosmetic claims */
+    tongue_posture: { face: { to: { neck: 0.15 }, caption: 'Tongue tip on the palate, jaw soft' } },
     tongue_press: { face: { to: { neck: 0.4 }, caption: 'Press tongue to the palate' } },
     slow_chew: { face: { dynamic: true, from: { jaw: 0.06 }, to: { jaw: 0.32 }, caption: 'Chew slowly' } },
     chin_resistance: { face: { to: { jaw: 0.28, neck: 0.35 }, caption: 'Open against a light hand' } },
 
     /* =================== NECK, BACK AND SPINE =================== */
+    /* docs/anim-briefs/chin_tuck.md — small straight-back glide, eyes level, not a big nod */
     chin_tuck: {
-      poses: [stand(118, { aN: [3, 3], aF: [-6, -6], h: 162 }), stand(118, { aN: [3, 3], aF: [-6, -6], h: 182 })]
+      defaultView: 'side',
+      views: {
+        side: {
+          poses: [
+            stand(118, { aN: [3, 3], aF: [-6, -6], h: 172 }),
+            stand(118, { aN: [3, 3], aF: [-6, -6], h: 186 })
+          ]
+        }
+      }
     },
     neck_forward_stretch: {
       poses: [stand(118, { aN: [3, 3], aF: [-6, -6] }), stand(118, { aN: [3, 3], aF: [-6, -6], h: 128 })]
     },
+    /* docs/anim-briefs/neck_rotation.md — slow turns, shoulders still, modest ROM, no circles */
     neck_rotation: {
-      cfg: { view: 'front' }, view: 'front', mode: 'cycle', dynamic: true,
-      poses: [
-        { hip: [130, 74.5], t: 0, h: -22, aL: [4, 4], lL: { to: [9, 136] } },
-        { hip: [130, 74.5], t: 0, h: 0, aL: [4, 4], lL: { to: [9, 136] } },
-        { hip: [130, 74.5], t: 0, h: 22, aL: [4, 4], lL: { to: [9, 136] } },
-        { hip: [130, 74.5], t: 0, h: 0, aL: [4, 4], lL: { to: [9, 136] } }
-      ]
+      defaultView: 'front',
+      views: {
+        front: {
+          cfg: { view: 'front' },
+          mode: 'cycle',
+          dynamic: true,
+          poses: [
+            { hip: [130, 74.5], t: 0, h: -14, aL: [4, 4], lL: { to: [9, 136] } },
+            { hip: [130, 74.5], t: 0, h: 0, aL: [4, 4], lL: { to: [9, 136] } },
+            { hip: [130, 74.5], t: 0, h: 14, aL: [4, 4], lL: { to: [9, 136] } },
+            { hip: [130, 74.5], t: 0, h: 0, aL: [4, 4], lL: { to: [9, 136] } }
+          ]
+        }
+      }
     },
+    /* docs/anim-briefs/neck_side_stretch.md — ear toward shoulder, shoulder down, no torso lean */
     neck_side_stretch: {
-      cfg: { view: 'front' }, view: 'front',
-      poses: [{ hip: [130, 74.5], t: 0, h: 0, aL: [4, 4], lL: { to: [9, 136] } }, { hip: [130, 74.5], t: 0, h: 26, aL: [4, 4], lL: { to: [9, 136] } }]
+      defaultView: 'front',
+      views: {
+        front: {
+          cfg: { view: 'front' },
+          poses: [
+            { hip: [130, 74.5], t: 0, h: 0, aL: [4, 4], lL: { to: [9, 136] } },
+            { hip: [130, 74.5], t: 0, h: 16, aL: [4, 4], lL: { to: [9, 136] } }
+          ]
+        },
+        side: {
+          poses: [
+            stand(118, { aN: [3, 3], aF: [-6, -6], h: 180 }),
+            stand(118, { aN: [3, 3], aF: [-6, -6], h: 164 })
+          ]
+        }
+      }
     },
     scapular_squeeze: {
       poses: [stand(118, { aN: [12, 98], aF: [6, 92] }), stand(118, { aN: [-30, 64], aF: [-34, 60] })]
@@ -404,13 +543,19 @@
         lying({ aN: [250, 255], aF: [175, 175], lN: [205, 95], lF: [92, 88], fN: 180, fF: 90 })
       ]
     },
+    /* docs/anim-briefs/hamstring_stretch.md — tall sit → hip hinge (not round), modest reach to shin */
     hamstring_stretch: {
-      cfg: { track: 'haN' },
-      props: P.mat(30, 200),
-      poses: [
-        { hip: [78, 118], t: 185, h: 175, aN: [70, 20], aF: [64, 16], lN: { to: [168, 136], b: 1 }, lF: { to: [62, 136], b: 1 } },
-        { hip: [82, 118], t: [158, 148], h: 138, aN: { to: [150, 128], b: -1 }, aF: { to: [146, 130], b: -1 }, lN: { to: [168, 136], b: 1 }, lF: { to: [62, 136], b: 1 } }
-      ]
+      defaultView: 'side',
+      views: {
+        side: {
+          cfg: { track: 'haN' },
+          props: P.mat(30, 200),
+          poses: [
+            { hip: [78, 118], t: 188, h: 180, aN: [70, 20], aF: [64, 16], lN: { to: [168, 136], b: 1 }, lF: { to: [62, 136], b: 1 } },
+            { hip: [80, 118], t: [168, 155], h: 155, aN: { to: [148, 128], b: -1 }, aF: { to: [144, 130], b: -1 }, lN: { to: [168, 136], b: 1 }, lF: { to: [62, 136], b: 1 } }
+          ]
+        }
+      }
     },
     lateral_raise: {
       cfg: { view: 'front', track: 'haL', equip: 'dumbbell' },
@@ -445,13 +590,19 @@
         stand(118, armsFwd)
       ]
     },
+    /* docs/anim-briefs/quad_stretch.md — wall hand, same-side foot hold, knees near, moderate heel lift, no arch */
     quad_stretch: {
-      cfg: { track: 'anN' },
-      props: P.wallRight(168),
-      poses: [
-        { hip: [118, 74.5], t: 180, aN: { to: [164, 56], b: -1 }, aF: [20, 20], lN: { to: [118, 136], b: 1 }, lF: { to: [128, 136], b: 1 } },
-        { hip: [118, 74.5], t: 180, aN: { to: [164, 56], b: -1 }, aF: { to: [96, 92], b: 1 }, lN: { to: [118, 136], b: 1 }, lF: [200, 90], fF: 270 }
-      ]
+      defaultView: 'side',
+      views: {
+        side: {
+          cfg: { track: 'anN' },
+          props: P.wallRight(168),
+          poses: [
+            { hip: [118, 74.5], t: 180, aN: { to: [164, 56], b: -1 }, aF: [20, 20], lN: { to: [118, 136], b: 1 }, lF: { to: [126, 136], b: 1 } },
+            { hip: [118, 74.5], t: 178, aN: { to: [164, 56], b: -1 }, aF: { to: [100, 96], b: 1 }, lN: { to: [118, 136], b: 1 }, lF: [185, 100], fF: 250 }
+          ]
+        }
+      }
     },
     side_lunge: {
       cfg: { view: 'front', track: 'hip' },

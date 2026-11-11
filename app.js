@@ -55,13 +55,50 @@
   }
   function addAnim(f) { anims.push(f); return function () { anims = anims.filter(function (x) { return x !== f; }); }; }
 
-  function loopPeriod(ex) { return ex.type === 'reps' || ex.anim.dynamic ? C.period(ex) : 5; }
+  function loopPeriod(ex, anim) { anim = anim || (ex && ex.anim); return ex.type === 'reps' || (anim && anim.dynamic) ? C.period(ex) : 5; }
+  function activeAnim(ex, viewId) {
+    var ids = Catalog.viewIds(ex);
+    if (ids.length < 2) return ex.anim;
+    var id = viewId && ids.indexOf(viewId) >= 0 ? viewId : (ex.anim._defaultView || ids[0]);
+    return Catalog.animForView(ex, id) || ex.anim;
+  }
+  function mountViewBar(parent, ex, onChange) {
+    var ids = Catalog.viewIds(ex);
+    if (ids.length < 2) return null;
+    var bar = document.createElement('div');
+    bar.className = 'rviews';
+    bar.setAttribute('role', 'group');
+    bar.setAttribute('aria-label', 'Camera angle');
+    var cur = ex.anim._defaultView || ids[0];
+    function paint() {
+      bar.innerHTML = ids.map(function (id) {
+        return '<button type="button" class="rview' + (id === cur ? ' on' : '') + '" data-view="' + esc(id) + '">' + esc(Catalog.viewLabel(id)) + '</button>';
+      }).join('');
+      $$('[data-view]', bar).forEach(function (b) {
+        b.onclick = function () {
+          cur = b.getAttribute('data-view');
+          paint();
+          onChange(cur);
+        };
+      });
+    }
+    paint();
+    parent.appendChild(bar);
+    return { get: function () { return cur; } };
+  }
   function mountDemo(box, ex) {
-    var svg = document.createElementNS(NS, 'svg'); svg.setAttribute('class', 'fig'); box.appendChild(svg);
-    var fig = Figure.create(svg), clock = 0, cur = null;
-    function set(e, mirror) { cur = e; fig.setAnim(e.anim, mirror); }
+    var viewId = ex.anim._defaultView || (Catalog.viewIds(ex)[0] || null), fig = null, clock = 0, cur = ex;
+    mountViewBar(box, ex, function (id) { viewId = id; if (fig) fig.setAnim(activeAnim(cur, viewId), false); });
+    var stage = document.createElement('div'); stage.className = 'demo-stage'; box.appendChild(stage);
+    var svg = document.createElementNS(NS, 'svg'); svg.setAttribute('class', 'fig'); stage.appendChild(svg);
+    fig = Figure.create(svg);
+    function set(e, mirror) { cur = e; viewId = e.anim._defaultView || (Catalog.viewIds(e)[0] || null); fig.setAnim(activeAnim(e, viewId), mirror); }
     set(ex, false);
-    var stop = addAnim(function (dt) { clock += dt; fig.show({ u: (clock / loopPeriod(cur)) % 1 }); });
+    var stop = addAnim(function (dt) {
+      clock += dt;
+      var anim = activeAnim(cur, viewId);
+      fig.show({ u: (clock / loopPeriod(cur, anim)) % 1 });
+    });
     return { stop: stop, set: set };
   }
   function thumbs(root) {
@@ -398,7 +435,7 @@
     r.innerHTML =
       '<div class="rtop"><button class="ic" id="rClose" aria-label="Pause. End workout is on the pause screen">' + ico('close') + '</button><div class="rprog"><div class="rbar" id="rBar"></div></div><button class="ic" id="rMute" aria-label="Voice on or off"></button></div>' +
       '<div class="rblock" id="rBlock"></div>' +
-      '<div class="rstage" id="rStage"><button class="rinstr" id="rHow" aria-label="Instructions">' + ico('info', 'sm') + '<span>Instructions</span></button></div>' +
+      '<div class="rstage" id="rStage"><div class="rviews" id="rViews" hidden role="group" aria-label="Camera angle"></div><button class="rinstr" id="rHow" aria-label="Instructions">' + ico('info', 'sm') + '<span>Instructions</span></button></div>' +
       '<div class="rinfo"><div class="eyebrow" id="rArea"></div><h2 id="rName"></h2><div class="sub" id="rSub"></div>' +
       '<div class="rmain" id="rMain"></div><div class="rcue" id="rCue"></div></div>' +
       '<div class="rctrl"><button class="rc" id="rPrev" aria-label="Previous exercise"><span>' + ico('prev') + '</span><small>Previous</small></button>' +
@@ -514,16 +551,37 @@
     }
   }
 
+  function syncViewBar(ex) {
+    var box = $('#rViews'); if (!box) return;
+    if (RUN.viewEx !== ex.id) { RUN.viewEx = ex.id; RUN.viewId = null; }
+    var ids = Catalog.viewIds(ex);
+    if (ids.length < 2) { box.hidden = true; box.innerHTML = ''; RUN.viewId = null; return; }
+    var cur = RUN.viewId && ids.indexOf(RUN.viewId) >= 0 ? RUN.viewId : (ex.anim._defaultView || ids[0]);
+    RUN.viewId = cur;
+    box.hidden = false;
+    box.innerHTML = ids.map(function (id) {
+      return '<button type="button" class="rview' + (id === cur ? ' on' : '') + '" data-view="' + esc(id) + '">' + esc(Catalog.viewLabel(id)) + '</button>';
+    }).join('');
+    $$('[data-view]', box).forEach(function (b) {
+      b.onclick = function () {
+        RUN.viewId = b.getAttribute('data-view');
+        RUN.key = '';
+        $$('[data-view]', box).forEach(function (x) { x.classList.toggle('on', x === b); });
+      };
+    });
+  }
+
   function drawStage(st, inst, ex) {
     var mirror = (st.kind === 'work' || st.kind === 'rest') && st.why !== 'between' && (st.sideIdx || 0) === 1;
-    var key = ex.id + (mirror ? 'm' : '');
-    if (RUN.key !== key) { RUN.key = key; RUN.fig.setAnim(ex.anim, mirror); }
-    var n = ex.anim.poses.length, opts;
+    var anim = activeAnim(ex, RUN.viewId);
+    var key = ex.id + (mirror ? 'm' : '') + '|' + (anim._viewId || '');
+    if (RUN.key !== key) { RUN.key = key; RUN.fig.setAnim(anim, mirror); }
+    var n = (anim.poses && anim.poses.length) || 1, opts;
     if (st.kind === 'work') {
-      if (st.mode === 'reps') { var per = C.period(ex), u = (RUN.t % per) / per; if (ex.anim.reverseSide2 && st.sideIdx === 1) u = 1 - u; opts = { u: u }; }
-      else if (ex.anim.dynamic) opts = { u: (RUN.t / C.period(ex)) % 1 };
+      if (st.mode === 'reps') { var per = C.period(ex), u = (RUN.t % per) / per; if (anim.reverseSide2 && st.sideIdx === 1) u = 1 - u; opts = { u: u }; }
+      else if (anim.dynamic) opts = { u: (RUN.t / C.period(ex)) % 1 };
       else { var f = Math.min(1, RUN.t / 1.2); opts = { pos: (0.5 - 0.5 * Math.cos(Math.PI * f)) * (n - 1), u: 0.25 }; }
-    } else opts = { u: (RUN.clock / loopPeriod(ex)) % 1 };
+    } else opts = { u: (RUN.clock / loopPeriod(ex, anim)) % 1 };
     RUN.fig.show(opts);
   }
 
@@ -552,6 +610,7 @@
       if (st.sets > 1) sub.push((st.mode === 'hold' ? 'Hold ' : 'Set ') + st.set + ' of ' + st.sets);
       setTexts({ area: muscleList(ex).join(' · '), muscle: true, title: ex.name, sub: sub.join(' · ') });
     }
+    syncViewBar(ex);
     mkRing();
     // muscle overlay: tint the working body part while a set runs (the muscle names show above the exercise name)
     var z = st.kind === 'work' ? zonesOf(ex) : [], cls = RUN.fig.svg.classList;

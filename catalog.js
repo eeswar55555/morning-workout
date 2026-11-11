@@ -36,6 +36,9 @@
     return out;
   }
 
+  /* Camera-angle labels for the switchable-view UI (SPEC-anim-multi-view). */
+  var VIEW_LABEL = { side: 'Side', front: 'Front', 'close-up': 'Close-up', oblique: 'Oblique' };
+
   /* An exercise without an illustration gets a neutral placeholder (so any exercise from any AI works at once). */
   function placeholder(ex) {
     return {
@@ -55,19 +58,55 @@
     };
   }
 
-  function animFor(ex) {
+  function rawAnim(ex) {
     var A = root.ANIMATIONS || {}, src = A[ex.looks || ex.id], guard = 0;      // a custom exercise borrows the picture of `looks`
     while (src && src.like && guard++ < 5) src = A[src.like];          // { like: 'other_id' } reuses another picture
-    if (src && src.face && root.Face) return root.Face.build(src.face, ex);   // face-only drawing (face.js)
-    if (!src || !src.poses) return placeholder(ex);
+    return src || null;
+  }
+
+  /* Multi-view entries: { defaultView, views: { side: {...}, front: {...} } }. Legacy entries are a single block. */
+  function pickView(raw, viewId) {
+    if (!raw || !raw.views) return { block: raw, viewId: null, views: null, defaultView: null, map: null };
+    var ids = Object.keys(raw.views), def = (raw.defaultView && raw.views[raw.defaultView]) ? raw.defaultView : ids[0];
+    var id = (viewId && raw.views[viewId]) ? viewId : def;
+    return { block: raw.views[id], viewId: id, views: ids, defaultView: def, map: raw.views };
+  }
+
+  function fromBlock(block, ex) {
+    if (block && block.face && root.Face) return root.Face.build(block.face, ex);   // face-only drawing (face.js)
+    if (!block || !block.poses) return null;
     var anim = {}, k;
-    for (k in src) anim[k] = src[k];                                    // own copy: _cfg and _ex belong to this exercise
+    for (k in block) anim[k] = block[k];                                  // own copy: _cfg and _ex belong to this exercise
     anim._cfg = {};
-    for (k in (src.cfg || {})) anim._cfg[k] = src.cfg[k];
+    for (k in (block.cfg || {})) anim._cfg[k] = block.cfg[k];
     anim._cfg.primary = drawable(ex.primaryMuscles);
     anim._cfg.secondary = drawable(ex.secondaryMuscles).filter(function (m) { return anim._cfg.primary.indexOf(m) < 0; });
     anim._ex = ex;
     return anim;
+  }
+
+  function stampViews(anim, picked) {
+    if (!anim || !picked.views) return anim;
+    anim._views = picked.views;
+    anim._defaultView = picked.defaultView;
+    anim._viewId = picked.viewId;
+    anim._viewMap = picked.map;
+    return anim;
+  }
+
+  function animFor(ex, viewId) {
+    var raw = rawAnim(ex);
+    if (!raw) return placeholder(ex);
+    var picked = pickView(raw, viewId);
+    var anim = fromBlock(picked.block, ex);
+    if (!anim) return placeholder(ex);
+    /* Meta that lives on the multi-view root (not inside each view block). */
+    if (raw.views) {
+      ['reverseSide2', 'bag', 'noFloor', 'down', 'dynamic'].forEach(function (k) {
+        if (raw[k] != null && anim[k] == null) anim[k] = raw[k];
+      });
+    }
+    return stampViews(anim, picked);
   }
 
   function runtimeExercise(e) {
@@ -144,6 +183,14 @@
   };
   /* "each side" for right/left, "each way" for forward/backward */
   C.leftRight = function (ex) { return !!ex.sides && ex.sides.indexOf('left') >= 0; };
+  /* Switchable teaching angles (empty = single fixed view). */
+  C.viewIds = function (ex) { return (ex && ex.anim && ex.anim._views) ? ex.anim._views.slice() : []; };
+  C.viewLabel = function (id) {
+    if (VIEW_LABEL[id]) return VIEW_LABEL[id];
+    if (!id) return '';
+    return id.charAt(0).toUpperCase() + id.slice(1);
+  };
+  C.animForView = function (ex, viewId) { return ex ? animFor(ex, viewId) : null; };
 
   root.Catalog = C;
 })(window);
