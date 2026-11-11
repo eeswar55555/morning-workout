@@ -323,6 +323,39 @@
     var i = Math.min(Math.floor(pos), n - 2);
     return mixAny(P[i], P[i + 1], pos - i);
   }
+  /* Front limbs must all be FK or all IK across poses — mixAny of array vs {to} yields NaN. */
+  function prepareFront(anim) {
+    if (anim._ready || anim.custom) { anim._ready = true; return anim; }
+    var poses = anim.poses;
+    if (!poses || !poses.length) { anim._ready = true; return anim; }
+    function angFrom(root, tip, sg) {
+      return Math.atan2((tip[0] - root[0]) / sg, tip[1] - root[1]) * 180 / Math.PI;
+    }
+    ['aL', 'aR', 'lL', 'lR'].forEach(function (k) {
+      var isArm = k[0] === 'a', side = k[1], alt = k[0] + (side === 'L' ? 'R' : 'L');
+      var kinds = poses.map(function (p) {
+        var s = p[k] != null ? p[k] : p[alt];
+        if (s == null) return 'fk';
+        return Array.isArray(s) ? 'fk' : 'ik';
+      });
+      if (kinds.indexOf('fk') < 0 || kinds.indexOf('ik') < 0) return;
+      var prev = null, sg = side === 'L' ? -1 : 1;
+      poses.forEach(function (p) {
+        var s = p[k] != null ? p[k] : p[alt];
+        if (Array.isArray(s)) { prev = s; if (p[k] == null) p[k] = s; return; }
+        if (!s || !s.to) return;
+        var j = solveFront(p);
+        var root = isArm ? (side === 'L' ? j.sL : j.sR) : (side === 'L' ? j.hL : j.hR);
+        var joint = j[(isArm ? 'el' : 'kn') + side], end = j[(isArm ? 'ha' : 'an') + side];
+        var a1 = angFrom(root, joint, sg), a2 = angFrom(joint, end, sg);
+        if (prev) { a1 += 360 * Math.round((prev[0] - a1) / 360); a2 += 360 * Math.round((prev[1] - a2) / 360); }
+        p[k] = [a1, a2];
+        prev = p[k];
+      });
+    });
+    anim._ready = true;
+    return anim;
+  }
   function solveFront(p) {
     var H = p.hip, r = rad(p.t || 0), up = [Math.sin(r), -Math.cos(r)], sd = [Math.cos(r), Math.sin(r)];
     var S0 = [H[0] + up[0] * (LEN.lo + LEN.hi - 2), H[1] + up[1] * (LEN.lo + LEN.hi - 2)];
@@ -502,8 +535,8 @@
       drawProps(back, anim, mirror);
       var c = cfgFor(anim), ex = exFor(anim);
       if (anim && anim.custom) { cur.rig = null; return; }
-      F.prepare(anim);
       cur.front = (c.view || anim.view) === 'front';
+      if (cur.front) prepareFront(anim); else F.prepare(anim);
       cur.n = anim.poses.length;
       cur.cycle = anim.mode === 'cycle';
       cur.o = { bag: anim.bag, equip: c.equip };

@@ -7,7 +7,7 @@
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
   var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
   var cap = function (s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : s; };
-  var screen = 'today', RUN = null, deferredInstall = null, openRows = {};
+  var screen = 'today', RUN = null, deferredInstall = null;
 
   /* ====================== icons (inline SVG: same look on every phone, follows the theme) ====================== */
   var ICONS = {
@@ -141,13 +141,18 @@
     opts = opts || {};
     var bd = document.createElement('div'); bd.className = 'backdrop';
     if (opts.sticky) bd.setAttribute('data-sticky', '1');
-    bd.innerHTML = '<div class="sheet' + (opts.tall ? ' tall' : '') + '" role="dialog" aria-modal="true"><div class="grab"></div>' + html + '</div>';
+    bd.innerHTML = '<div class="sheet' + (opts.tall ? ' tall' : '') + '" role="dialog" aria-modal="true"' +
+      (opts.label ? ' aria-label="' + esc(opts.label) + '"' : '') +
+      (opts.labelledBy ? ' aria-labelledby="' + esc(opts.labelledBy) + '"' : '') +
+      '><div class="grab" aria-hidden="true"></div>' + html + '</div>';
     document.body.appendChild(bd);
     var api = { root: bd.firstChild, close: function () { if (api.closed) return; api.closed = true; if (opts.onClose) opts.onClose(); bd.remove(); } };
     bd.addEventListener('click', function (e) { if (e.target === bd && !opts.sticky) api.close(); });
     $$('[data-close]', bd).forEach(function (b) { b.addEventListener('click', api.close); });
     thumbs(bd);
     pushBack();
+    var focusEl = $('[data-close]', bd) || $('button, [href], input, select, textarea', bd);
+    if (focusEl) setTimeout(function () { try { focusEl.focus(); } catch (e) {} }, 0);
     return api;
   }
   function applyTheme() {
@@ -171,16 +176,22 @@
     if (i.breathing) tips.push('<b>Breathing:</b> ' + esc(i.breathing));
     if (i.easier) tips.push('<b>Easier:</b> ' + esc(i.easier));
     if (i.harder) tips.push('<b>Harder:</b> ' + esc(i.harder));
-    return (ms.length ? '<h3>Muscles worked</h3><div class="mchips">' + ms.map(function (m) { return '<span class="chip">' + esc(m) + '</span>'; }).join('') + '</div>' : '') +
+    return '<div class="instr">' +
+      (ms.length ? '<h3>Muscles worked</h3><div class="mchips">' + ms.map(function (m) { return '<span class="chip">' + esc(m) + '</span>'; }).join('') + '</div>' : '') +
       (i.steps ? '<h3>How to do it</h3><ol class="steps">' + i.steps.map(function (s) { return '<li>' + esc(s) + '</li>'; }).join('') + '</ol>' : (ex.description ? '<p>' + esc(ex.description) + '</p>' : '')) +
       (tips.length ? '<h3>Tips</h3><ul class="tips">' + tips.map(function (t) { return '<li>' + t + '</li>'; }).join('') + '</ul>' : '') +
-      (i.commonMistake ? '<h3>Common mistake</h3><p>' + esc(i.commonMistake) + '</p>' : '');
+      (i.commonMistake ? '<h3>Common mistake</h3><p>' + esc(i.commonMistake) + '</p>' : '') +
+      '</div>';
   }
 
   /* ====================== navigation ====================== */
   function go(name) {
     screen = name; var v = $('#view');
-    $$('#nav button').forEach(function (b) { var on = b.getAttribute('data-go') === name; b.classList.toggle('on', on); b.setAttribute('aria-current', on ? 'page' : 'false'); });
+    $$('#nav button').forEach(function (b) {
+      var on = b.getAttribute('data-go') === name;
+      b.classList.toggle('on', on);
+      if (on) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');
+    });
     SCREENS[name](v);
     v.scrollTop = 0; thumbs(v);
   }
@@ -203,6 +214,7 @@
     var h = '<header class="top"><div><h1>' + greeting() + '</h1><div class="muted">' + esc(dateStr) + '</div></div>' +
       '<div class="chips"><span class="chip">' + ico('flame', 'sm') + C.streak() + ' day' + (C.streak() === 1 ? '' : 's') + '</span><span class="chip">Day ' + plan.day + ' of ' + plan.total + '</span></div></header>';
     if (C.saveFailed()) h += '<div class="warn" role="alert"><b>Progress can\'t be saved.</b> This browser is blocking storage (a private window?). Open the app in a normal Chrome tab.</div>';
+    h += '<div class="today-layout"><div class="today-lead">';
     if (plan.rest) {
       h += '<section class="hero empty"><span class="eyebrow">Rest day</span><h2>Take it easy today</h2><p class="muted">' + esc(plan.note || 'Rest is part of the plan. Walk, stretch, drink water and sleep well.') + '</p></section>';
     } else if (!nEx) {
@@ -220,20 +232,22 @@
     h += '<section class="card" aria-labelledby="painQ"><div class="row"><b id="painQ">How is your back this morning?</b><span class="muted small">optional</span></div><div class="painrow" id="pain" role="group" aria-labelledby="painQ">';
     for (var i = 0; i <= 10; i++) h += '<button class="pn' + (pain === i ? ' on' : '') + '" data-p="' + i + '" aria-pressed="' + (pain === i) + '">' + i + '</button>';
     h += '</div><div class="painend small muted"><span>0 · none</span><span>10 · worst</span></div></section>';
+    h += '</div>';
     if (nEx) {
-      h += '<div class="planhead"><h2>Today\'s plan</h2><span class="muted">about ' + mins + ' min</span></div><p class="muted small planhint">Tap an exercise to read how it is done. You never have to.</p>';
+      h += '<div class="today-plan"><div class="planhead"><h2>Today\'s plan</h2><span class="muted">about ' + mins + ' min</span></div><p class="muted small planhint">Tap an exercise to see how it is done.</p>';
       var seq = 0;
       plan.blocks.forEach(function (b) {
         h += '<section class="card block"><h3 class="bt">' + esc(b.title) + (b.rounds > 1 ? ' <span class="muted">· ' + b.rounds + ' rounds</span>' : '') + '</h3>';
         b.items.forEach(function (it) {
-          var ex = C.getEx(it.id), open = !!openRows[ex.id]; seq++;
-          h += '<div class="item pv' + (open ? ' open' : '') + '">' + thumbHtml(ex.id) +
-            '<button class="meta" data-exp="' + esc(ex.id) + '" aria-expanded="' + open + '" aria-controls="xp-' + esc(ex.id) + '"><span class="mt"><span class="nm">' + seq + '. ' + esc(ex.name) + '</span><span class="muted small">' + esc(C.doseText(ex, it.entry)) + '</span></span>' + ico('chev', 'chev') + '</button>' +
-            '<div class="xp" id="xp-' + esc(ex.id) + '"' + (open ? '' : ' hidden') + '>' + instrHtml(ex, it.entry) + '<button class="link" data-open="' + esc(ex.id) + '">Change amount and more</button></div></div>';
+          var ex = C.getEx(it.id); seq++;
+          h += '<div class="item pv">' + thumbHtml(ex.id) +
+            '<button type="button" class="meta" data-open="' + esc(ex.id) + '"><span class="mt"><span class="nm">' + seq + '. ' + esc(ex.name) + '</span><span class="muted small">' + esc(C.doseText(ex, it.entry)) + '</span></span>' + ico('chev', 'chev r') + '</button></div>';
         });
         h += '</section>';
       });
+      h += '</div>';
     }
+    h += '</div>';
     if (adv.repeat || adv.back) h += '<section class="card note"><b>' + (adv.back ? 'Back sore lately?' : 'Ready for the next week?') + '</b><p class="small">' + esc(adv.text) + '</p>' +
       '<button class="btn small alt" id="wkRepeat">' + (adv.back ? 'Go back one week' : 'Repeat last week') + '</button>' +
       (adv.back ? '' : '<button class="btn small" id="wkKeep">Keep going</button>') + '</section>';
@@ -241,14 +255,7 @@
 
     var sb = $('#start'); if (sb) sb.onclick = function () { startWorkout(plan); };
     $$('#pain .pn').forEach(function (b) { b.onclick = function () { var p = +b.getAttribute('data-p'); if (S.pain[key] === p) delete S.pain[key]; else S.pain[key] = p; C.save(); refresh(); }; });
-    $$('[data-open]', v).forEach(function (m) { m.onclick = function () { var id = m.getAttribute('data-open'); openDetail(id, entryOf(plan, id)); }; });
-    $$('[data-exp]', v).forEach(function (m) {
-      m.onclick = function () {
-        var id = m.getAttribute('data-exp'), on = !openRows[id], row = m.closest('.item');
-        if (on) openRows[id] = 1; else delete openRows[id];
-        m.setAttribute('aria-expanded', on); row.classList.toggle('open', on); $('#xp-' + id, row).hidden = !on;
-      };
-    });
+    $$('[data-open]', v).forEach(function (m) { m.onclick = function () { openDetail(m.getAttribute('data-open'), entryOf(plan, m.getAttribute('data-open'))); }; });
     var wr = $('#wkRepeat'); if (wr) wr.onclick = function () { C.shiftPlan(7); toast('Back one week'); refresh(); };
     var wk = $('#wkKeep'); if (wk) wk.onclick = function () { S.reviewed = key; C.save(); refresh(); };
     var ib = $('#installBtn'); if (ib) ib.onclick = function () { deferredInstall.prompt(); deferredInstall.userChoice.then(function () { deferredInstall = null; refresh(); }); };
@@ -258,17 +265,19 @@
   /* `entry` (optional) = the workout line being shown, which sets the amount and may add a note. */
   function openDetail(id, entry) {
     var ex = C.getEx(id); if (!ex) return;
-    var i = ins(ex), demo, h = '<div class="demo" id="demoBox"></div><h2>' + esc(ex.name) + '</h2><div class="muted">' + esc(ex.area || '') + ' · ' + esc(entry ? C.doseText(ex, entry) : ex.difficulty) + '</div>' +
+    var i = ins(ex), demo;
+    var h = '<div class="sheet-top"><h2 id="exTitle">' + esc(ex.name) + '</h2><button type="button" class="ic" data-close aria-label="Close">' + ico('close') + '</button></div>' +
+      '<div class="demo" id="demoBox"></div><div class="muted">' + esc(ex.area || '') + ' · ' + esc(entry ? C.doseText(ex, entry) : ex.difficulty) + '</div>' +
       (ex.description ? '<p class="small">' + esc(ex.description) + '</p>' : '') +
-      '<div class="rowbtns"><button class="btn small" id="hear">' + ico('volume') + 'Hear instructions</button></div>' +
+      '<div class="rowbtns"><button type="button" class="btn small" id="hear">' + ico('volume') + 'Hear instructions</button></div>' +
       instrHtml(ex, entry) +
       '<div class="warn small">' + ico('warning', 'sm') + ' Stop if this causes sharp pain, or pain, tingling or numbness in your leg.</div>';
     if (entry) {
       var o = S.dose[ex.id] && S.dose[ex.id].n != null ? S.dose[ex.id].n : '';
       h += '<label class="field">Your ' + (ex.type === 'reps' ? 'reps' : 'seconds') + ' (leave empty to follow the plan: ' + C.planAmount(ex, entry) + ')<input type="number" inputmode="numeric" min="1" max="300" id="amt" placeholder="' + C.planAmount(ex, entry) + '" value="' + o + '"></label>';
     }
-    h += '<div class="rowbtns">' + (ex.custom ? '<button class="ghost" id="exEdit">' + ico('edit') + 'Edit</button><button class="ghost danger" id="exDel">' + ico('trash') + 'Delete</button>' : '') + '<button class="btn small" data-close>Done</button></div>';
-    var sh = sheet(h, { tall: true, onClose: function () { demo && demo.stop(); V.cancel(); } });
+    h += '<div class="rowbtns">' + (ex.custom ? '<button type="button" class="ghost" id="exEdit">' + ico('edit') + 'Edit</button><button type="button" class="ghost danger" id="exDel">' + ico('trash') + 'Delete</button>' : '') + '<button type="button" class="btn small" data-close>Done</button></div>';
+    var sh = sheet(h, { tall: true, labelledBy: 'exTitle', onClose: function () { demo && demo.stop(); V.cancel(); } });
     var eb = $('#exEdit', sh.root); if (eb) eb.onclick = function () { sh.close(); Studio.editExercise(ex.id); };
     var db = $('#exDel', sh.root); if (db) db.onclick = function () { sh.close(); Studio.deleteExercise(ex.id); };
     demo = mountDemo($('#demoBox', sh.root), ex);

@@ -139,22 +139,28 @@
       defaultView: 'front',
       dynamic: true,
       views: {
-        /* front: knee track, opposite arm–leg, feet under hips (not high-knees) */
+        /* front: all FK angles (mixed FK/IK NaNs the blend). Contralateral arms. Mid-stance between peaks. */
         front: {
           cfg: { view: 'front' },
           mode: 'cycle',
           dynamic: true,
           poses: [
-            { hip: [130, 74.5], t: 0, h: 0, aL: [40, 55], aR: [-20, -10], lL: [72, 35], lR: { to: [9, 136] } },
-            { hip: [130, 74.5], t: 0, h: 0, aL: [-20, -10], aR: [40, 55], lL: { to: [9, 136] }, lR: [72, 35] }
+            { hip: [130, 74.5], t: 0, h: 0, aL: [16, 26], aR: [16, 26], lL: [6, 0], lR: [6, 0] },
+            { hip: [130, 74.5], t: 0, h: 0, aL: [-22, -12], aR: [48, 62], lL: [70, 28], lR: [6, 0] },
+            { hip: [130, 74.5], t: 0, h: 0, aL: [16, 26], aR: [16, 26], lL: [6, 0], lR: [6, 0] },
+            { hip: [130, 74.5], t: 0, h: 0, aL: [48, 62], aR: [-22, -12], lL: [6, 0], lR: [70, 28] }
           ]
         },
-        /* side: vertical torso, mid-thigh knee, flat stance foot, contralateral arms */
+        /* side: vertical torso, mid-thigh knee, flat stance foot (90°), contralateral arms */
         side: {
+          cfg: { track: 'knN' },
+          mode: 'cycle',
           dynamic: true,
           poses: [
-            { hip: [118, 74.5], t: 180, lN: [68, -4], lF: { to: [118, 136], b: 1 }, fN: 35, fF: 0, aN: [-28, -12], aF: [48, 68] },
-            { hip: [118, 74.5], t: 180, lN: { to: [118, 136], b: 1 }, lF: [68, -4], fN: 0, fF: 35, aN: [48, 68], aF: [-28, -12] }
+            { hip: [118, 74.5], t: 180, lN: { to: [118, 136], b: 1 }, lF: { to: [126, 136], b: 1 }, fN: 90, fF: 90, aN: [14, 24], aF: [10, 20] },
+            { hip: [118, 74.5], t: 180, lN: [68, -4], lF: { to: [126, 136], b: 1 }, fN: 40, fF: 90, aN: [-28, -12], aF: [48, 68] },
+            { hip: [118, 74.5], t: 180, lN: { to: [118, 136], b: 1 }, lF: { to: [126, 136], b: 1 }, fN: 90, fF: 90, aN: [14, 24], aF: [10, 20] },
+            { hip: [118, 74.5], t: 180, lN: { to: [118, 136], b: 1 }, lF: [68, -4], fN: 90, fF: 40, aN: [48, 68], aF: [-28, -12] }
           ]
         }
       }
